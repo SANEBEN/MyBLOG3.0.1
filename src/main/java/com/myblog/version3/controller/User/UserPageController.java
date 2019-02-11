@@ -1,13 +1,10 @@
 package com.myblog.version3.controller.User;
 
-import com.myblog.version3.entity.User;
 import com.myblog.version3.mapper.articleMapper;
 import com.myblog.version3.mapper.messageMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.session.Session;
-import org.apache.shiro.subject.Subject;
+import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -43,11 +40,15 @@ public class UserPageController {
     }
 
     @RequestMapping(value = "/Article/{Uid}/editArticle/{Aid}" ,method = RequestMethod.GET)
-    @ApiImplicitParam(value = "文章的ID" ,name = "Aid" ,paramType = "path" ,dataType = "String" ,required = true)
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "用户的ID" ,name = "Uid" ,dataType = "String" ,paramType = "path" ,required = true),
+            @ApiImplicitParam(value = "文章的ID" ,name = "Aid" ,paramType = "path" ,dataType = "String")
+    })
     public String editArticle(@PathVariable(value = "Uid") String Uid ,@PathVariable(value = "Aid") String Aid, ModelMap modelMap){
         modelMap.addAttribute("message" ,messageMapper.getByUid(Uid));
-        modelMap.addAttribute("article" ,articleMapper.getByID(Aid));
-        modelMap.addAttribute("articles" ,articleMapper.getByUid(Uid));
+        if(Aid !=null) {
+            modelMap.addAttribute("article", articleMapper.getByID(Aid));
+        }
         return "authc/User/editArticle";
     }
 }
