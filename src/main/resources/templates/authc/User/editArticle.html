@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>MyBLOG</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"-->
+    <!--integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">-->
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+          integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/fonts/line-icons.css}">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/icons.css}">
+
+    <link rel="stylesheet" th:href="@{/plugins/morris/morris.css}">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/responsive.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/WangEditor/wangEditor.min.css}">
+    <style type="text/css">
+        .toolbar {
+            border: 1px solid #ccc;
+        }
+
+        .editor {
+            border: 1px solid #ccc;
+            height: 490px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="layout" id="app">
+    <!--顶部导航栏-->
+    <div class="header navbar">
+        <div class="header-container">
+            <div class="nav-logo">
+                <a th:href="@{/}">
+                    <b><img th:src="@{/img/logo.png}" alt=""></b>
+                    <span class="logo">
+                             <img th:src="@{/img/logo-text.png}" alt="">
+                        </span>
+                </a>
+            </div>
+            <ul class="nav-right">
+                <!--显示用户信息-->
+                <li class="user-profile dropdown dropdown-animated scale-left">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img class="profile-img img-fluid" th:src="@{${message.getImg()}}" alt="">
+                    </a>
+                    <ul class="dropdown-menu dropdown-md">
+                        <li>
+                            <ul class="list-media">
+                                <li class="list-item avatar-info">
+                                    <div class="media-img">
+                                        <img th:src="@{${message.getImg()}}" alt="">
+                                    </div>
+                                    <div class="info">
+                                        <span class="title text-semibold" th:text="${message.getUserName()}"></span>
+                                        <span class="sub-title" th:text="${'加入时间'+#strings.substring(message.getCreatedTime(),0,10)}"></span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li>
+                            <a th:href="@{'/user/personalCenter/'+${message.getUid()}}">
+                                <i class="lni-user"></i>
+                                <span>个人中心</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{}">
+                                <i class="lni-cog"></i>
+                                <span>更改个人信息</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{'/user/Article/'+${message.getUid()}}">
+                                <i class="lni-envelope"></i>
+                                <span>写文章</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/logout}">
+                                <i class="lni-lock"></i>
+                                <span>注销</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <br><br><br><br>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <form id="article">
+                    <div id="editor1" class="toolbar">
+                    </div>
+                    <div style="padding: 5px 0; color: #ccc">
+                        <input type="text" class="form-control" id="title" name="title"
+                               placeholder="请输入文章标题">
+                        <input type="text" name="Aid" hidden placeholder="" id="Aid">
+                        <input type="text" name="corpus" hidden placeholder="" id="corpus">
+                    </div>
+                    <div id="editor2" class="editor">
+                    </div>
+                    <button class="btn btn-primary float-right" id="submit"
+                            type="button">保存</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 注意， 只需要引用 JS，无需引用任何 CSS ！！！-->
+<script type="text/javascript" th:src="@{/WangEditor/wangEditor.min.js}"></script>
+<script th:src="@{/js/jquery-min.js}"></script>
+<script th:src="@{/js/popper.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/jquery.app.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+<script th:src="@{/plugins/morris/morris.min.js}"></script>
+<script th:src="@{/plugins/raphael/raphael-min.js}"></script>
+<script th:src="@{/js/dashborad1.js}"></script>
+</body>
+</html>

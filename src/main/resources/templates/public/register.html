@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>用户注册</title>
+    <link rel="stylesheet" th:href="@{/css/register.css}">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <!--图标库-->
+    <link rel="stylesheet" th:href="@{/css/font-awesome.css}">
+    <script th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/js/popper.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+</head>
+<body class="text-center">
+<form class="form-register" name="form" id="form" th:action="@{/userRegister}">
+    <h1 class="h3 mb-3 font-weight-normal">Please register</h1><br>
+    <input type="text" class="form-control" placeholder="Username" name="userName">
+    <label for="inputPhone" class="sr-only">Phone Number</label>
+    <input type="email" id="inputPhone" class="form-control" placeholder="Phone Number" required autofocus=""
+           name="phone">
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="Rpassword">
+    <input type="password" class="form-control" placeholder="Confirm Your Password" required name="Lpassword">
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Verification Code" name="verification" required>
+        <div class="input-group-append">
+            <button type="button" class="btn btn-outline-primary input-group-text sendVerification" id="sendVerification">获得验证码</button>
+        </div>
+    </div>
+    <div>
+        <a th:href="@{/login}">Already have a account?</a>
+    </div>
+    <br><br>
+    <button class="btn btn-lg btn-primary btn-block submit" type="submit" form="form">Regster now</button>
+</form>
+</body>
+<script th:src="@{/js/Index/register.js}"></script>
+</html>

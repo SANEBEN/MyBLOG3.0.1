@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>博客主页</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/fonts/line-icons.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/icons.css}">
+    <link rel="stylesheet" th:href="@{/plugins/morris/morris.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/responsive.css}">
+</head>
+<body>
+<div id="data" class="layout">
+    <div class="header navbar">
+        <div class="header-container">
+            <div class="nav-logo">
+                <a th:href="@{/}">
+                    <b><img th:src="@{/img/logo.png}" alt=""></b>
+                    <span class="logo">
+                        <img th:src="@{/img/logo-text.png}" alt="">
+                    </span>
+                </a>
+            </div>
+            <ul class="nav-right">
+                <!--登录和注册按钮-->
+                <li class="massages  scale-left" th:unless="${isLogIn}">
+                    <a th:href="@{/login}">
+                        <i class="fa fa-user-o"></i>
+                    </a>
+                </li>
+                <li class="massages scale-left" th:unless="${isLogIn}">
+                    <a th:href="@{/register}">
+                        <i class="fa fa-cog"></i>
+                    </a>
+                </li>
+                <!--显示用户信息-->
+                <li class="user-profile dropdown dropdown-animated scale-left" th:if="${isLogIn}">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="data2">
+                        <img class="profile-img img-fluid" th:src="@{/File/defult.png}" alt="">
+                    </a>
+                    <ul class="dropdown-menu dropdown-md">
+                        <li>
+                            <ul class="list-media">
+                                <li class="list-item avatar-info">
+                                    <div class="media-img">
+                                        <img th:src="@{${message.getImg()}}" alt="">
+                                    </div>
+                                    <div class="info">
+                                        <span class="title text-semibold" th:text="${message.getUserName()}"></span>
+                                        <span class="sub-title" th:text="${message.getCreatedTime()}"></span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li>
+                            <a th:href="@{'/user/personalCenter/'+${message.getUid()}}">
+                                <i class="lni-user"></i>
+                                <span>个人中心</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="lni-cog"></i>
+                                <span>更改个人信息</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{'/user/Article/'+${message.getUid()}}">
+                                <i class="lni-envelope"></i>
+                                <span>写文章</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/logout}">
+                                <i class="lni-lock"></i>
+                                <span>注销</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <br><br><br><br>
+    <div class="container-fluid" style="width: 90%;">
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="card">
+                    <div class="profile-bg">
+                        <div class="user-profile">
+                            <figure class="profile-wall-img">
+                                <img class="img-fluid" th:src="@{/img/user-bg.jpg}" alt="User Wall">
+                            </figure>
+                            <div class="profile-body">
+                                <figure class="profile-user-avatar">
+                                    <img th:src="@{img/user1.jpg}" alt="User Wall">
+                                </figure>
+                                <h3 class="profile-user-name">博主：三年二班的路小雨</h3>
+                                <small class="profile-user-address">广西桂林，华北电力大学（保定）</small>
+                                <div class="profile-user-description">
+                                    <p>这个个人博客网站是作为对自己学习成果的一个检验，使用了springboot作为后台框架，view部分使用了thymeleaf模板引擎。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box bg-primary">
+                    <div class="icon-box">
+                        <i class="lni-book"></i>
+                    </div>
+                    <div class="info-box-content">
+                        <h4 class="number">1125</h4>
+                        <p class="info-text">文章总数</p>
+                    </div>
+                </div>
+                <div class="info-box bg-success">
+                    <div class="icon-box">
+                        <i class="lni-eye"></i>
+                    </div>
+                    <div class="info-box-content">
+                        <h4 class="number">351</h4>
+                        <p class="info-text">网站访问量</p>
+                    </div>
+                </div>
+                <div class="info-box bg-info">
+                    <div class="icon-box">
+                        <i class="lni-user"></i>
+                    </div>
+                    <div class="info-box-content">
+                        <h4 class="number">774</h4>
+                        <p class="info-text">用户总数</p>
+                    </div>
+                </div>
+                <div class="info-box bg-purple">
+                    <div class="icon-box">
+                        <i class="lni-alarm-clock"></i>
+                    </div>
+                    <div class="info-box-content">
+                        <h4 class="number">13天</h4>
+                        <p class="info-text">上线时间</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-9">
+                <div class="card-body">
+                    <div class="row m-t-25">
+                        <div class="col-md-8 offset-md-2">
+                            <div id="carouselExampleCaption" class="carousel slide" data-ride="carousel">
+                                <ol class="carousel-indicators">
+                                    <li data-target="#carouselExampleCaption" data-slide-to="0" class=""></li>
+                                    <li data-target="#carouselExampleCaption" data-slide-to="1" class="active"></li>
+                                    <li data-target="#carouselExampleCaption" data-slide-to="2" class=""></li>
+                                </ol>
+                                <div class="carousel-inner">
+                                    <div class="carousel-item">
+                                        <div class="bg-overlay">
+                                            <img class="d-block w-100" th:src="@{/img/picture.jpg}"
+                                                 alt="第一张幻灯片">
+                                            <div class="carousel-caption d-none d-md-block">
+                                                <h4 class="text-white">第一张幻灯片标签</h4>
+                                                <p class="text-white">Nulla vitae elit libero，一个pharetra augue。</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item active">
+                                        <div class="bg-overlay">
+                                            <img class="d-block w-100" th:src="@{/img/picture2.jpg}"
+                                                 alt="第二张幻灯片">
+                                            <div class="carousel-caption d-none d-md-block">
+                                                <h4 class="text-white">第二张幻灯片标签</h4>
+                                                <p class="text-white">Lorem ipsum dolor坐在amet，consectetur。</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <div class="bg-overlay">
+                                            <img class="d-block w-100" th:src="@{/img/picture3.jpg}"
+                                                 alt="第二张幻灯片">
+                                            <div class="carousel-caption d-none d-md-block">
+                                                <h4 class="text-white">第二张幻灯片标签</h4>
+                                                <p class="text-white">Lorem ipsum dolor坐在amet，consectetur。</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a class="carousel-control-prev" href="#carouselExampleCaption" role="button"
+                                   data-slide="prev">
+                                    <span class="mdi mdi-chevron-left" aria-hidden="true"></span>
+                                </a>
+                                <a class="carousel-control-next" href="#carouselExampleCaption" role="button"
+                                   data-slide="next">
+                                    <span class="mdi mdi-chevron-right" aria-hidden="true"></span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">文章标题</h5>
+                            <p class="card-text">文章节选</p>
+                        </div>
+                        <div class="card-footer text-muted">
+                            2 days ago
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/jquery-min.js}"></script>
+<script th:src="@{/js/popper.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/jquery.app.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+<script th:src="@{/plugins/morris/morris.min.js}"></script>
+<script th:src="@{/plugins/raphael/raphael-min.js}"></script>
+<script th:src="@{/js/dashborad1.js}"></script>
+</body>
+</html>

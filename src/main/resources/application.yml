@@ -1,0 +1,45 @@
+#链接数据源的相关配置
+spring.datasource.url: jdbc:mysql://localhost:3306/myblog?connectTimeout=1000&useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+spring.datasource.username: root
+spring.datasource.password: 990517
+spring.datasource.driver-class-name: com.mysql.cj.jdbc.Driver
+
+#服务器配置
+server:
+  port: 8088
+
+logging:
+  config: classpath:log4j2.xml
+
+# Spring Datasource Settings
+spring:
+  datasource:
+    name: druidDataSource
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/myblog?connectTimeout=1000&useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+      username: root
+      password: 990517
+      filters: stat,wall,log4j2,config
+      max-active: 100
+      initial-size: 1
+      max-wait: 60000
+      min-idle: 1
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: select 'x'
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-open-prepared-statements: 50
+      max-pool-prepared-statement-per-connection-size: 2
+#thymeleaf start
+#开发时关闭缓存,不然没法看到实时页面
+  thymeleaf:
+    mode: HTML5
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+    cache: false

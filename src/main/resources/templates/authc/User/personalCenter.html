@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>个人中心</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"-->
+    <!--integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">-->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/fonts/line-icons.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/icons.css}">
+    <link rel="stylesheet" th:href="@{/plugins/morris/morris.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/responsive.css}">
+</head>
+<body>
+<div id="data" class="layout">
+    <div class="header navbar">
+        <div class="header-container">
+            <div class="nav-logo">
+                <a th:href="@{/}">
+                    <b><img th:src="@{/img/logo.png}" alt=""></b>
+                    <span class="logo">
+                    <img th:src="@{/img/logo-text.png}" alt="">
+                            </span>
+                </a>
+            </div>
+            <ul class="nav-right">
+                <!--显示用户信息-->
+                <li class="user-profile dropdown dropdown-animated scale-left">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="data2">
+                        <img class="profile-img img-fluid" th:src="@{/File/defult.png}" alt="">
+                    </a>
+                    <ul class="dropdown-menu dropdown-md">
+                        <li>
+                            <ul class="list-media">
+                                <li class="list-item avatar-info">
+                                    <div class="media-img">
+                                        <img th:src="@{/File/defult.png}" alt="">
+                                    </div>
+                                    <div class="info">
+                                        <span class="title text-semibold" th:text="${message.getUserName()}"></span>
+                                        <span class="sub-title" th:text="${'加入时间：'+#strings.substring(message.getCreatedTime(),0,10)}"></span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li>
+                            <a th:href="@{'/user/personalCenter/'+${message.getUid()}}">
+                                <i class="lni-user"></i>
+                                <span>个人中心</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="lni-cog"></i>
+                                <span>更改个人信息</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{'/user/Article/'+${message.getUid()}}">
+                                <i class="lni-envelope"></i>
+                                <span>文章管理</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/logout}">
+                                <i class="lni-lock"></i>
+                                <span>注销</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <br><br><br><br>
+    <div class="container-fluid" style="width: 80%;">
+        <div class="row">
+            <div class="col-12 col-md-4">
+                <div class="card">
+                    <div class="profile-bg">
+                        <div class="user-profile">
+                            <figure class="profile-wall-img">
+                                <img class="img-fluid" th:src="@{/img/user-bg.jpg}" alt="User Wall">
+                            </figure>
+                            <div class="profile-body">
+                                <figure class="profile-user-avatar">
+                                    <img th:src="@{${message.getImg()}}" alt="User Wall" width="90px" height="90px">
+                                </figure>
+                                <h3 class="profile-user-name" th:text="${message.getUserName()}"></h3>
+                                <small class="profile-user-address" th:text="${'加入时间：'+message.getCreatedTime()}"></small>
+                                <div class="profile-user-description">
+                                    <p th:text="${'个人简介'}"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-8">
+                <div class="card">
+                    <div class="card-header border-bottom">
+                        <h4 class="card-title">博客主页</h4>
+                    </div>
+                    <div class="tab-success">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a href="#tab-success-1" class="nav-link active show" role="tab" data-toggle="tab"
+                                   aria-selected="true">个人简介</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#tab-success-2" class="nav-link" role="tab" data-toggle="tab"
+                                   aria-selected="false">动态</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active show" id="tab-success-1">
+                                <div class="p-20">
+                                    <div class="card">
+                                        <div class="table-overflow">
+                                            <table class="table table-hover table-lg">
+                                                <tbody>
+                                                <tr>
+                                                    <td>用户名
+                                                    </td>
+                                                    <td><p th:text="${'三年二班的路小雨'}"></p></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>性别</td>
+                                                    <td><p th:text="${'男'}"></p></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>电话号码</td>
+                                                    <td><p th:text="${'18077362305'}"></p></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>生日</td>
+                                                    <td><p th:text="${'1999/5/17'}"></p></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>居住城市</td>
+                                                    <td><p th:text="${'桂林'}"></p></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab-success-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/jquery-min.js}"></script>
+<script th:src="@{/js/popper.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/jquery.app.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+<script th:src="@{/plugins/morris/morris.min.js}"></script>
+<script th:src="@{/plugins/raphael/raphael-min.js}"></script>
+<script th:src="@{/js/dashborad1.js}"></script>
+</body>
+</html>

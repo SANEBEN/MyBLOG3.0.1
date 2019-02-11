@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>用户登录</title>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <!--图标库-->
+    <link rel="stylesheet" th:href="@{/css/font-awesome.css}">
+    <script th:href="@{/js/jquery-3.3.1.min.js}"></script>
+    <script th:href="@{/js/popper.min.js}"></script>
+    <script th:href="@{/js/bootstrap.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/jquery.growl.css}">
+    <script th:href="@{/js/jquery.growl.js}"></script>
+    <script th:href="@{/js/Index/login.js}"></script>
+</head>
+<body class="text-center">
+<form class="form-signin" name="form" id="form" th:action="@{/userLogin}" method="post">
+    <img class="mb-4 rounded-circle rounded" th:src="@{/File/defult.png}" alt="" width="72" height="72">
+    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+    <label for="inputPhone" class="sr-only">Phone Number</label>
+    <input  id="inputPhone" class="form-control" placeholder="Phone Number" required autofocus="" name="phone">
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password">
+    <div class="alert alert-info" role="alert">
+        <p th:text="${message}" style="font-size: 13px">输入正确的手机号和密码即可登录本网站</p>
+    </div>
+    <div class="checkbox mb-3">
+        <label>
+            <input type="checkbox" name="rememberMe" value="true"> Remember me
+        </label>
+    </div>
+    <input class="btn btn-lg btn-primary btn-block" type="submit" form="form" value="Sign in">
+    <a th:href="@{/register}">no Account?</a>
+</form>
+</body>
+</html>
