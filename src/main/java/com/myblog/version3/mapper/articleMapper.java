@@ -1,7 +1,6 @@
 package com.myblog.version3.mapper;
 
 import com.myblog.version3.entity.Article;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -18,7 +17,7 @@ public interface articleMapper {
     @Select("SELECT * FROM myblog.article where Uid = #{Uid}")
     List<Article> getByUid(String Uid);
 
-    @Select("SELECT * FROM myblog.article")
+    @Select("SELECT * FROM myblog.article limit 0,10")
     List<Article> getAll();
 
     @Insert("insert into myblog.article(ID, Cid, Uid, title, URL, createdTime, changeTIme) VALUES (#{ID} ,#{Cid} ,#{Uid} ,#{title} ,#{URL} ,#{createdTime} ,#{changeTime})")
@@ -28,7 +27,10 @@ public interface articleMapper {
     Boolean status(Integer status ,String ID);
 
     @Update("update myblog.article set allowComment = #{comment} where ID = #{ID}")
-    Boolean commentStatus(Integer comment ,String ID);
+    Boolean commentStatus(Boolean comment ,String ID);
+
+    @Update("update myblog.article set isPrivate = #{isPrivate} where ID = #{ID}")
+    Boolean setPrivate(Boolean isPrivate ,String ID);
 
     @Update("update myblog.article set hits = hits + 1 where ID = #{ID}")
     Boolean hit(String Id);

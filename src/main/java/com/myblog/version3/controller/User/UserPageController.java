@@ -42,12 +42,12 @@ public class UserPageController {
     @RequestMapping(value = "/Article/{Uid}/editArticle/{Aid}" ,method = RequestMethod.GET)
     @ApiImplicitParams({
             @ApiImplicitParam(value = "用户的ID" ,name = "Uid" ,dataType = "String" ,paramType = "path" ,required = true),
-            @ApiImplicitParam(value = "文章的ID" ,name = "Aid" ,paramType = "path" ,dataType = "String")
+            @ApiImplicitParam(value = "文章的ID" ,name = "Aid" ,dataType = "String" ,paramType = "path")
     })
     public String editArticle(@PathVariable(value = "Uid") String Uid ,@PathVariable(value = "Aid") String Aid, ModelMap modelMap){
         modelMap.addAttribute("message" ,messageMapper.getByUid(Uid));
-        if(Aid !=null) {
-            modelMap.addAttribute("article", articleMapper.getByID(Aid));
+        if(!Aid.equals("new")){
+            modelMap.addAttribute("article" ,articleMapper.getByID(Aid));
         }
         return "authc/User/editArticle";
     }

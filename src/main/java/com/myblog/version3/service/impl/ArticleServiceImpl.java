@@ -40,7 +40,12 @@ public class ArticleServiceImpl implements articleService {
     }
 
     @Override
-    public Boolean commentStatus(Integer comment, String ID) {
+    public Boolean serPrivate(Boolean isPrivate, String ID) {
+        return mapper.setPrivate(isPrivate,ID);
+    }
+
+    @Override
+    public Boolean commentStatus(Boolean comment, String ID) {
         return mapper.commentStatus(comment ,ID);
     }
 

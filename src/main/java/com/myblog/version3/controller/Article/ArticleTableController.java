@@ -4,6 +4,7 @@ import com.myblog.version3.entity.Article;
 import com.myblog.version3.mapper.articleMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,4 +30,8 @@ public class ArticleTableController {
     public List<Article> getByUid(String Uid){
         return articleMapper.getByUid(Uid);
     }
+
+    @RequestMapping(value = "/message/getAllArticles" ,method = {RequestMethod.GET ,RequestMethod.POST})
+    @ApiOperation(value = "获得所有的文章" ,notes = "获得所有的文章，无参数")
+    public List<Article> getAll(){return articleMapper.getAll();}
 }

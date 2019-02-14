@@ -48,8 +48,8 @@ public class Swagger2Config {
                 .apiInfo(apiInfo())
                 .groupName("后台模块")
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.myblog.version3.controller。Management"))
-                .paths(PathSelectors.regex("/management.*"))
+                .apis(RequestHandlerSelectors.basePackage("com.myblog.version3.controller.Management"))
+                .paths(PathSelectors.any())
                 .build();
     }
 

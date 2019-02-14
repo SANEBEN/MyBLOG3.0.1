@@ -4,8 +4,6 @@
     <title>文章管理</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"-->
-    <!--integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">-->
     <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/fonts/line-icons.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/icons.css}">
@@ -95,6 +93,9 @@
                                 <li class="nav-item">
                                     <a href="#default-tab-3" class="nav-link" role="tab" data-toggle="tab">日记本</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#"><i class="fa fa-plus"></i></a>
+                                </li>
                             </ul>
                             <div class="tab-content">
                                 <div role="tabpanel" class="tab-pane active" id="default-tab-1">
@@ -113,7 +114,7 @@
                                                     <tbody>
                                                     <tr th:if="${#lists.isEmpty(articles)}" >
                                                         <td class="text-center" colspan="4">
-                                                                还没有文章吗？快<a href="#" style="color: #a6e1ec">创建一个</a>吧！
+                                                                还没有文章吗？快<a th:href="@{'/user/Article/'+${message.getUid()}+'/editArticle'}" style="color: #a6e1ec">创建一个</a>吧！
                                                         </td>
                                                     </tr>
                                                     <tr th:each="article : ${articles}" th:unless="${#lists.isEmpty(articles)}">

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>MyBLOG</title>
     <meta charset="UTF-8">
@@ -61,7 +61,8 @@
                                     </div>
                                     <div class="info">
                                         <span class="title text-semibold" th:text="${message.getUserName()}"></span>
-                                        <span class="sub-title" th:text="${'加入时间'+#strings.substring(message.getCreatedTime(),0,10)}"></span>
+                                        <span class="sub-title"
+                                              th:text="${'加入时间'+#strings.substring(message.getCreatedTime(),0,10)}"></span>
                                     </div>
                                 </li>
                             </ul>
@@ -74,7 +75,7 @@
                             </a>
                         </li>
                         <li>
-                            <a th:href="@{}">
+                            <a href="#">
                                 <i class="lni-cog"></i>
                                 <span>更改个人信息</span>
                             </a>
@@ -96,24 +97,72 @@
             </ul>
         </div>
     </div>
-    <br><br><br><br>
-    <div class="container-fluid">
+    <br><br><br>
+    <div class="container-fluid" style="width: 80%">
         <div class="row">
             <div class="col-md-12">
-                <form id="article">
-                    <div id="editor1" class="toolbar">
-                    </div>
-                    <div style="padding: 5px 0; color: #ccc">
-                        <input type="text" class="form-control" id="title" name="title"
-                               placeholder="请输入文章标题">
-                        <input type="text" name="Aid" hidden placeholder="" id="Aid">
-                        <input type="text" name="corpus" hidden placeholder="" id="corpus">
-                    </div>
-                    <div id="editor2" class="editor">
-                    </div>
-                    <button class="btn btn-primary float-right" id="submit"
-                            type="button">保存</button>
-                </form>
+                <div class="card">
+                    <form id="article">
+                        <div style="width: 95%;" class="m-auto">
+                            <div style="padding: 5px 0; color: #ccc">
+                                <input type="text" class="form-control" id="title" name="title" th:value="${article.getTitle()}"
+                                       placeholder="请输入文章标题">
+                                <input type="text" name="Aid" th:if="${article != null}" th:value="${article.getID()}" placeholder="" hidden>
+                            </div>
+                            <div id="editor1" class="toolbar"></div>
+                            <div id="editor2" class="editor" style="height: 600px"></div>
+                            <br>
+                            <div>
+                                <form class="form-sample">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group row">
+                                                <label class="col-sm-3 col-form-label" for="category">文章分类</label>
+                                                <div class="col-sm-9">
+                                                    <select class="form-control" id="category">
+                                                        <option value="false">选择分类</option>
+                                                        <option value="默认">默认</option>
+                                                        <option value="散文集">散文集</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <textarea id="text" style="width:100%; height:200px;" hidden></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="custom-control custom-radio radio custom-control-inline">
+                                                <input type="checkbox" class="custom-control-input" name="allowComment"
+                                                       id="allowComment" th:checked="${article.getAllowComment()}">
+                                                <label class="custom-control-label" for="allowComment">允许评论</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="custom-control custom-radio radio custom-control-inline">
+                                                <input type="checkbox" class="custom-control-input" name="isPrivate"
+                                                       id="private" th:checked="${article.getPrivate()}">
+                                                <label class="custom-control-label" for="private">私密文章</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div>
+                                        <button class="btn btn-outline-primary">
+                                            保存修改
+                                        </button>
+                                    </div>
+                                    <br>
+                                </form>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -126,9 +175,85 @@
 <script th:src="@{/js/bootstrap.min.js}"></script>
 <script th:src="@{/js/jquery.app.js}"></script>
 <script th:src="@{/js/main.js}"></script>
-
 <script th:src="@{/plugins/morris/morris.min.js}"></script>
 <script th:src="@{/plugins/raphael/raphael-min.js}"></script>
 <script th:src="@{/js/dashborad1.js}"></script>
+<script type="text/javascript">
+    var E = window.wangEditor;
+    var editor = new E('#editor1', '#editor2');
+    // 或者 var editor = new E( document.getElementById('editor') )
+    // 自定义菜单配置
+    editor.customConfig.menus = [
+        'head',  // 标题
+        'bold',  // 粗体
+        'fontSize',  // 字号
+        'fontName',  // 字体
+        'italic',  // 斜体
+        'underline',  // 下划线
+        'strikeThrough',  // 删除线
+        'foreColor',  // 文字颜色
+        'link',  // 插入链接
+        'justify',  // 对齐方式
+        'quote',  // 引用
+        'emoticon',  // 表情
+        'image',  // 插入图片
+        'code',  // 插入代码
+        'undo',  // 撤销
+        'redo'  // 重复
+    ];
+    //同步内容到textarea
+    editor.customConfig.onchange = function (html) {
+        // 监控变化，同步更新到 textarea
+        $("#text").val(html)
+    };
+
+    editor.customConfig.zIndex = 1;
+    // 上传图片到服务器
+    editor.customConfig.uploadImgServer = '';
+    // 隐藏“网络图片”tab
+    editor.customConfig.showLinkImg = false;
+    // 将图片大小限制为 5M
+    editor.customConfig.uploadImgMaxSize = 5 * 1024 * 1024;
+
+    editor.customConfig.uploadImgMaxLength = 2;
+
+    editor.customConfig.uploadImgParamsWithUrl = true;
+    //自定义上传图片事件
+    editor.customConfig.uploadImgHooks = {
+        before: function (xhr, editor, files) {
+        },
+        success: function (xhr, editor, result) {
+            console.log("上传成功");
+        },
+        fail: function (xhr, editor, result) {
+            console.log("上传失败,原因是" + xhr + " " + editor + " " + result);
+        },
+        error: function (xhr, editor) {
+            alert("上传出错，请稍后再试");
+            console.log("上传出错");
+        },
+        timeout: function (xhr, editor) {
+            console.log("上传超时");
+        }
+    };
+    // 将 timeout 时间改为 3s
+    editor.customConfig.uploadImgTimeout = 3000;
+
+    editor.customConfig.linkImgCallback = function (url) {
+        console.log(url) // url 即插入图片的地址
+    };
+    editor.customConfig.emotions = [
+        {
+            // tab 的标题
+            title: 'emoji',
+            // type -> 'emoji' / 'image'
+            type: 'emoji',
+            // content -> 数组
+            content: '😀 😃 😄 😁 😆 😅 😂 😊 😇 🙂 🙃 😉 😌 😍 😘 😗 😙 😚 😋 😜 😝 😛 🤑 🤗 🤓 😎 😏 😒 😞 😔 😟 😕 🙁 😣 😖 😫 😩 😤 😠 😡 😶 😐 😑 😯 😦 😧 😮 😲 😵 😳 😱 😨 😰 😢 😥 😭 😓 😪 😴 🙄 🤔 😬 🤐'.split(/\s/)
+        },
+    ];
+
+    editor.create();
+</script>
 </body>
 </html>

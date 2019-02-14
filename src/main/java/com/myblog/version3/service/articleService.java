@@ -16,7 +16,9 @@ public interface articleService {
 
     Boolean status(Integer status ,String ID);
 
-    Boolean commentStatus(Integer comment ,String ID);
+    Boolean commentStatus(Boolean comment ,String ID);
+
+    Boolean serPrivate(Boolean isPrivate ,String ID);
 
     Boolean hit(String ID);
 }

@@ -14,7 +14,8 @@ public class Article {
     private Date createdTime;
     private Date changeTime;
     private int hits;
-    private int allowComment;
+    private Boolean isPrivate;
+    private Boolean allowComment;
     private int status;
 
     public String getID() {
@@ -81,11 +82,11 @@ public class Article {
         this.hits = hits;
     }
 
-    public int getAllowComment() {
+    public Boolean getAllowComment() {
         return allowComment;
     }
 
-    public void setAllowComment(int allowComment) {
+    public void setAllowComment(Boolean allowComment) {
         this.allowComment = allowComment;
     }
 
@@ -95,5 +96,14 @@ public class Article {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+
+    public Boolean getPrivate() {
+        return isPrivate;
+    }
+
+    public void setPrivate(Boolean aPrivate) {
+        isPrivate = aPrivate;
     }
 }
