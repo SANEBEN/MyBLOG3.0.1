@@ -40,7 +40,7 @@ public class UserPageController {
     public String ArticlesManagement(@PathVariable String Uid ,ModelMap modelMap){
         modelMap.addAttribute("message" ,messageMapper.getByUid(Uid));
         modelMap.addAttribute("articles" ,articleMapper.getByUid(Uid));
-        modelMap.addAttribute("category",categoryMapper.getByUid(Uid));
+        modelMap.addAttribute("categories",categoryMapper.getByUid(Uid));
         return "authc/User/ArticlesManagement";
     }
 
@@ -51,7 +51,7 @@ public class UserPageController {
     })
     public String editArticle(@PathVariable(value = "Uid") String Uid ,@PathVariable(value = "Aid") String Aid, ModelMap modelMap){
         modelMap.addAttribute("message" ,messageMapper.getByUid(Uid));
-        modelMap.addAttribute("categorys",categoryMapper.getByUid(Uid));
+        modelMap.addAttribute("categories",categoryMapper.getByUid(Uid));
         if(!Aid.equals("new")){
             modelMap.addAttribute("article" ,articleMapper.getByID(Aid));
         }

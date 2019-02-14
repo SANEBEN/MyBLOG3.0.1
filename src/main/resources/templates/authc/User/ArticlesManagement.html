@@ -38,7 +38,8 @@
                                     </div>
                                     <div class="info">
                                         <span class="title text-semibold" th:text="${message.getUserName()}"></span>
-                                        <span class="sub-title" th:text="${'加入时间：'+#strings.substring(message.getCreatedTime(),0,10)}"></span>
+                                        <span class="sub-title"
+                                              th:text="${'加入时间：'+#strings.substring(message.getCreatedTime(),0,10)}"></span>
                                     </div>
                                 </li>
                             </ul>
@@ -59,7 +60,7 @@
                         <li>
                             <a th:href="@{'/user/Article/'+${message.getUid()}}">
                                 <i class="lni-envelope"></i>
-                                <span>写文章</span>
+                                <span>管理文章</span>
                             </a>
                         </li>
                         <li>
@@ -85,32 +86,42 @@
                         <div class="tab-info">
                             <ul class="nav nav-tabs" role="tablist">
                                 <li class="nav-item">
-                                    <a href="#default-tab-1" class="nav-link active" role="tab" data-toggle="tab">全部文章</a>
+                                    <a href="#all" class="nav-link active" role="tab" data-toggle="tab">全部文章</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#default-tab-2" class="nav-link" role="tab" data-toggle="tab">散文集</a>
+                                    <a href="#default" class="nav-link" role="tab" data-toggle="tab">默认分类</a>
+                                </li>
+                                <li class="nav-item" th:each="category : ${categories}">
+                                    <a th:href="'#'+${category.getID()}" class="nav-link" role="tab" data-toggle="tab"
+                                       th:text="${category.getName()}"></a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#default-tab-3" class="nav-link" role="tab" data-toggle="tab">日记本</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-toggle="modal" data-target=".bs-example-modal-center"><i class="fa fa-plus"></i></a>
-                                    <div class="modal fade bs-example-modal-center" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" style="display: none;">
+                                    <a class="nav-link" data-toggle="modal" data-target=".bs-example-modal-center"><i
+                                            class="fa fa-plus"></i></a>
+                                    <div class="modal fade bs-example-modal-center" tabindex="-1" role="dialog"
+                                         aria-labelledby="mySmallModalLabel" aria-hidden="true" style="display: none;"
+                                         id="modal">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title">Center modal</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                    <h5 class="modal-title">新增文章分类</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-hidden="true">×
+                                                    </button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <form id="form">
-                                                        <input class="form-control" name = "category" placeholder="请输入分类名（8个字符以内）" required>
+                                                        <input class="form-control" name="category"
+                                                               placeholder="请输入分类名（8个字符以内）" required>
                                                         <input name="Uid" th:value="${message.getUid()}" hidden>
                                                     </form>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-common" id="addCategory">提交</button>
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                                                    <button type="button" class="btn btn-common" id="addCategory">提交
+                                                    </button>
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">取消
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -118,7 +129,7 @@
                                 </li>
                             </ul>
                             <div class="tab-content">
-                                <div role="tabpanel" class="tab-pane active" id="default-tab-1">
+                                <div role="tabpanel" class="tab-pane active" id="all">
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="table-responsive">
@@ -132,29 +143,46 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <tr th:if="${#lists.isEmpty(articles)}" >
+                                                    <tr th:if="${#lists.isEmpty(articles)}">
                                                         <td class="text-center" colspan="4">
-                                                                还没有文章吗？快<a th:href="@{'/user/Article/'+${message.getUid()}+'/editArticle/new'}" style="color: #a6e1ec">创建一个</a>吧！
+                                                            还没有文章吗？快<a
+                                                                th:href="@{'/user/Article/'+${message.getUid()}+'/editArticle/new'}"
+                                                                style="color: #a6e1ec">创建一个</a>吧！
                                                         </td>
                                                     </tr>
-                                                    <tr th:each="article : ${articles}" th:unless="${#lists.isEmpty(articles)}">
-                                                        <th th:value="${#strings.substring(article.getCreatedTime(),10)}"></th>
-                                                        <td th:value="${article.getTitle()}"></td>
-                                                        <td th:value="${message.getUserName()}"></td>
-                                                        <td><div class="dropdown m-b-10">
+                                                    <tr th:each="article : ${articles}"
+                                                        th:unless="${#lists.isEmpty(articles)}">
+                                                        <th>
+                                                            <span th:text="${article.getCreatedTime()}"></span>
+                                                        </th>
+                                                        <td>
+                                                            <span th:text="${article.getTitle()}"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span th:text="${message.getUserName()}"></span>
+                                                        </td>
+                                                        <td>
                                                             <button class="btn btn-common dropdown-toggle" type="button"
-                                                                    id="message" data-toggle="dropdown" aria-haspopup="true"
+                                                                    th:id="${article.getID()}" data-toggle="dropdown"
+                                                                    aria-haspopup="true"
                                                                     aria-expanded="false">
-                                                                编辑文章
+                                                                选择项目
                                                             </button>
-                                                            <div class="dropdown-menu" aria-labelledby="message"
+                                                            <div class="dropdown-menu" th:aria-labelledby="${article.getID()}"
                                                                  x-placement="bottom-start"
-                                                                 style="position: absolute; transform: translate3d(0px, 34px, 0px); top: 0; left: 0; will-change: transform;">
-                                                                <a class="dropdown-item" href="javascript:void(0)">禁止评论 </a>
-                                                                <a class="dropdown-item" href="javascript:void(0)">允许评论 </a>
-                                                                <a class="dropdown-item" href="javascript:void(0)">删除文章</a>
+                                                                 style=" transform: translate3d(0px, 34px, 0px); top: 0; left: 0; will-change: transform;">
+                                                                <a class="dropdown-item"
+                                                                   th:href="@{'/user/Article/'+${message.getUid()}+'/editArticle/'+${article.getID()}}">
+                                                                    编辑文章
+                                                                </a>
+                                                                <a class="dropdown-item"
+                                                                   href="javascript:void(0)">禁止评论 </a>
+                                                                <a class="dropdown-item"
+                                                                   href="javascript:void(0)">允许评论 </a>
+                                                                <a class="dropdown-item"
+                                                                   href="javascript:void(0)">删除文章</a>
                                                             </div>
-                                                        </div></td>
+                                                        </td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
@@ -162,14 +190,60 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div role="tabpanel" class="tab-pane fade" id="default-tab-2">
-                                    <div class="p-20">
-                                        <p>Rouge Group, use your harpoons and tow cables. Go for the legs. It might be our only chance of stopping them. All right, stand by, Dack. Luke, we've got a malfunction in fire control. I'll have to cut in the auxiliary. ust hang on. Hang on, Dack. Get ready to fire that tow cable. Dack? Dack! Yes, Lord Vader. I've reached the main power generator. The shield will be down in moments. You may start your landing. Rouge Three. Copy, Rouge Leader Wedge, I've lost my gunner.You'll have to make this shot.</p>
-                                    </div>
+                                <div role="tabpanel" class="tab-pane" id="default">
+                                    这个是默认文件夹
                                 </div>
-                                <div role="tabpanel" class="tab-pane fade" id="default-tab-3">
-                                    <div class="p-20">
-                                        <p>If only you had attached my legs, I wouldn't be in this ridiculous position. Now, remember, Chewbacca, you have a responsibility to me, so don't do anything foolish. What's going on...buddy? You're being put into carbon freeze. What if he doesn't survive? He's worth a lot to me. The Empire will compensate you if he dies. Put him in! Oh, no! No, no, no! Stop, Chewbacca, stop...! Stop, Chewie, stop! Do you hear me? Stop! Yes, stop, please! I'm not ready to die. Chewie! Chewie, this won't help me.</p>
+                                <div role="tabpanel" class="tab-pane" th:each="category : ${categories}"
+                                     th:id="${category.getID()}">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered mb-0">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>创建时间</th>
+                                                        <th>标题</th>
+                                                        <th>作者</th>
+                                                        <th>操作</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr th:if="${#lists.isEmpty(articles)}">
+                                                        <td class="text-center" colspan="4">
+                                                            还没有文章吗？快<a
+                                                                th:href="@{'/user/Article/'+${message.getUid()}+'/editArticle/new'}"
+                                                                style="color: #a6e1ec">创建一个</a>吧！
+                                                        </td>
+                                                    </tr>
+                                                    <tr th:each="article : ${articles}"
+                                                        th:unless="${#lists.isEmpty(articles)}">
+                                                        <th th:value="${#strings.substring(article.getCreatedTime(),10)}"></th>
+                                                        <td th:value="${article.getTitle()}"></td>
+                                                        <td th:value="${message.getUserName()}"></td>
+                                                        <td>
+                                                            <div class="dropdown m-b-10">
+                                                                <button class="btn btn-common dropdown-toggle"
+                                                                        type="button"
+                                                                        th:id="${category.getID()}"
+                                                                        data-toggle="dropdown" aria-haspopup="true"
+                                                                        aria-expanded="false">
+                                                                    编辑文章
+                                                                </button>
+                                                                <div class="dropdown-menu"
+                                                                     th:aria-labelledby="${category.getID()}"
+                                                                     x-placement="bottom-start"
+                                                                     style="position: absolute; transform: translate3d(0px, 34px, 0px); top: 0; left: 0; will-change: transform;">
+                                                                    <a class="dropdown-item" href="javascript:void(0)">禁止评论 </a>
+                                                                    <a class="dropdown-item" href="javascript:void(0)">允许评论 </a>
+                                                                    <a class="dropdown-item" href="javascript:void(0)">删除文章</a>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -192,17 +266,18 @@
 <script>
     $(document).ready(function () {
         $("#addCategory").click(function () {
-            var data = $("#form").serialize();
-            $.ajax({
-                url:"/Form/addCategory",
-                data: data,
-                success:function (message) {
-                    alert(message)
-                },
-                error:function (xhr) {
-                    alert("出现错误："+xhr.status)
-                }
-            })
+                var data = $("#form").serialize();
+                $.ajax({
+                    url: "/Form/addCategory",
+                    data: data,
+                    success: function (message) {
+                        alert(message);
+                        $("#modal").modal('hide');
+                    },
+                    error: function (xhr) {
+                        alert("出现错误：" + xhr.status)
+                    }
+                })
             }
         )
     })

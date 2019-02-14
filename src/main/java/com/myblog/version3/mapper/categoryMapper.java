@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @Repository
@@ -17,5 +18,5 @@ public interface categoryMapper {
     List<Category> getByUid(String Uid);
 
     @Insert("INSERT INTO myblog.category(ID, Uid, name) VALUES (#{ID} ,#{Uid} ,#{name})")
-    boolean Insert(Category category);
+    boolean Insert(Category category) throws SQLIntegrityConstraintViolationException;
 }

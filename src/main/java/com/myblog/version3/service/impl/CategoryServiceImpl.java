@@ -6,6 +6,7 @@ import com.myblog.version3.service.categoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @Service
@@ -20,12 +21,12 @@ public class CategoryServiceImpl implements categoryService {
     }
 
     @Override
-    public List<Category> getByUid(String Uid) {
+    public List<Category> getByUid(String Uid)  {
         return mapper.getByUid(Uid);
     }
 
     @Override
-    public boolean add(Category category) {
+    public boolean add(Category category)throws SQLIntegrityConstraintViolationException {
         return mapper.Insert(category);
     }
 }

@@ -2,6 +2,7 @@ package com.myblog.version3.service;
 
 import com.myblog.version3.entity.Category;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 public interface categoryService {
@@ -10,5 +11,5 @@ public interface categoryService {
 
     List<Category> getByUid(String Uid);
 
-    boolean add(Category category);
+    boolean add(Category category) throws SQLIntegrityConstraintViolationException;
 }
