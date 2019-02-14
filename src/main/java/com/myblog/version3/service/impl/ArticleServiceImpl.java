@@ -35,6 +35,11 @@ public class ArticleServiceImpl implements articleService {
     }
 
     @Override
+    public Boolean update(Article article) {
+        return mapper.update(article);
+    }
+
+    @Override
     public Boolean status(Integer status, String ID) {
         return mapper.status(status,ID);
     }

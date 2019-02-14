@@ -1,6 +1,7 @@
 package com.myblog.version3.controller.User;
 
 import com.myblog.version3.mapper.articleMapper;
+import com.myblog.version3.mapper.categoryMapper;
 import com.myblog.version3.mapper.messageMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -23,6 +24,9 @@ public class UserPageController {
     @Autowired
     articleMapper articleMapper;
 
+    @Autowired
+    categoryMapper categoryMapper;
+
     @RequestMapping(value = "/personalCenter/{Uid}" ,method = RequestMethod.GET)
     @ApiImplicitParam(value = "用户的ID" ,name = "Uid" ,dataType = "String" ,paramType = "path" ,required = true)
     public String PersonalCenter(@PathVariable String Uid , ModelMap modelMap){
@@ -36,6 +40,7 @@ public class UserPageController {
     public String ArticlesManagement(@PathVariable String Uid ,ModelMap modelMap){
         modelMap.addAttribute("message" ,messageMapper.getByUid(Uid));
         modelMap.addAttribute("articles" ,articleMapper.getByUid(Uid));
+        modelMap.addAttribute("category",categoryMapper.getByUid(Uid));
         return "authc/User/ArticlesManagement";
     }
 
@@ -46,6 +51,7 @@ public class UserPageController {
     })
     public String editArticle(@PathVariable(value = "Uid") String Uid ,@PathVariable(value = "Aid") String Aid, ModelMap modelMap){
         modelMap.addAttribute("message" ,messageMapper.getByUid(Uid));
+        modelMap.addAttribute("categorys",categoryMapper.getByUid(Uid));
         if(!Aid.equals("new")){
             modelMap.addAttribute("article" ,articleMapper.getByID(Aid));
         }

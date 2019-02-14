@@ -14,6 +14,8 @@ public interface articleService {
 
     Boolean Insert(Article article);
 
+    Boolean update(Article article);
+
     Boolean status(Integer status ,String ID);
 
     Boolean commentStatus(Boolean comment ,String ID);

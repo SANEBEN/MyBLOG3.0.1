@@ -1,5 +1,5 @@
 #链接数据源的相关配置
-spring.datasource.url: jdbc:mysql://localhost:3306/myblog?connectTimeout=1000&useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+spring.datasource.url: jdbc:mysql://localhost:3306/myblog?connectTimeout=1000&useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=CTT
 spring.datasource.username: root
 spring.datasource.password: 990517
 spring.datasource.driver-class-name: com.mysql.cj.jdbc.Driver
@@ -21,7 +21,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/myblog?connectTimeout=1000&useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+      url: jdbc:mysql://localhost:3306/myblog?connectTimeout=1000&useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=CTT
       username: root
       password: 990517
       filters: stat,wall,log4j2,config

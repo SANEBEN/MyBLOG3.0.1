@@ -102,18 +102,18 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <form id="article">
+                    <form id="article" method="post" action="/Form/createArticle">
                         <div style="width: 95%;" class="m-auto">
                             <div style="padding: 5px 0; color: #ccc">
-                                <input type="text" class="form-control" id="title" name="title" th:value="${article.getTitle()}"
+                                <input type="text" class="form-control" id="title" name="title" th:value="${article?.getTitle()}"
                                        placeholder="请输入文章标题">
-                                <input type="text" name="Aid" th:if="${article != null}" th:value="${article.getID()}" placeholder="" hidden>
+                                <input type="text" name="Aid" th:value="${article?.getID()}" placeholder="" hidden>
                             </div>
                             <div id="editor1" class="toolbar"></div>
                             <div id="editor2" class="editor" style="height: 600px"></div>
                             <br>
                             <div>
-                                <form class="form-sample">
+                                <form class="form-sample" id="form">
                                     <div class="row">
                                         <div class="col-md-12">
                                         </div>
@@ -123,10 +123,10 @@
                                             <div class="form-group row">
                                                 <label class="col-sm-3 col-form-label" for="category">文章分类</label>
                                                 <div class="col-sm-9">
-                                                    <select class="form-control" id="category">
+                                                    <select class="form-control" id="category" style="height: auto">
                                                         <option value="false">选择分类</option>
-                                                        <option value="默认">默认</option>
-                                                        <option value="散文集">散文集</option>
+                                                        <option value="default">默认</option>
+                                                        <option th:each="category : ${categorys}" th:value="${category.getID()}" th:text="${category.getName()}"></option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -139,21 +139,21 @@
                                         <div class="col-md-4">
                                             <div class="custom-control custom-radio radio custom-control-inline">
                                                 <input type="checkbox" class="custom-control-input" name="allowComment"
-                                                       id="allowComment" th:checked="${article.getAllowComment()}">
-                                                <label class="custom-control-label" for="allowComment">允许评论</label>
+                                                       id="allowComment" checked="checked" th:checked="${article?.getAllowComment()}">
+                                                <label class="custom-control-label" for="allowComment">允许评论(设置该文章能否评论，可之后更改)</label>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="custom-control custom-radio radio custom-control-inline">
                                                 <input type="checkbox" class="custom-control-input" name="isPrivate"
-                                                       id="private" th:checked="${article.getPrivate()}">
-                                                <label class="custom-control-label" for="private">私密文章</label>
+                                                       id="private" th:checked="${article?.getPrivate()}">
+                                                <label class="custom-control-label" for="private">私密文章(仅自己可见，可之后更改)</label>
                                             </div>
                                         </div>
                                     </div>
                                     <br>
                                     <div>
-                                        <button class="btn btn-outline-primary">
+                                        <button class="btn btn-outline-primary" id="addArticle">
                                             保存修改
                                         </button>
                                     </div>
@@ -178,6 +178,24 @@
 <script th:src="@{/plugins/morris/morris.min.js}"></script>
 <script th:src="@{/plugins/raphael/raphael-min.js}"></script>
 <script th:src="@{/js/dashborad1.js}"></script>
+<script>
+    $(document).ready(function () {
+        $("#addArticle").click(function () {
+                var data = $("#form").serialize();
+                $.ajax({
+                    url:"/Form/addCategory",
+                    data: data,
+                    success:function (message) {
+                        alert(message)
+                    },
+                    error:function (xhr) {
+                        alert("出现错误："+xhr.status)
+                    }
+                })
+            }
+        )
+    })
+</script>
 <script type="text/javascript">
     var E = window.wangEditor;
     var editor = new E('#editor1', '#editor2');

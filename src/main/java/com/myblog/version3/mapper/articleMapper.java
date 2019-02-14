@@ -20,8 +20,11 @@ public interface articleMapper {
     @Select("SELECT * FROM myblog.article limit 0,10")
     List<Article> getAll();
 
-    @Insert("insert into myblog.article(ID, Cid, Uid, title, URL, createdTime, changeTIme) VALUES (#{ID} ,#{Cid} ,#{Uid} ,#{title} ,#{URL} ,#{createdTime} ,#{changeTime})")
+    @Insert("insert into myblog.article(ID, Cid, Uid, title, URL, createdTime, changeTime ,isPrivate ,allowComment) VALUES (#{ID} ,#{Cid} ,#{Uid} ,#{title} ,#{URL} ,#{createdTime} ,#{changeTime} ,#{isPrivate} ,#{allowComment})")
     Boolean insert(Article article);
+
+    @Update("update myblog.article set URL=#{URL}.title=#{title},changeTime=#{changeTime},Cid=#{Cid},isPrivate=#{isPrivate},allowComment=#{allowComment} where ID=#{ID}")
+    Boolean update(Article article);
 
     @Update("update myblog.article set Status = #{status} where ID = #{ID}")
     Boolean status(Integer status ,String ID);

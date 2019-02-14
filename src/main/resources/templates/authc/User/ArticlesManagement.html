@@ -94,7 +94,27 @@
                                     <a href="#default-tab-3" class="nav-link" role="tab" data-toggle="tab">日记本</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#"><i class="fa fa-plus"></i></a>
+                                    <a class="nav-link" data-toggle="modal" data-target=".bs-example-modal-center"><i class="fa fa-plus"></i></a>
+                                    <div class="modal fade bs-example-modal-center" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" style="display: none;">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Center modal</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form id="form">
+                                                        <input class="form-control" name = "category" placeholder="请输入分类名（8个字符以内）" required>
+                                                        <input name="Uid" th:value="${message.getUid()}" hidden>
+                                                    </form>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-common" id="addCategory">提交</button>
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </li>
                             </ul>
                             <div class="tab-content">
@@ -114,14 +134,27 @@
                                                     <tbody>
                                                     <tr th:if="${#lists.isEmpty(articles)}" >
                                                         <td class="text-center" colspan="4">
-                                                                还没有文章吗？快<a th:href="@{'/user/Article/'+${message.getUid()}+'/editArticle'}" style="color: #a6e1ec">创建一个</a>吧！
+                                                                还没有文章吗？快<a th:href="@{'/user/Article/'+${message.getUid()}+'/editArticle/new'}" style="color: #a6e1ec">创建一个</a>吧！
                                                         </td>
                                                     </tr>
                                                     <tr th:each="article : ${articles}" th:unless="${#lists.isEmpty(articles)}">
-                                                        <th scope="row">1</th>
-                                                        <td>Mark</td>
-                                                        <td>Otto</td>
-                                                        <td>@mdo</td>
+                                                        <th th:value="${#strings.substring(article.getCreatedTime(),10)}"></th>
+                                                        <td th:value="${article.getTitle()}"></td>
+                                                        <td th:value="${message.getUserName()}"></td>
+                                                        <td><div class="dropdown m-b-10">
+                                                            <button class="btn btn-common dropdown-toggle" type="button"
+                                                                    id="message" data-toggle="dropdown" aria-haspopup="true"
+                                                                    aria-expanded="false">
+                                                                编辑文章
+                                                            </button>
+                                                            <div class="dropdown-menu" aria-labelledby="message"
+                                                                 x-placement="bottom-start"
+                                                                 style="position: absolute; transform: translate3d(0px, 34px, 0px); top: 0; left: 0; will-change: transform;">
+                                                                <a class="dropdown-item" href="javascript:void(0)">禁止评论 </a>
+                                                                <a class="dropdown-item" href="javascript:void(0)">允许评论 </a>
+                                                                <a class="dropdown-item" href="javascript:void(0)">删除文章</a>
+                                                            </div>
+                                                        </div></td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
@@ -156,5 +189,23 @@
 <script th:src="@{/plugins/morris/morris.min.js}"></script>
 <script th:src="@{/plugins/raphael/raphael-min.js}"></script>
 <script th:src="@{/js/dashborad1.js}"></script>
+<script>
+    $(document).ready(function () {
+        $("#addCategory").click(function () {
+            var data = $("#form").serialize();
+            $.ajax({
+                url:"/Form/addCategory",
+                data: data,
+                success:function (message) {
+                    alert(message)
+                },
+                error:function (xhr) {
+                    alert("出现错误："+xhr.status)
+                }
+            })
+            }
+        )
+    })
+</script>
 </body>
 </html>
