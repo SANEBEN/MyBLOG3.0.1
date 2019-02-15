@@ -3,6 +3,7 @@ package com.myblog.version3.entity;
 import io.swagger.annotations.ApiModel;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @ApiModel(value = "用户信息实体类" ,description = "用于存储用户信息")
 public class Message implements Serializable {
@@ -11,7 +12,7 @@ public class Message implements Serializable {
     private String phone;
     private String email;
     private String userName;
-    private String createdTime;
+    private Date createdTime;
 
     public String getID() {
         return ID;
@@ -53,11 +54,11 @@ public class Message implements Serializable {
         this.userName = userName;
     }
 
-    public String getCreatedTime() {
+    public Date getCreatedTime() {
         return createdTime;
     }
 
-    public void setCreatedTime(String createdTime) {
+    public void setCreatedTime(Date createdTime) {
         this.createdTime = createdTime;
     }
 

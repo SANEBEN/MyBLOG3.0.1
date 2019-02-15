@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>博客主页</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/fonts/line-icons.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/icons.css}">
+    <link rel="stylesheet" th:href="@{/plugins/morris/morris.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/responsive.css}">
+</head>
+<body>
+<div id="data" class="layout">
+    <div class="header navbar">
+        <div class="header-container">
+            <div class="nav-logo">
+                <a th:href="@{/}">
+                    <b><img th:src="@{/img/logo.png}" alt=""></b>
+                    <span class="logo">
+                        <img th:src="@{/img/logo-text.png}" alt="">
+                    </span>
+                </a>
+            </div>
+            <ul class="nav-right">
+                <!--登录和注册按钮-->
+                <li class="massages  scale-left" th:unless="${isLogIn}">
+                    <a th:href="@{/login}">
+                        <i class="fa fa-user-o"></i>
+                    </a>
+                </li>
+                <li class="massages scale-left" th:unless="${isLogIn}">
+                    <a th:href="@{/register}">
+                        <i class="fa fa-cog"></i>
+                    </a>
+                </li>
+                <!--显示用户信息-->
+                <li class="user-profile dropdown dropdown-animated scale-left" th:if="${isLogIn}">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="data2">
+                        <img class="profile-img img-fluid" th:src="@{/File/defult.png}" alt="">
+                    </a>
+                    <ul class="dropdown-menu dropdown-md">
+                        <li>
+                            <ul class="list-media">
+                                <li class="list-item avatar-info">
+                                    <div class="media-img">
+                                        <img th:src="@{${message.getImg()}}" alt="">
+                                    </div>
+                                    <div class="info">
+                                        <span class="title text-semibold" th:text="${message.getUserName()}"></span>
+                                        <span class="sub-title" th:text="${message.getCreatedTime()}"></span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li>
+                            <a th:href="@{'/user/personalCenter/'+${message.getUid()}}">
+                                <i class="lni-user"></i>
+                                <span>个人中心</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="lni-cog"></i>
+                                <span>更改个人信息</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{'/user/Article/'+${message.getUid()}}">
+                                <i class="lni-envelope"></i>
+                                <span>文章管理</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/logout}">
+                                <i class="lni-lock"></i>
+                                <span>注销</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <br><br><br><br>
+    <div class="container-fluid" style="width: 80%;">
+        <div class="row">
+            <div class="col col-md-12">
+                <div class="card" style="height: 600px">
+                    <div class="card-body">
+                        <h1 th:text="${article.getTitle()}"></h1>
+                        <table class="table " style="table-layout:fixed;width: auto;border-bottom: #666666">
+                            <tr>
+                                <td width="">
+                                    <a th:text="${#dates.format(article.getChangeTime(),'yyyy/MM/dd HH:mm:ss')}"></a>
+                                </td>
+                                <td>
+                                    <a th:text="${author.getUserName()}"
+                                       th:href="@{'/user/personalCenter/'+${author.getUid()}}"></a>
+                                </td>
+                                <td>
+                                    <a th:text="'阅读数：'+${article.getHits()}"></a>
+                                </td>
+                            </tr>
+                        </table>
+                        <div th:utext="${article.getContent()}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/jquery-min.js}"></script>
+<script th:src="@{/js/popper.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/jquery.app.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+<script th:src="@{/plugins/morris/morris.min.js}"></script>
+<script th:src="@{/plugins/raphael/raphael-min.js}"></script>
+<script th:src="@{/js/dashborad1.js}"></script>
+</body>
+</html>

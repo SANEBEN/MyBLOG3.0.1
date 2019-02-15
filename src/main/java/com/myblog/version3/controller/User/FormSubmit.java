@@ -58,7 +58,7 @@ public class FormSubmit {
             article1.setCid(article.getCategory());
             String content = article.getContent();
             byte[] data = content.getBytes();
-            File file = new File("E:\\MyBLOGFileFolder\\" + article.getUid() + "\\" + article.getCategory() + "\\" + article1.getID(), article.getTitle() + "_" + Random.forArticle(date) + ".txt");
+            File file = new File("E:\\MyBLOGFileFolder\\" + article.getUid() + "\\" + article.getCategory() + "\\" + article1.getID(), article.getTitle() + "_" + Random.forArticle(date) + ".html");
             file.getParentFile().mkdirs();
             if (file.createNewFile()) {
                 logger.info("为用户" + article.getUid() + "创建了一个新的文件");
@@ -93,7 +93,7 @@ public class FormSubmit {
             Date date = new Date();
             article1.setChangeTime(date);
             String content = article.getContent();
-            File file = new File("E:\\MyBLOGFileFolder\\" + article.getUid() + "\\" + article.getCategory() + "\\" + article1.getID(), article.getTitle() + "_" + Random.forArticle(date) + ".txt");
+            File file = new File("E:\\MyBLOGFileFolder\\" + article.getUid() + "\\" + article.getCategory() + "\\" + article1.getID(), article.getTitle() + "_" + Random.forArticle(date) + ".html");
             if (file.createNewFile()) {
                 logger.info("用户" + article.getUid() + "新建了一个文件");
             }

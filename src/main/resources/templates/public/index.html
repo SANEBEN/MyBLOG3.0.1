@@ -200,13 +200,13 @@
                     </div>
                 </div>
                 <div>
-                    <div class="card">
+                    <div class="card" th:each="article : ${articles}">
                         <div class="card-body">
-                            <h5 class="card-title">文章标题</h5>
-                            <p class="card-text">文章节选</p>
+                            <h5 class="card-title"><a th:text="${article.getTitle()}" th:href="@{'/Article/'+${article.getID()}}"></a></h5>
+                            <p class="card-text" th:text="${#strings.abbreviate(article.getContent(),20)}"></p>
                         </div>
                         <div class="card-footer text-muted">
-                            2 days ago
+                            <span th:text="'最后修改时间：'+${#dates.format(article.getChangeTime(), 'yyyy/MM/dd HH:mm')}"></span>
                         </div>
                     </div>
                 </div>

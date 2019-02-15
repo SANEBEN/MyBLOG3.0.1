@@ -2,15 +2,18 @@ package com.myblog.version3.entity;
 
 import io.swagger.annotations.ApiModel;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
-@ApiModel(value = "文章实体类" ,description = "用于存储文章信息")
+@ApiModel(value = "文章实体类", description = "用于存储文章信息")
 public class Article {
     private String ID;
     private String Cid;
     private String Uid;
     private String title;
     private String URL;
+    private String Content;
     private Date createdTime;
     private Date changeTime;
     private int hits;
@@ -56,6 +59,31 @@ public class Article {
 
     public void setURL(String URL) {
         this.URL = URL;
+    }
+
+    public String getContent(){
+        return Content;
+    }
+
+    public void setContent(String URL) {
+        try {
+            File file = new File(URL);
+            if (file.exists()) {
+                InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
+                BufferedReader bufferedReader = new BufferedReader(reader);
+                String temp = null;
+                StringBuilder content = new StringBuilder();
+                while ((temp = bufferedReader.readLine()) != null) {
+                    content.append(temp);
+                }
+                Content = content.toString();
+            } else {
+                Content = "未找到指定文件，请稍后重试，或联系网站管理员了解相关情况";
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Content = "读取文件出错，请稍后重试，或联系网站管理员了解相关情况";
+        }
     }
 
     public Date getCreatedTime() {

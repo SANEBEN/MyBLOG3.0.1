@@ -3,6 +3,8 @@ package com.myblog.version3.service.impl;
 import com.myblog.version3.entity.Article;
 import com.myblog.version3.mapper.articleMapper;
 import com.myblog.version3.service.articleService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +12,8 @@ import java.util.List;
 
 @Service
 public class ArticleServiceImpl implements articleService {
+
+    private Logger logger = LoggerFactory.getLogger(ArticleServiceImpl.class);
 
     @Autowired
     articleMapper mapper;

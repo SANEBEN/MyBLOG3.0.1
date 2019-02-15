@@ -26,28 +26,39 @@
                 </a>
             </div>
             <ul class="nav-right">
+                <!--登录和注册按钮-->
+                <li class="massages  scale-left" th:unless="${isLogIn}">
+                    <a th:href="@{/login}">
+                        <i class="fa fa-user-o"></i>
+                    </a>
+                </li>
+                <li class="massages scale-left" th:unless="${isLogIn}">
+                    <a th:href="@{/register}">
+                        <i class="fa fa-cog"></i>
+                    </a>
+                </li>
                 <!--显示用户信息-->
-                <li class="user-profile dropdown dropdown-animated scale-left">
+                <li class="user-profile dropdown dropdown-animated scale-left" th:if="${isLogIn}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="data2">
-                        <img class="profile-img img-fluid" th:src="@{/File/defult.png}" alt="">
+                        <img class="profile-img img-fluid" th:src="@{${user.getImg()}}" alt="">
                     </a>
                     <ul class="dropdown-menu dropdown-md">
                         <li>
                             <ul class="list-media">
                                 <li class="list-item avatar-info">
                                     <div class="media-img">
-                                        <img th:src="@{/File/defult.png}" alt="">
+                                        <img th:src="@{${user.getImg()}}" alt="">
                                     </div>
                                     <div class="info">
-                                        <span class="title text-semibold" th:text="${message.getUserName()}"></span>
-                                        <span class="sub-title" th:text="${'加入时间：'+#strings.substring(message.getCreatedTime(),0,10)}"></span>
+                                        <span class="title text-semibold" th:text="${user.getUserName()}"></span>
+                                        <span class="sub-title" th:text="${'加入时间：'+#strings.substring(user.getCreatedTime(),0,10)}"></span>
                                     </div>
                                 </li>
                             </ul>
                         </li>
                         <li role="separator" class="divider"></li>
                         <li>
-                            <a th:href="@{'/user/personalCenter/'+${message.getUid()}}">
+                            <a th:href="@{'/user/personalCenter/'+${user.getUid()}}">
                                 <i class="lni-user"></i>
                                 <span>个人中心</span>
                             </a>
@@ -59,7 +70,7 @@
                             </a>
                         </li>
                         <li>
-                            <a th:href="@{'/user/Article/'+${message.getUid()}}">
+                            <a th:href="@{'/user/Article/'+${user.getUid()}}">
                                 <i class="lni-envelope"></i>
                                 <span>文章管理</span>
                             </a>
@@ -90,10 +101,24 @@
                                     <img th:src="@{${message.getImg()}}" alt="User Wall" width="90px" height="90px">
                                 </figure>
                                 <h3 class="profile-user-name" th:text="${message.getUserName()}"></h3>
-                                <small class="profile-user-address" th:text="${'加入时间：'+message.getCreatedTime()}"></small>
+                                <small class="profile-user-address" th:text="${'加入时间：'+#dates.format(message.getCreatedTime(),'yyyy/MM/dd')}"></small>
                                 <div class="profile-user-description">
                                     <p th:text="${'个人简介'}"></p>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="row border-top m-t-20">
+                            <div class="col-4 border-right d-flex flex-column justify-content-center align-items-center py-4">
+                                <h3>274</h3>
+                                <small>文章</small>
+                            </div>
+                            <div class="col-4 border-right d-flex flex-column justify-content-center align-items-center py-4">
+                                <h3>2,483</h3>
+                                <small>粉丝</small>
+                            </div>
+                            <div class="col-4 border-right d-flex flex-column justify-content-center align-items-center py-4">
+                                <h3>146</h3>
+                                <small>访问</small>
                             </div>
                         </div>
                     </div>
@@ -107,16 +132,20 @@
                     <div class="tab-success">
                         <ul class="nav nav-tabs" role="tablist">
                             <li class="nav-item">
-                                <a href="#tab-success-1" class="nav-link active show" role="tab" data-toggle="tab"
+                                <a href="#message" class="nav-link active show" role="tab" data-toggle="tab"
                                    aria-selected="true">个人简介</a>
                             </li>
                             <li class="nav-item">
-                                <a href="#tab-success-2" class="nav-link" role="tab" data-toggle="tab"
+                                <a href="#activity" class="nav-link" role="tab" data-toggle="tab"
                                    aria-selected="false">动态</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#articles" class="nav-link" role="tab" data-toggle="tab"
+                                   aria-selected="false">文章</a>
                             </li>
                         </ul>
                         <div class="tab-content">
-                            <div role="tabpanel" class="tab-pane active show" id="tab-success-1">
+                            <div role="tabpanel" class="tab-pane active show" id="message">
                                 <div class="p-20">
                                     <div class="card">
                                         <div class="table-overflow">
@@ -149,7 +178,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div role="tabpanel" class="tab-pane fade" id="tab-success-2"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="activity"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="articles"></div>
                         </div>
                     </div>
                 </div>
