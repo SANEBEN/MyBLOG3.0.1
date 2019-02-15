@@ -46,7 +46,7 @@
                         </li>
                         <li role="separator" class="divider"></li>
                         <li>
-                            <a th:href="@{'/user/personalCenter/'+${message.getUid()}}">
+                            <a th:href="@{'/personalCenter/'+${message.getUid()}}">
                                 <i class="lni-user"></i>
                                 <span>个人中心</span>
                             </a>
@@ -153,7 +153,7 @@
                                                     <tr th:each="article : ${articles}"
                                                         th:unless="${#lists.isEmpty(articles)}">
                                                         <th>
-                                                            <span th:text="${article.getCreatedTime()}"></span>
+                                                            <span th:text="${#dates.format(article.getCreatedTime(),'yyyy/MM/dd HH:mm')}"></span>
                                                         </th>
                                                         <td>
                                                             <span th:text="${article.getTitle()}"></span>
@@ -164,11 +164,11 @@
                                                         <td>
                                                             <div class="m-0">
                                                                 <button type="button"
-                                                                        class="btn btn-primary dropdown-toggle"
+                                                                        class="btn btn-primary dropdown-toggle" th:id="${article.getID()}"
                                                                         data-toggle="dropdown" aria-haspopup="true"
                                                                         aria-expanded="false">选择项目
                                                                 </button>
-                                                                <div class="dropdown-menu">
+                                                                <div class="dropdown-menu" th:aria-labelledby="${article.getID()}">
                                                                     <a class="dropdown-item"
                                                                        th:href="@{'/user/Article/'+${message.getUid()}+'/editArticle/'+${article.getID()}}">
                                                                         编辑文章
@@ -191,7 +191,65 @@
                                     </div>
                                 </div>
                                 <div role="tabpanel" class="tab-pane" id="default">
-                                    这个是默认文件夹
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered mb-0">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>创建时间</th>
+                                                        <th>标题</th>
+                                                        <th>作者</th>
+                                                        <th>操作</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr th:if="${#lists.isEmpty(articles)}">
+                                                        <td class="text-center" colspan="4">
+                                                            还没有文章吗？快<a
+                                                                th:href="@{'/user/Article/'+${message.getUid()}+'/editArticle/new'}"
+                                                                style="color: #a6e1ec">创建一个</a>吧！
+                                                        </td>
+                                                    </tr>
+                                                    <tr th:each="article : ${articles}"
+                                                        th:unless="${#lists.isEmpty(articles)}">
+                                                        <th>
+                                                            <span th:text="${#dates.format(article.getCreatedTime(),'yyyy/MM/dd HH:mm')}"></span>
+                                                        </th>
+                                                        <td>
+                                                            <span th:text="${article.getTitle()}"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span th:text="${message.getUserName()}"></span>
+                                                        </td>
+                                                        <td>
+                                                            <div class="m-0">
+                                                                <button type="button"
+                                                                        class="btn btn-primary dropdown-toggle" th:id="${article.getID()}"
+                                                                        data-toggle="dropdown" aria-haspopup="true"
+                                                                        aria-expanded="false">选择项目
+                                                                </button>
+                                                                <div class="dropdown-menu" th:aria-labelledby="${article.getID()}">
+                                                                    <a class="dropdown-item"
+                                                                       th:href="@{'/user/Article/'+${message.getUid()}+'/editArticle/'+${article.getID()}}">
+                                                                        编辑文章
+                                                                    </a>
+                                                                    <a class="dropdown-item"
+                                                                       href="javascript:void(0)">禁止评论 </a>
+                                                                    <a class="dropdown-item"
+                                                                       href="javascript:void(0)">允许评论 </a>
+                                                                    <div class="dropdown-divider"></div>
+                                                                    <a class="dropdown-item"
+                                                                       href="javascript:void(0)">删除文章</a>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div role="tabpanel" class="tab-pane" th:each="category : ${categories}"
                                      th:id="${category.getID()}">
@@ -217,25 +275,34 @@
                                                     </tr>
                                                     <tr th:each="article : ${articles}"
                                                         th:unless="${#lists.isEmpty(articles)}">
-                                                        <th th:value="${#strings.substring(article.getCreatedTime(),10)}"></th>
-                                                        <td th:value="${article.getTitle()}"></td>
-                                                        <td th:value="${message.getUserName()}"></td>
+                                                        <th>
+                                                            <span th:text="${#dates.format(article.getCreatedTime(),'yyyy/MM/dd HH:mm')}"></span>
+                                                        </th>
                                                         <td>
-                                                            <div class="dropdown m-b-10">
-                                                                <button class="btn btn-common dropdown-toggle"
-                                                                        type="button"
-                                                                        th:id="${category.getID()}"
+                                                            <span th:text="${article.getTitle()}"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span th:text="${message.getUserName()}"></span>
+                                                        </td>
+                                                        <td>
+                                                            <div class="m-0">
+                                                                <button type="button"
+                                                                        class="btn btn-primary dropdown-toggle" th:id="${article.getID()}"
                                                                         data-toggle="dropdown" aria-haspopup="true"
-                                                                        aria-expanded="false">
-                                                                    编辑文章
+                                                                        aria-expanded="false">选择项目
                                                                 </button>
-                                                                <div class="dropdown-menu"
-                                                                     th:aria-labelledby="${category.getID()}"
-                                                                     x-placement="bottom-start"
-                                                                     style="position: absolute; transform: translate3d(0px, 34px, 0px); top: 0; left: 0; will-change: transform;">
-                                                                    <a class="dropdown-item" href="javascript:void(0)">禁止评论 </a>
-                                                                    <a class="dropdown-item" href="javascript:void(0)">允许评论 </a>
-                                                                    <a class="dropdown-item" href="javascript:void(0)">删除文章</a>
+                                                                <div class="dropdown-menu" th:aria-labelledby="${article.getID()}">
+                                                                    <a class="dropdown-item"
+                                                                       th:href="@{'/user/Article/'+${message.getUid()}+'/editArticle/'+${article.getID()}}">
+                                                                        编辑文章
+                                                                    </a>
+                                                                    <a class="dropdown-item"
+                                                                       href="javascript:void(0)">禁止评论 </a>
+                                                                    <a class="dropdown-item"
+                                                                       href="javascript:void(0)">允许评论 </a>
+                                                                    <div class="dropdown-divider"></div>
+                                                                    <a class="dropdown-item"
+                                                                       href="javascript:void(0)">删除文章</a>
                                                                 </div>
                                                             </div>
                                                         </td>

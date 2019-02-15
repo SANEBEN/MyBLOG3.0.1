@@ -12,7 +12,7 @@ public class Article {
     private String content;
 
     @NotBlank(message = "文章分类不能为空")
-    private String category;
+    private String Cid;
 
     private String Uid;
 
@@ -37,12 +37,12 @@ public class Article {
         this.content = content;
     }
 
-    public String getCategory() {
-        return category;
+    public String getCid() {
+        return Cid;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setCid(String cid) {
+        Cid = cid;
     }
 
     public Boolean getAllowComment() {

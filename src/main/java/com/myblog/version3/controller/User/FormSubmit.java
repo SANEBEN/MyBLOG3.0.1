@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -38,7 +39,7 @@ public class FormSubmit {
     @Autowired
     categoryMapper categoryMapper;
 
-    @RequestMapping("/createArticle")
+    @RequestMapping(value = "/createArticle" ,method = {RequestMethod.GET ,RequestMethod.POST})
     public String insert(@Valid Article article, BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {
             List<FieldError> list = bindingResult.getFieldErrors();
@@ -55,10 +56,10 @@ public class FormSubmit {
             article1.setCreatedTime(date);
             article1.setChangeTime(date);
             article1.setUid(article.getUid());
-            article1.setCid(article.getCategory());
+            article1.setCid(article.getCid());
             String content = article.getContent();
             byte[] data = content.getBytes();
-            File file = new File("E:\\MyBLOGFileFolder\\" + article.getUid() + "\\" + article.getCategory() + "\\" + article1.getID(), article.getTitle() + "_" + Random.forArticle(date) + ".html");
+            File file = new File("E:\\MyBLOGFileFolder\\" + article.getUid() + "\\" + article.getCid() + "\\" + article1.getID(), article.getTitle() + "_" + Random.forArticle(date) + ".html");
             file.getParentFile().mkdirs();
             if (file.createNewFile()) {
                 logger.info("为用户" + article.getUid() + "创建了一个新的文件");
@@ -76,7 +77,7 @@ public class FormSubmit {
         }
     }
 
-    @RequestMapping(value = "/updateArticle")
+    @RequestMapping(value = "/updateArticle" ,method = {RequestMethod.GET ,RequestMethod.POST})
     public String updateArticle(@Valid Article article, BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {
             List<FieldError> list = bindingResult.getFieldErrors();
@@ -87,13 +88,13 @@ public class FormSubmit {
             return builder.toString();
         } else {
             com.myblog.version3.entity.Article article1 = new com.myblog.version3.entity.Article();
-            article1.setCid(article.getCategory());
+            article1.setCid(article.getCid());
             article1.setPrivate(article.getPrivate());
             article1.setAllowComment(article.getAllowComment());
             Date date = new Date();
             article1.setChangeTime(date);
             String content = article.getContent();
-            File file = new File("E:\\MyBLOGFileFolder\\" + article.getUid() + "\\" + article.getCategory() + "\\" + article1.getID(), article.getTitle() + "_" + Random.forArticle(date) + ".html");
+            File file = new File("E:\\MyBLOGFileFolder\\" + article.getUid() + "\\" + article.getCid() + "\\" + article1.getID(), article.getTitle() + "_" + Random.forArticle(date) + ".html");
             if (file.createNewFile()) {
                 logger.info("用户" + article.getUid() + "新建了一个文件");
             }
@@ -109,7 +110,7 @@ public class FormSubmit {
     }
 
 
-    @RequestMapping("/addCategory")
+    @RequestMapping(value = "/addCategory" ,method = {RequestMethod.GET ,RequestMethod.POST})
     @ApiImplicitParams({
             @ApiImplicitParam(value = "分类名称", name = "category", paramType = "query", dataType = "String", required = true),
             @ApiImplicitParam(value = "用户ID", name = "Uid", paramType = "query", dataType = "String", required = true)

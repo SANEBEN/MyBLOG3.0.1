@@ -69,7 +69,7 @@
                         </li>
                         <li role="separator" class="divider"></li>
                         <li>
-                            <a th:href="@{'/user/personalCenter/'+${message.getUid()}}">
+                            <a th:href="@{'/personalCenter/'+${message.getUid()}}">
                                 <i class="lni-user"></i>
                                 <span>个人中心</span>
                             </a>
@@ -83,7 +83,7 @@
                         <li>
                             <a th:href="@{'/user/Article/'+${message.getUid()}}">
                                 <i class="lni-envelope"></i>
-                                <span>写文章</span>
+                                <span>文章管理</span>
                             </a>
                         </li>
                         <li>
@@ -102,44 +102,49 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <form id="article" method="post" action="/Form/createArticle">
+                    <form id="article">
                         <div style="width: 95%;" class="m-auto">
                             <div style="padding: 5px 0; color: #ccc">
-                                <input type="text" class="form-control" id="title" name="title" th:value="${article?.getTitle()}"
+                                <input type="text" class="form-control" id="title" name="title"
+                                       th:value="${article?.getTitle()}"
                                        placeholder="请输入文章标题">
                                 <input type="text" name="Aid" th:value="${article?.getID()}" placeholder="" hidden>
                             </div>
                             <div id="editor1" class="toolbar"></div>
-                            <div id="editor2" class="editor" style="height: 600px"></div>
+                            <div id="editor2" class="editor" style="height: 600px">
+                                <div th:utext="${article?.getContent()}"></div>
+                            </div>
                             <br>
                             <div>
                                 <form class="form-sample" id="form">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                        </div>
-                                    </div>
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group row">
                                                 <label class="col-sm-3 col-form-label" for="category">文章分类</label>
                                                 <div class="col-sm-9">
-                                                    <select class="form-control" id="category" style="height: auto">
-                                                        <option value="false">选择分类</option>
-                                                        <option value="default">默认</option>
-                                                        <option th:each="category : ${categories}" th:value="${category.getID()}" th:text="${category.getName()}"></option>
+                                                    <select class="form-control" id="category" name="Cid"
+                                                            style="height: auto">
+                                                        <option value="false" th:selected="${#strings.equals('false',article?.getCid())}">选择分类</option>
+                                                        <option value="default" th:selected="${#strings.equals('default',article?.getCid())}">默认</option>
+                                                        <option th:each="category : ${categories}" th:selected="${category.getID().equals(article?.getCid())}"
+                                                                th:value="${category.getID()}"
+                                                                th:text="${category.getName()}"></option>
                                                     </select>
                                                 </div>
                                             </div>
                                         </div>
                                         <div>
-                                            <textarea id="text" style="width:100%; height:200px;" hidden></textarea>
+                                            <textarea id="text" name="content" style="width:100%; height:200px;" th:value="${article?.getContent()}"
+                                                      hidden></textarea>
+                                            <input type="text" name="Uid" th:value="${message.getUid()}" hidden>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="custom-control custom-radio radio custom-control-inline">
                                                 <input type="checkbox" class="custom-control-input" name="allowComment"
-                                                       id="allowComment" checked="checked" th:checked="${article?.getAllowComment()}">
+                                                       id="allowComment" checked="checked"
+                                                       th:checked="${article?.getAllowComment()}">
                                                 <label class="custom-control-label" for="allowComment">允许评论(设置该文章能否评论，可之后更改)</label>
                                             </div>
                                         </div>
@@ -147,16 +152,22 @@
                                             <div class="custom-control custom-radio radio custom-control-inline">
                                                 <input type="checkbox" class="custom-control-input" name="isPrivate"
                                                        id="private" th:checked="${article?.getPrivate()}">
-                                                <label class="custom-control-label" for="private">私密文章(仅自己可见，可之后更改)</label>
+                                                <label class="custom-control-label"
+                                                       for="private">私密文章(仅自己可见，可之后更改)</label>
                                             </div>
                                         </div>
                                     </div>
                                     <br>
                                     <div>
-                                        <button class="btn btn-outline-primary" id="addArticle">
+                                        <button class="btn btn-outline-primary" type="button" id="createArticle"
+                                                th:if="${article} == null">
+                                            创建文章
+                                        </button>
+                                        <button class="btn btn-outline-primary" type="button" id="updateArticle"
+                                                th:unless="${article} == null">
                                             保存修改
                                         </button>
-                                        <button class="btn btn-outline-danger">
+                                        <button class="btn btn-outline-danger" type="button" onclick="javascript:history.back()">
                                             取消
                                         </button>
                                     </div>
@@ -183,25 +194,42 @@
 <script th:src="@{/js/dashborad1.js}"></script>
 <script>
     $(document).ready(function () {
-        $("#addArticle").click(function () {
-                var data = $("#form").serialize();
-                $.ajax({
-                    url:"/Form/addCategory",
-                    data: data,
-                    success:function (message) {
-                        alert(message)
-                    },
-                    error:function (xhr) {
-                        alert("出现错误："+xhr.status)
-                    }
-                })
-            }
-        )
+        $("#createArticle").click(function () {
+            var data = $("#article").serialize();
+            $.ajax({
+                url: "/Form/createArticle",
+                data: data,
+                dataType: "text",
+                type: "post",
+                success: function (message) {
+                    alert(message)
+                },
+                error: function (xhr) {
+                    alert("出现错误：" + xhr.status)
+                }
+            });
+        });
+        $("#updateArticle").click(function () {
+            var data = $("#article").serialize();
+            $.ajax({
+                url: "/Form/updateArticle",
+                data: data,
+                dataType: "text",
+                type: "post",
+                success: function (message) {
+                    alert(message)
+                },
+                error: function (xhr) {
+                    alert("出现错误：" + xhr.status)
+                }
+            });
+        })
     })
 </script>
 <script type="text/javascript">
     var E = window.wangEditor;
     var editor = new E('#editor1', '#editor2');
+    var $text1 = $("#text");
     // 或者 var editor = new E( document.getElementById('editor') )
     // 自定义菜单配置
     editor.customConfig.menus = [
@@ -225,7 +253,7 @@
     //同步内容到textarea
     editor.customConfig.onchange = function (html) {
         // 监控变化，同步更新到 textarea
-        $("#text").val(html)
+        $text1.val(html)
     };
 
     editor.customConfig.zIndex = 1;
@@ -271,10 +299,10 @@
             type: 'emoji',
             // content -> 数组
             content: '😀 😃 😄 😁 😆 😅 😂 😊 😇 🙂 🙃 😉 😌 😍 😘 😗 😙 😚 😋 😜 😝 😛 🤑 🤗 🤓 😎 😏 😒 😞 😔 😟 😕 🙁 😣 😖 😫 😩 😤 😠 😡 😶 😐 😑 😯 😦 😧 😮 😲 😵 😳 😱 😨 😰 😢 😥 😭 😓 😪 😴 🙄 🤔 😬 🤐'.split(/\s/)
-        },
+        }
     ];
-
     editor.create();
+    $text1.val(editor.txt.html())
 </script>
 </body>
 </html>

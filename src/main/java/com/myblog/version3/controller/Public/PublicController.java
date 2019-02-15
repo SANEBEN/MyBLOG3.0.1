@@ -4,6 +4,7 @@ import com.myblog.version3.entity.Article;
 import com.myblog.version3.entity.User;
 import com.myblog.version3.mapper.articleMapper;
 import com.myblog.version3.mapper.messageMapper;
+import io.swagger.annotations.ApiImplicitParam;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
@@ -13,6 +14,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
@@ -44,6 +46,23 @@ public class PublicController {
         }
         modelMap.addAttribute("articles" ,articles);
         return "public/index";
+    }
+
+    @RequestMapping(value = "/personalCenter/{Uid}" ,method = RequestMethod.GET)
+    @ApiImplicitParam(value = "用户的ID" ,name = "Uid" ,dataType = "String" ,paramType = "path" ,required = true)
+    public String PersonalCenter(@PathVariable String Uid , ModelMap modelMap){
+        Subject subject = SecurityUtils.getSubject();
+        Session session = subject.getSession();
+        if(session.getAttribute("isLogIn") !=null){
+            modelMap.addAttribute("isLogIn",session.getAttribute("isLogIn"));
+            User user = (User)session.getAttribute("User");
+            modelMap.addAttribute("user" ,messageMapper.getByUid(user.getID()));
+        }else {
+            modelMap.addAttribute("isLogIn",false);
+        }
+        modelMap.addAttribute("message",messageMapper.getByUid(Uid));
+        modelMap.addAttribute("articles" ,articleMapper.getByUid(Uid));
+        return "public/personalCenter";
     }
 
     @RequestMapping("/Article/{Aid}")

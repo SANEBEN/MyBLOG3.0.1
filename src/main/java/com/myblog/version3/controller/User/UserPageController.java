@@ -1,15 +1,12 @@
 package com.myblog.version3.controller.User;
 
-import com.myblog.version3.entity.User;
+import com.myblog.version3.entity.Article;
 import com.myblog.version3.mapper.articleMapper;
 import com.myblog.version3.mapper.categoryMapper;
 import com.myblog.version3.mapper.messageMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.session.Session;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -31,23 +28,6 @@ public class UserPageController {
     @Autowired
     categoryMapper categoryMapper;
 
-    @RequestMapping(value = "/personalCenter/{Uid}" ,method = RequestMethod.GET)
-    @ApiImplicitParam(value = "用户的ID" ,name = "Uid" ,dataType = "String" ,paramType = "path" ,required = true)
-    public String PersonalCenter(@PathVariable String Uid , ModelMap modelMap){
-        Subject subject = SecurityUtils.getSubject();
-        Session session = subject.getSession();
-        if(session.getAttribute("isLogIn") !=null){
-            modelMap.addAttribute("isLogIn",session.getAttribute("isLogIn"));
-            User user = (User)session.getAttribute("User");
-            modelMap.addAttribute("user" ,messageMapper.getByUid(user.getID()));
-        }else {
-            modelMap.addAttribute("isLogIn",false);
-        }
-        modelMap.addAttribute("message",messageMapper.getByUid(Uid));
-        modelMap.addAttribute("articles" ,articleMapper.getByUid(Uid));
-        return "authc/User/personalCenter";
-    }
-
     @RequestMapping(value = "/Article/{Uid}" ,method = RequestMethod.GET)
     @ApiImplicitParam(value = "用户的ID" ,name = "Uid" ,dataType = "String" ,paramType = "path" ,required = true)
     public String ArticlesManagement(@PathVariable String Uid ,ModelMap modelMap){
@@ -66,7 +46,9 @@ public class UserPageController {
         modelMap.addAttribute("message" ,messageMapper.getByUid(Uid));
         modelMap.addAttribute("categories",categoryMapper.getByUid(Uid));
         if(!Aid.equals("new")){
-            modelMap.addAttribute("article" ,articleMapper.getByID(Aid));
+            Article article = articleMapper.getByID(Aid);
+            article.setContent(article.getURL());
+            modelMap.addAttribute("article" ,article);
         }
         return "authc/User/editArticle";
     }
