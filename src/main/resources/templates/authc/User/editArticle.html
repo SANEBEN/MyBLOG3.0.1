@@ -136,22 +136,22 @@
                                         <div>
                                             <textarea id="text" name="content" style="width:100%; height:200px;" th:value="${article?.getContent()}"
                                                       hidden></textarea>
-                                            <input type="text" name="Uid" th:value="${message.getUid()}" hidden>
+                                            <input type="hidden" name="Uid" th:value="${message.getUid()}">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="custom-control custom-radio radio custom-control-inline">
                                                 <input type="checkbox" class="custom-control-input" name="allowComment"
-                                                       id="allowComment" checked="checked"
-                                                       th:checked="${article?.getAllowComment()}">
+                                                       id="allowComment" th:checked="${article?.getAllowComment()}"
+                                                       th:value="true">
                                                 <label class="custom-control-label" for="allowComment">允许评论(设置该文章能否评论，可之后更改)</label>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="custom-control custom-radio radio custom-control-inline">
                                                 <input type="checkbox" class="custom-control-input" name="isPrivate"
-                                                       id="private" th:checked="${article?.getPrivate()}">
+                                                       id="private" th:value="true" th:checked="${article?.getPrivate()}">
                                                 <label class="custom-control-label"
                                                        for="private">私密文章(仅自己可见，可之后更改)</label>
                                             </div>
@@ -193,19 +193,26 @@
 <script th:src="@{/plugins/raphael/raphael-min.js}"></script>
 <script th:src="@{/js/dashborad1.js}"></script>
 <script>
+    function change(data){
+        return data === false;
+    }
     $(document).ready(function () {
         $("#createArticle").click(function () {
             var data = $("#article").serialize();
             $.ajax({
                 url: "/Form/createArticle",
                 data: data,
-                dataType: "text",
+                dataType: "json",
                 type: "post",
-                success: function (message) {
-                    alert(message)
+                success: function (data) {
+                    alert(data.message);
+                    if(data.status == 1){
+                        window.location.href = data.URL
+                    }
                 },
                 error: function (xhr) {
-                    alert("出现错误：" + xhr.status)
+                    alert("出现错误：" + xhr.status);
+                    window.location.reload(true)
                 }
             });
         });
@@ -214,13 +221,15 @@
             $.ajax({
                 url: "/Form/updateArticle",
                 data: data,
-                dataType: "text",
+                dataType: "json",
                 type: "post",
-                success: function (message) {
-                    alert(message)
+                success: function (data) {
+                    alert(data.message);
+                    window.location.reload(true)
                 },
                 error: function (xhr) {
-                    alert("出现错误：" + xhr.status)
+                    alert("出现错误：" + xhr.status);
+                    window.location.reload(true)
                 }
             });
         })

@@ -1,5 +1,6 @@
 package com.myblog.version3.controller.User;
 
+import com.google.gson.JsonObject;
 import com.myblog.version3.Tools.Random;
 import com.myblog.version3.entity.Category;
 import com.myblog.version3.entity.Form.Article;
@@ -7,6 +8,7 @@ import com.myblog.version3.mapper.articleMapper;
 import com.myblog.version3.mapper.categoryMapper;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import org.apache.commons.io.FileUtils;
 import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,15 +41,18 @@ public class FormSubmit {
     @Autowired
     categoryMapper categoryMapper;
 
-    @RequestMapping(value = "/createArticle" ,method = {RequestMethod.GET ,RequestMethod.POST})
+    @RequestMapping(value = "/createArticle", method = {RequestMethod.GET, RequestMethod.POST})
     public String insert(@Valid Article article, BindingResult bindingResult) throws IOException {
+        JsonObject json = new JsonObject();
         if (bindingResult.hasErrors()) {
             List<FieldError> list = bindingResult.getFieldErrors();
             StringBuilder builder = new StringBuilder();
             for (FieldError error : list) {
                 builder.append(error.getDefaultMessage() + "&");
             }
-            return builder.toString();
+            json.addProperty("status", 0);
+            json.addProperty("message", builder.toString());
+            return json.toString();
         } else {
             com.myblog.version3.entity.Article article1 = new com.myblog.version3.entity.Article();
             article1.setID(Random.getUUID().substring(0, 8));
@@ -57,6 +62,16 @@ public class FormSubmit {
             article1.setChangeTime(date);
             article1.setUid(article.getUid());
             article1.setCid(article.getCid());
+            if (article.getIsPrivate() != null) {
+                article1.setPrivate(true);
+            } else {
+                article1.setPrivate(false);
+            }
+            if (article.getAllowComment() != null) {
+                article1.setAllowComment(true);
+            } else {
+                article1.setAllowComment(false);
+            }
             String content = article.getContent();
             byte[] data = content.getBytes();
             File file = new File("E:\\MyBLOGFileFolder\\" + article.getUid() + "\\" + article.getCid() + "\\" + article1.getID(), article.getTitle() + "_" + Random.forArticle(date) + ".html");
@@ -70,47 +85,77 @@ public class FormSubmit {
             outputStream.close();
             article1.setURL(file.getPath());
             if (articleMapper.insert(article1)) {
-                return "添加文章成功";
+                json.addProperty("status", 1);
+                json.addProperty("message", "添加文章成功");
+                json.addProperty("URL", "/user/Article/" + article.getUid() + "/editArticle/" + article1.getID());
+                return json.toString();
             } else {
-                return "添加文章失败";
+                json.addProperty("status", 0);
+                json.addProperty("message", "添加文章失败");
+                return json.toString();
             }
         }
     }
 
-    @RequestMapping(value = "/updateArticle" ,method = {RequestMethod.GET ,RequestMethod.POST})
+    @RequestMapping(value = "/updateArticle", method = {RequestMethod.GET, RequestMethod.POST})
     public String updateArticle(@Valid Article article, BindingResult bindingResult) throws IOException {
+        JsonObject json = new JsonObject();
         if (bindingResult.hasErrors()) {
             List<FieldError> list = bindingResult.getFieldErrors();
             StringBuilder builder = new StringBuilder();
             for (FieldError error : list) {
                 builder.append(error.getDefaultMessage() + "&");
             }
-            return builder.toString();
+            json.addProperty("status", 0);
+            json.addProperty("message", builder.toString());
+            return json.toString();
         } else {
             com.myblog.version3.entity.Article article1 = new com.myblog.version3.entity.Article();
             article1.setCid(article.getCid());
-            article1.setPrivate(article.getPrivate());
-            article1.setAllowComment(article.getAllowComment());
+            if (article.getIsPrivate() != null) {
+                article1.setPrivate(true);
+            } else {
+                article1.setPrivate(false);
+            }
+            if (article.getAllowComment() != null) {
+                article1.setAllowComment(true);
+            } else {
+                article1.setAllowComment(false);
+            }
             Date date = new Date();
             article1.setChangeTime(date);
+            article1.setID(article.getAid());
+            article1.setTitle(article.getTitle());
             String content = article.getContent();
-            File file = new File("E:\\MyBLOGFileFolder\\" + article.getUid() + "\\" + article.getCid() + "\\" + article1.getID(), article.getTitle() + "_" + Random.forArticle(date) + ".html");
+            byte[] data = content.getBytes();
+            com.myblog.version3.entity.Article origin = articleMapper.getByID(article.getAid());
+            if(!article.getCid().equals(origin.getCid())){
+                File newOne = new File("E:\\MyBLOGFileFolder\\" + article.getUid() + "\\" + article.getCid() + "\\" + article.getAid());
+                File oldOne = new File("E:\\MyBLOGFileFolder\\" + article.getUid() + "\\" + origin.getCid() + "\\" + article.getAid());
+                newOne.mkdirs();
+                FileUtils.copyDirectory(oldOne,newOne);
+                FileUtils.deleteDirectory(oldOne);
+                logger.info("将用户"+article.getUid()+"存放文章的文件夹更改了存储位置");
+            }
+            File file = new File("E:\\MyBLOGFileFolder\\" + article.getUid() + "\\" + article.getCid() + "\\" + article.getAid(), article.getTitle() + "_" + Random.forArticle(date) + ".html");
             if (file.createNewFile()) {
                 logger.info("用户" + article.getUid() + "新建了一个文件");
             }
-            byte[] data = content.getBytes();
             BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file));
             outputStream.write(data, 0, data.length);
             outputStream.flush();
             outputStream.close();
             article1.setURL(file.getPath());
             articleMapper.update(article1);
-            return "更新文章成功";
+            json.addProperty("status", 1);
+            json.addProperty("message", "更新文章成功");
+            json.addProperty("URL", "/user/Article/" + article.getUid() + "/editArticle/" + article.getAid());
+            return json.toString();
         }
     }
 
 
-    @RequestMapping(value = "/addCategory" ,method = {RequestMethod.GET ,RequestMethod.POST})
+    @RequestMapping(value = "/addCategory", method = {RequestMethod.GET, RequestMethod.POST})
     @ApiImplicitParams({
             @ApiImplicitParam(value = "分类名称", name = "category", paramType = "query", dataType = "String", required = true),
             @ApiImplicitParam(value = "用户ID", name = "Uid", paramType = "query", dataType = "String", required = true)
