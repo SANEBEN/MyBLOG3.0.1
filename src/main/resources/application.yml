@@ -38,6 +38,24 @@ spring:
       pool-prepared-statements: true
       max-open-prepared-statements: 50
       max-pool-prepared-statement-per-connection-size: 2
+      # 配置监控服务器
+      stat-view-servlet:
+        login-username: admin
+        login-password: 123456
+        reset-enable: false
+        url-pattern: /druid/*
+          # 添加IP白名单
+          #allow:
+          # 添加IP黑名单，当白名单和黑名单重复时，黑名单优先级更高
+          #deny:
+      filter:
+        stat:
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: true
+        wall:
+          config:
+            multi-statement-allow: true
 #thymeleaf start
 #开发时关闭缓存,不然没法看到实时页面
   thymeleaf:

@@ -120,7 +120,8 @@
                                 添加评论
                             </div>
                             <div class="card-body" th:if="${isLogIn}">
-                                <textarea placeholder="评论最多可以发送255个字符" name="content" class="form-control"></textarea><hr>
+                                <textarea placeholder="评论最多可以发送255个字符" name="content" class="form-control"></textarea>
+                                <hr>
                                 <input type="button" value="添加评论" id="addComment"
                                        class="btn btn-primary float-right">
                             </div>
@@ -134,32 +135,76 @@
                     <ul class="list-media">
                         <li class="list-item">
                             <div class="client-item">
-                                <div class="media-img">
-                                    <img src="" alt="">
-                                </div>
-                                <div class="info">
-                                    <span class="title text-semibold">Johny Vinno</span>
-                                    <div class="float-item">
-                                        <span>这是内容</span>
-                                        <button class="btn btn-common btn-rounded">Follow</button>
+                                <table class="table">
+                                    <tr>
+                                        <td style="width: auto">
+                                            Johny Vinno：
+                                        </td>
+                                        <td style="width: 70%">
+                                            <span class="title text-semibold">
+                                        哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈
+                                        哈哈哈哈哈哈哈哈哈哈哈哈，哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈
+                                        哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈</span>
+                                        </td>
+                                        <td>
+                                            <a th:href="'#Cid'" data-toggle="collapse" style="display: inline">回复</a>
+                                            <a style="display: inline">删除评论</a>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div th:id="'Cid'" class="collapse float-right" style="width: 70%;">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <form>
+                                                    <textarea placeholder="回复最多可以发送255个字符"
+                                                              name="content" class="form-control"></textarea>
+                                                <input type="hidden" name="Cid">
+                                                <input type="hidden" name="Uid">
+                                                <button class="btn btn-danger float-right" type="button"
+                                                        th:href="'#Cid'" data-toggle="collapse">取消
+                                                </button>
+                                                <input type="button" value="添加回复"
+                                                       class="btn btn-primary float-right">
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
-                            </div><hr>
+                            </div>
                         </li>
-                        <li class="list-item float-right" style="width: 80%;">
+                        <li class="list-item float-right" style="width: 90%;">
                             <div class="client-item">
                                 <div class="media-img">
                                     <img src="" alt="">
                                 </div>
                                 <div class="info">
-                                    <span class="title text-semibold">Robinson</span>
+                                    <span class="title text-semibold">Robinson 回复 Johny Vinno：这里是回复内容</span>
                                     <div class="float-item">
-                                        <button class="btn btn-common btn-rounded">Follow</button>
+                                        <a th:href="'#reply'" data-toggle="collapse" style="display: inline">回复</a>
+                                        <a style="display: inline">删除评论</a>
+                                    </div>
+                                    <div th:id="'reply'" class="collapse">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <form>
+                                                    <textarea placeholder="回复最多可以发送255个字符"
+                                                              name="content" class="form-control"></textarea>
+                                                    <input type="text" name="Cid" hidden placeholder="">
+                                                    <input type="text" name="Uid" hidden placeholder="">
+                                                    <hr>
+                                                    <button class="btn btn-danger float-right" type="button"
+                                                            th:href="'#reply'" data-toggle="collapse">取消
+                                                    </button>
+                                                    <input type="button" value="添加回复"
+                                                           class="btn btn-primary float-right">
+                                                </form>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </li>
-                    </ul><hr>
+                    </ul>
+                    <hr>
                 </div>
             </div>
         </div>
