@@ -124,6 +124,8 @@
                                 <hr>
                                 <input type="button" value="添加评论" id="addComment"
                                        class="btn btn-primary float-right">
+                                <input type="hidden" name="Uid" th:value="${message.getUid()}">
+                                <input type="hidden" name="Aid" th:value="${article.getID()}">
                             </div>
                             <div class="card-body text-center" th:unless="${isLogIn}">
                                 <a th:href="@{/login}">登录</a>后才能发表评论

@@ -4,8 +4,13 @@ import com.google.gson.JsonObject;
 import com.myblog.version3.Tools.Random;
 import com.myblog.version3.entity.Category;
 import com.myblog.version3.entity.Form.Article;
+import com.myblog.version3.entity.Form.Comment;
+import com.myblog.version3.entity.Form.Reply;
 import com.myblog.version3.mapper.articleMapper;
 import com.myblog.version3.mapper.categoryMapper;
+import com.myblog.version3.mapper.commentMapper;
+import com.myblog.version3.mapper.replyMapper;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.apache.commons.io.FileUtils;
@@ -31,6 +36,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/Form")
+@Api(tags = "用户相关表单提交处理类")
 public class FormSubmit {
 
     private Logger logger = LoggerFactory.getLogger(FormSubmit.class);
@@ -40,6 +46,12 @@ public class FormSubmit {
 
     @Autowired
     categoryMapper categoryMapper;
+
+    @Autowired
+    commentMapper commentMapper;
+
+    @Autowired
+    replyMapper replyMapper;
 
     @RequestMapping(value = "/createArticle", method = {RequestMethod.GET, RequestMethod.POST})
     public String insert(@Valid Article article, BindingResult bindingResult) throws IOException {
@@ -172,5 +184,78 @@ public class FormSubmit {
             e.printStackTrace();
             return "已存在相同的分类名";
         }
+    }
+
+    @RequestMapping(value = "/addComment" ,method = {RequestMethod.GET ,RequestMethod.POST})
+    public String addComment(@Valid Comment comment ,BindingResult bindingResult){
+        JsonObject json = new JsonObject();
+        if(bindingResult.hasErrors()){
+            List<FieldError> list = bindingResult.getFieldErrors();
+            StringBuilder builder = new StringBuilder();
+            for (FieldError error : list) {
+                builder.append(error.getDefaultMessage() + "&");
+            }
+            json.addProperty("status", 0);
+            json.addProperty("message", builder.toString());
+            return json.toString();
+        }else {
+            com.myblog.version3.entity.Comment newOne = new com.myblog.version3.entity.Comment();
+            newOne.setContent(comment.getContent());
+            newOne.setAid(comment.getAid());
+            newOne.setUid(comment.getUid());
+            newOne.setID(Random.getUUID().substring(0,8));
+            newOne.setTime(new Date());
+            if(commentMapper.insert(newOne)){
+                json.addProperty("status", 1);
+                json.addProperty("message", "添加评论成功");
+                return json.toString();
+            }else {
+                json.addProperty("status", 0);
+                json.addProperty("message", "添加评论失败，请稍后再试");
+                return json.toString();
+            }
+        }
+    }
+
+    @RequestMapping(value = "/deleteComment" ,method = {RequestMethod.GET ,RequestMethod.POST})
+    public Boolean deleteComment(@Param(value = "Cid") String Cid){
+        return commentMapper.delete(Cid);
+    }
+
+    @RequestMapping(value = "/addReply" ,method = {RequestMethod.GET ,RequestMethod.POST})
+    public String addReply(@Valid Reply reply ,BindingResult bindingResult){
+        JsonObject json = new JsonObject();
+        if(bindingResult.hasErrors()){
+            List<FieldError> list = bindingResult.getFieldErrors();
+            StringBuilder builder = new StringBuilder();
+            for (FieldError error : list) {
+                builder.append(error.getDefaultMessage() + "&");
+            }
+            json.addProperty("status", 0);
+            json.addProperty("message", builder.toString());
+            return json.toString();
+        }else {
+            com.myblog.version3.entity.Reply newOne = new com.myblog.version3.entity.Reply();
+            newOne.setCid(reply.getCid());
+            newOne.setReply_id(reply.getReply_id());
+            newOne.setParent_reply_id(reply.getParent_reply_id());
+            newOne.setContent(reply.getContent());
+            newOne.setID(Random.getUUID().substring(0,8));
+            newOne.setTime(new Date());
+            if(replyMapper.insert(newOne)){
+                json.addProperty("status", 1);
+                json.addProperty("message", "回复成功");
+                return json.toString();
+            }else {
+                json.addProperty("status", 0);
+                json.addProperty("message", "回复失败，请稍后再试");
+                return json.toString();
+            }
+        }
+    }
+
+    @RequestMapping(value = "/deleteReply" ,method = {RequestMethod.GET ,RequestMethod.POST})
+    public Boolean deleteReply(@Param(value = "Rid") String Rid){
+        return replyMapper.delete(Rid);
     }
 }
