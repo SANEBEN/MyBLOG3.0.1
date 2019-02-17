@@ -76,7 +76,8 @@ public class Article {
                 while ((temp = bufferedReader.readLine()) != null) {
                     content.append(temp);
                 }
-                Content = content.toString();
+                reader.close();
+                Content = content.toString().trim();
             } else {
                 Content = "未找到指定文件，请稍后重试，或联系网站管理员了解相关情况";
             }

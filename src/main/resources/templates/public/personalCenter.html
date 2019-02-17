@@ -179,7 +179,31 @@
                                 </div>
                             </div>
                             <div role="tabpanel" class="tab-pane fade" id="activity"></div>
-                            <div role="tabpanel" class="tab-pane fade" id="articles"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="articles">
+                                <table class="table table-bordered mb-0">
+                                    <thead>
+                                    <tr>
+                                        <th>创建时间</th>
+                                        <th>标题</th>
+                                        <th>作者</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="article : ${articles}"
+                                        th:unless="${#lists.isEmpty(articles)}">
+                                        <td>
+                                            <span th:text="${#dates.format(article.getCreatedTime(),'yyyy/MM/dd HH:mm')}"></span>
+                                        </td>
+                                        <td>
+                                            <a th:text="${article.getTitle()}" th:href="@{'/Article/'+${article.getID()}}"></a>
+                                        </td>
+                                        <td>
+                                            <span th:text="${message.getUserName()}"></span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

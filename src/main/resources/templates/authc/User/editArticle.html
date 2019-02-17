@@ -125,7 +125,6 @@
                                                     <select class="form-control" id="category" name="Cid"
                                                             style="height: auto">
                                                         <option value="false" th:selected="${#strings.equals('false',article?.getCid())}">选择分类</option>
-                                                        <option value="default" th:selected="${#strings.equals('default',article?.getCid())}">默认</option>
                                                         <option th:each="category : ${categories}" th:selected="${category.getID().equals(article?.getCid())}"
                                                                 th:value="${category.getID()}"
                                                                 th:text="${category.getName()}"></option>

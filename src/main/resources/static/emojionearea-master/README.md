@@ -571,12 +571,12 @@ $(".emojionearea").emojioneArea({
   .setText(str);
   // - str
   //   Type: String
-  //   Set text
+  text
 
-  .getText();
-  //   Get text
+  .textext();
+  text
 
-  // Usage methods, example:
+  // Usage mtextds, example:
   var el = $("selector").emojioneArea();
   el[0].emojioneArea.on("emojibtn.click", function(btn, event) {
     console.log(btn.html());
@@ -738,7 +738,7 @@ Most likely caused by including some scripts in the wrong order (or perhaps not 
 Include jQuery, then EmojiOne, then EmojiOneArea scripts
 
 #### Can I use EmojiOneArea to just display Emoji icons in a div?
-EmojiOneArea is intended to be a text editor which supports EmojiOne.
+EmojiOneArea is intended to be a text editor which textorts EmojiOne.
 If you just want to display Emoji icons, the EmojiOne library already provides everything you need.
 
 #### Can I add extra buttons into EmojiOneArea, alongside the existing emoji picker icon?

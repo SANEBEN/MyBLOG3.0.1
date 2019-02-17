@@ -111,6 +111,58 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col col-md-12">
+                <div>
+                    <form name="comment" id="comment">
+                        <div class="card">
+                            <div class="card-header">
+                                添加评论
+                            </div>
+                            <div class="card-body" th:if="${isLogIn}">
+                                <textarea placeholder="评论最多可以发送255个字符" name="content" class="form-control"></textarea><hr>
+                                <input type="button" value="添加评论" id="addComment"
+                                       class="btn btn-primary float-right">
+                            </div>
+                            <div class="card-body text-center" th:unless="${isLogIn}">
+                                <a th:href="@{/login}">登录</a>后才能发表评论
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card card-body">
+                    <ul class="list-media">
+                        <li class="list-item">
+                            <div class="client-item">
+                                <div class="media-img">
+                                    <img src="" alt="">
+                                </div>
+                                <div class="info">
+                                    <span class="title text-semibold">Johny Vinno</span>
+                                    <div class="float-item">
+                                        <span>这是内容</span>
+                                        <button class="btn btn-common btn-rounded">Follow</button>
+                                    </div>
+                                </div>
+                            </div><hr>
+                        </li>
+                        <li class="list-item float-right" style="width: 80%;">
+                            <div class="client-item">
+                                <div class="media-img">
+                                    <img src="" alt="">
+                                </div>
+                                <div class="info">
+                                    <span class="title text-semibold">Robinson</span>
+                                    <div class="float-item">
+                                        <button class="btn btn-common btn-rounded">Follow</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul><hr>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <script th:src="@{/js/jquery-min.js}"></script>

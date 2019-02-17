@@ -130,10 +130,10 @@ Default options
   .setText(str);
   // - str
   //   Type: String
-  //   Set text
+  text
 
   .getText();
-  //   Get text
+  text
 
   // Usage methods, example:
   var el = $("selector").emojioneArea();

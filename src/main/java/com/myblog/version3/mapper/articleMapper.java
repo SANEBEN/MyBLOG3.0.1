@@ -17,6 +17,9 @@ public interface articleMapper {
     @Select("SELECT * FROM myblog.article where Uid = #{Uid}")
     List<Article> getByUid(String Uid);
 
+    @Select("SELECT * FROM myblog.article where Cid = #{Cid}")
+    List<Article> getByCid(String Cid);
+
     @Select("SELECT * FROM myblog.article limit 0,10")
     List<Article> getAll();
 

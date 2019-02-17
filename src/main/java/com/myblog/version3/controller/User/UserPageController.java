@@ -32,7 +32,7 @@ public class UserPageController {
     @ApiImplicitParam(value = "用户的ID" ,name = "Uid" ,dataType = "String" ,paramType = "path" ,required = true)
     public String ArticlesManagement(@PathVariable String Uid ,ModelMap modelMap){
         modelMap.addAttribute("message" ,messageMapper.getByUid(Uid));
-        modelMap.addAttribute("articles" ,articleMapper.getByUid(Uid));
+        modelMap.addAttribute("allArticle" ,articleMapper.getByUid(Uid));
         modelMap.addAttribute("categories",categoryMapper.getByUid(Uid));
         return "authc/User/ArticlesManagement";
     }
