@@ -3,6 +3,7 @@ package com.myblog.version3.controller.Public;
 import com.myblog.version3.entity.Article;
 import com.myblog.version3.entity.User;
 import com.myblog.version3.mapper.articleMapper;
+import com.myblog.version3.mapper.commentMapper;
 import com.myblog.version3.mapper.messageMapper;
 import io.swagger.annotations.ApiImplicitParam;
 import org.apache.shiro.SecurityUtils;
@@ -27,6 +28,9 @@ public class PublicController {
 
     @Autowired
     articleMapper articleMapper;
+
+    @Autowired
+    commentMapper commentMapper;
 
     @GetMapping("/")
     @ApiIgnore
@@ -80,6 +84,7 @@ public class PublicController {
         article.setContent(article.getURL());
         modelMap.addAttribute("article" ,article);
         modelMap.addAttribute("author" ,messageMapper.getByUid(article.getUid()));
+        modelMap.addAttribute("comments" ,commentMapper.getByAid(Aid));
         return "public/Article";
     }
 }

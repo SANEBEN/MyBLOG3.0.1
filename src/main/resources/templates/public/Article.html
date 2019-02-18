@@ -113,6 +113,7 @@
         </div>
         <div class="row">
             <div class="col col-md-12">
+                <!--评论输入区-->
                 <div>
                     <form name="comment" id="comment">
                         <div class="card">
@@ -121,7 +122,6 @@
                             </div>
                             <div class="card-body" th:if="${isLogIn}">
                                 <textarea placeholder="评论最多可以发送255个字符" name="content" class="form-control"></textarea>
-                                <hr>
                                 <input type="button" value="添加评论" id="addComment"
                                        class="btn btn-primary float-right">
                                 <input type="hidden" name="Uid" th:value="${message.getUid()}">
@@ -133,80 +133,104 @@
                         </div>
                     </form>
                 </div>
+                <!--显示区-->
                 <div class="card card-body">
-                    <ul class="list-media">
-                        <li class="list-item">
-                            <div class="client-item">
+                    <div class="text-center" th:if="${#lists.isEmpty(comments)}">
+                        <span>
+                            暂时还没有评论哦！！！快来占个楼
+                        </span>
+                    </div>
+                    <div th:each="comment ,commentStat: ${comments}" th:unless="${#lists.isEmpty(comments)}">
+                        <ul class="list-media">
+                            <li class="list-item">
                                 <table class="table">
                                     <tr>
-                                        <td style="width: auto">
-                                            Johny Vinno：
+                                        <td style="width: 90%">
+                                            <a th:href="@{'/personalCenter/'+${comment.getUser().getUid()}}"
+                                               th:text="${comment.getUser().getUserName()}+'：'"
+                                               style="display: inline;color: #00b6f9"></a>
+                                            <p th:text="${comment.getContent()}" style="display: inline"></p>
+                                            <p th:text="${#dates.format(comment.getTime(),'yyyy-MM-dd HH:mm')}"></p>
                                         </td>
-                                        <td style="width: 70%">
-                                            <span class="title text-semibold">
-                                        哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈
-                                        哈哈哈哈哈哈哈哈哈哈哈哈，哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈
-                                        哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈</span>
-                                        </td>
-                                        <td>
-                                            <a th:href="'#Cid'" data-toggle="collapse" style="display: inline">回复</a>
+                                        <td style="width: 10%">
+                                            <a th:href="'#'+${comment.getID()}" data-toggle="collapse" th:if="${isLogIn}"
+                                               style="display: inline">回复</a>
+                                            <a th:href="@{/login}" th:unless="${isLogIn}">回复</a>
                                             <a style="display: inline">删除评论</a>
                                         </td>
                                     </tr>
                                 </table>
-                                <div th:id="'Cid'" class="collapse float-right" style="width: 70%;">
+                                <div th:id="${comment.getID()}" class="collapse float-right" style="width: 70%;">
                                     <div class="card">
                                         <div class="card-body">
-                                            <form>
-                                                    <textarea placeholder="回复最多可以发送255个字符"
-                                                              name="content" class="form-control"></textarea>
-                                                <input type="hidden" name="Cid">
-                                                <input type="hidden" name="Uid">
+                                            <form th:id="'reply'+${comment.getID()}">
+                                                <textarea placeholder="回复最多可以发送255个字符"
+                                                          name="content" class="form-control"></textarea>
+                                                <input type="hidden" name="Cid" th:value="${comment.getID()}">
+                                                <input type="hidden" name="reply_id"
+                                                       th:value="${message?.getUid()}">
+                                                <input type="button" value="添加回复" th:name="${comment.getID()}"
+                                                       class="btn btn-primary float-right addReply">
                                                 <button class="btn btn-danger float-right" type="button"
-                                                        th:href="'#Cid'" data-toggle="collapse">取消
+                                                        th:href="'#'+${comment.getID()}" data-toggle="collapse">取消
                                                 </button>
-                                                <input type="button" value="添加回复"
-                                                       class="btn btn-primary float-right">
                                             </form>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </li>
-                        <li class="list-item float-right" style="width: 90%;">
-                            <div class="client-item">
-                                <div class="media-img">
-                                    <img src="" alt="">
-                                </div>
-                                <div class="info">
-                                    <span class="title text-semibold">Robinson 回复 Johny Vinno：这里是回复内容</span>
-                                    <div class="float-item">
-                                        <a th:href="'#reply'" data-toggle="collapse" style="display: inline">回复</a>
-                                        <a style="display: inline">删除评论</a>
-                                    </div>
-                                    <div th:id="'reply'" class="collapse">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <form>
+                            </li>
+                            <li class="list-item float-right" style="width: 95%;border-left: 3px solid #ddd"
+                                th:each="reply : ${comment.getReplies()}"
+                                th:unless="${#lists.isEmpty(comment.getReplies())}">
+                                <table class="table">
+                                    <tr>
+                                        <td style="width: 90%" th:if="${#strings.isEmpty(reply.getParent_reply_id())}">
+                                            <a th:href="@{'/personalCenter/'+${reply.getReply().getUid()}}"
+                                               th:text="${reply.getReply().getUserName()}+'：'"
+                                               style="display: inline;color: #00b6f9"></a>
+                                            <p th:text="${reply.getContent()}" style="display: inline"></p>
+                                            <p th:text="${#dates.format(reply.getTime(),'yyyy-MM-dd HH:mm')}"></p>
+                                        </td>
+                                        <td style="width: 90%"
+                                            th:unless="${#strings.isEmpty(reply.getParent_reply_id())}">
+                                            <a th:href="@{'/personalCenter/'+${reply.getReply().getUid()}}"
+                                               th:text="${reply.getReply().getUserName()}+'：'"
+                                               style="display: inline;color: #00b6f9"></a>
+                                            <a th:href="@{'/personalCenter/'+${reply.getParent_reply().getUid()}}"
+                                               th:text="'@'+${reply.getParent_reply().getUserName()}"
+                                               style="display: inline;color: #00b6f9"></a>
+                                            <p th:text="${reply.getContent()}" style="display: inline"></p>
+                                            <p th:text="${#dates.format(reply.getTime(),'yyyy-MM-dd HH:mm')}"></p>
+                                        </td>
+                                        <td style="width: 10%">
+                                            <a th:href="'#'+${reply.getID()}" data-toggle="collapse"
+                                               style="display: inline" th:if="${isLogIn}">回复</a>
+                                            <a th:href="@{/login}" th:unless="${isLogIn}">回复</a>
+                                            <a>删除评论</a>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div th:id="${reply.getID()}" class="collapse float-right" style="width: 70%;" th:if="${isLogIn}">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <form th:id="'reply'+${reply.getID()}">
                                                     <textarea placeholder="回复最多可以发送255个字符"
                                                               name="content" class="form-control"></textarea>
-                                                    <input type="text" name="Cid" hidden placeholder="">
-                                                    <input type="text" name="Uid" hidden placeholder="">
-                                                    <hr>
-                                                    <button class="btn btn-danger float-right" type="button"
-                                                            th:href="'#reply'" data-toggle="collapse">取消
-                                                    </button>
-                                                    <input type="button" value="添加回复"
-                                                           class="btn btn-primary float-right">
-                                                </form>
-                                            </div>
+                                                <input type="hidden" name="Cid" th:value="${comment.getID()}">
+                                                <input type="hidden" name="reply_id" th:value="${message?.getUid()}">
+                                                <input type="hidden" name="parent_reply_id" th:value="${reply.getReply().getUid()}">
+                                                <button class="btn btn-danger float-right" type="button"
+                                                        th:href="'#'+${reply.getID()}" data-toggle="collapse">取消
+                                                </button>
+                                                <input type="button" value="添加回复" th:name="${reply.getID()}"
+                                                       class="btn btn-primary float-right addReply">
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </li>
-                    </ul>
-                    <hr>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -220,5 +244,40 @@
 <script th:src="@{/plugins/morris/morris.min.js}"></script>
 <script th:src="@{/plugins/raphael/raphael-min.js}"></script>
 <script th:src="@{/js/dashborad1.js}"></script>
+<script>
+    $(document).ready(function () {
+        $("#addComment").click(function () {
+            var data = $("#comment").serialize();
+            $.ajax({
+                url: "/Form/addComment",
+                data: data,
+                dataType: "json",
+                success: function (data) {
+                    alert(data.message);
+                    window.location.reload(true);
+                },
+                error: function (xhr) {
+                    alert("出现错误：" + xhr.status)
+                }
+            })
+        });
+        $(".addReply").click(function () {
+            var id = $(this).attr("name");
+            var data = $("#reply" + id).serialize();
+            $.ajax({
+                url: "/Form/addReply",
+                data: data,
+                dataType: "json",
+                success: function (data) {
+                    alert(data.message);
+                    window.location.reload(true);
+                },
+                error: function (xhr) {
+                    alert("出现错误：" + xhr.status)
+                }
+            })
+        })
+    })
+</script>
 </body>
 </html>

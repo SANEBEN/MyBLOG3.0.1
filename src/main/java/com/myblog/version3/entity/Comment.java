@@ -8,6 +8,7 @@ public class Comment {
     private String ID;
     private String Aid;
     private String Uid;
+    private Message user;
     private String content;
     private Date time;
     private List<Reply> replies;
@@ -34,6 +35,14 @@ public class Comment {
 
     public void setUid(String uid) {
         Uid = uid;
+    }
+
+    public Message getUser() {
+        return user;
+    }
+
+    public void setUser(Message user) {
+        this.user = user;
     }
 
     public String getContent() {

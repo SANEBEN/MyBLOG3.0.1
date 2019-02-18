@@ -1,6 +1,7 @@
 package com.myblog.version3.mapper;
 
 import com.myblog.version3.entity.Comment;
+import com.myblog.version3.entity.Message;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 import org.springframework.stereotype.Repository;
@@ -15,8 +16,10 @@ public interface commentMapper {
             @Result(column = "ID", property = "ID", jdbcType = JdbcType.VARCHAR, id = true),
             @Result(column = "Aid", property = "Aid", jdbcType = JdbcType.VARCHAR),
             @Result(column = "Uid", property = "Uid", jdbcType = JdbcType.VARCHAR),
+            @Result(column = "Uid", property = "user", javaType = Message.class,
+                    one = @One(select = "com.myblog.version3.mapper.messageMapper.getByUid")),
             @Result(column = "content", property = "content", jdbcType = JdbcType.VARCHAR),
-            @Result(column = "time", property = "time", jdbcType = JdbcType.DATE),
+            @Result(column = "time", property = "time", jdbcType = JdbcType.DATETIMEOFFSET),
             @Result(column = "ID", property = "replies", javaType = List.class,
                     many = @Many(select = "com.myblog.version3.mapper.replyMapper.getByCid"))
     })
@@ -27,8 +30,10 @@ public interface commentMapper {
             @Result(column = "ID", property = "ID", jdbcType = JdbcType.VARCHAR, id = true),
             @Result(column = "Aid", property = "Aid", jdbcType = JdbcType.VARCHAR),
             @Result(column = "Uid", property = "Uid", jdbcType = JdbcType.VARCHAR),
+            @Result(column = "Uid", property = "user", javaType = Message.class,
+                    one = @One(select = "com.myblog.version3.mapper.messageMapper.getByUid")),
             @Result(column = "content", property = "content", jdbcType = JdbcType.VARCHAR),
-            @Result(column = "time", property = "time", jdbcType = JdbcType.DATE),
+            @Result(column = "time", property = "time", jdbcType = JdbcType.DATETIMEOFFSET),
             @Result(column = "ID", property = "replies", javaType = List.class,
                     many = @Many(select = "com.myblog.version3.mapper.replyMapper.getByCid"))
 
