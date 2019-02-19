@@ -4,8 +4,6 @@
     <title>个人中心</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"-->
-    <!--integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">-->
     <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/fonts/line-icons.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/icons.css}">
@@ -184,6 +182,7 @@
                                     <thead>
                                     <tr>
                                         <th>创建时间</th>
+                                        <th>分类</th>
                                         <th>标题</th>
                                         <th>作者</th>
                                     </tr>
@@ -195,10 +194,13 @@
                                             <span th:text="${#dates.format(article.getCreatedTime(),'yyyy/MM/dd HH:mm')}"></span>
                                         </td>
                                         <td>
+                                            <span th:text="${article.getCategory().getName()}"></span>
+                                        </td>
+                                        <td>
                                             <a th:text="${article.getTitle()}" th:href="@{'/Article/'+${article.getID()}}"></a>
                                         </td>
                                         <td>
-                                            <span th:text="${message.getUserName()}"></span>
+                                            <span th:text="${article.getUser().getUserName()}"></span>
                                         </td>
                                     </tr>
                                     </tbody>

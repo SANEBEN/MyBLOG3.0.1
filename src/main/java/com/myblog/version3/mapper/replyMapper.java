@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface replyMapper {
 
-    @Select("SELECT * FROM myblog.reply where Cid = #{Cid}")
+    @Select("SELECT * FROM myblog.reply where Cid = #{Cid} ORDER BY time")
     @Results({
             @Result(column = "ID", property = "ID", jdbcType = JdbcType.VARCHAR, id = true),
             @Result(column = "Cid", property = "Cid", jdbcType = JdbcType.VARCHAR),
@@ -26,7 +26,7 @@ public interface replyMapper {
     })
     List<Reply> getByCid(String Cid);
 
-    @Select("SELECT * FROM myblog.reply where ID = #{ID}")
+    @Select("SELECT * FROM myblog.reply where ID = #{ID} ORDER BY time")
     @Results({
             @Result(column = "ID", property = "ID", jdbcType = JdbcType.VARCHAR, id = true),
             @Result(column = "Cid", property = "Cid", jdbcType = JdbcType.VARCHAR),

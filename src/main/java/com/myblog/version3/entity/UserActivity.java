@@ -1,16 +1,16 @@
 package com.myblog.version3.entity;
 
+import java.util.Date;
+
 public class UserActivity {
     private String ID;
     private String Uid;
     private String action;
     private String object_id;
-    private String object_type;
-    private String parent_object_id;
-    private String parent_object_type;
-    private String reply_id;
-    private String parent_reply_id;
-    private String created_time;
+    private Object object;
+    private String operation_object_id;
+    private Object operation_object;
+    private Date created_time;
     private String text;
 
     public String getID() {
@@ -29,6 +29,7 @@ public class UserActivity {
         Uid = uid;
     }
 
+
     public String getAction() {
         return action;
     }
@@ -45,51 +46,35 @@ public class UserActivity {
         this.object_id = object_id;
     }
 
-    public String getObject_type() {
-        return object_type;
+    public Object getObject() {
+        return object;
     }
 
-    public void setObject_type(String object_type) {
-        this.object_type = object_type;
+    public void setObject(Object object) {
+        this.object = object;
     }
 
-    public String getParent_object_id() {
-        return parent_object_id;
+    public String getOperation_object_id() {
+        return operation_object_id;
     }
 
-    public void setParent_object_id(String parent_object_id) {
-        this.parent_object_id = parent_object_id;
+    public void setOperation_object_id(String operation_object_id) {
+        this.operation_object_id = operation_object_id;
     }
 
-    public String getParent_object_type() {
-        return parent_object_type;
+    public Object getOperation_object() {
+        return operation_object;
     }
 
-    public void setParent_object_type(String parent_object_type) {
-        this.parent_object_type = parent_object_type;
+    public void setOperation_object(Object operation_object) {
+        this.operation_object = operation_object;
     }
 
-    public String getReply_id() {
-        return reply_id;
-    }
-
-    public void setReply_id(String reply_id) {
-        this.reply_id = reply_id;
-    }
-
-    public String getParent_reply_id() {
-        return parent_reply_id;
-    }
-
-    public void setParent_reply_id(String parent_reply_id) {
-        this.parent_reply_id = parent_reply_id;
-    }
-
-    public String getCreated_time() {
+    public Date getCreated_time() {
         return created_time;
     }
 
-    public void setCreated_time(String created_time) {
+    public void setCreated_time(Date created_time) {
         this.created_time = created_time;
     }
 

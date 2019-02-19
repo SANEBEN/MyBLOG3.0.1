@@ -150,13 +150,17 @@
                                                th:text="${comment.getUser().getUserName()}+'：'"
                                                style="display: inline;color: #00b6f9"></a>
                                             <p th:text="${comment.getContent()}" style="display: inline"></p>
-                                            <p th:text="${#dates.format(comment.getTime(),'yyyy-MM-dd HH:mm')}"></p>
+                                            <p th:text="'('+${#dates.format(comment.getTime(),'yyyy-MM-dd HH:mm')}+'，#'+${commentStat.count}+'楼）'"></p>
                                         </td>
                                         <td style="width: 10%">
-                                            <a th:href="'#'+${comment.getID()}" data-toggle="collapse" th:if="${isLogIn}"
+                                            <a th:href="'#'+${comment.getID()}" data-toggle="collapse"
+                                               th:if="${isLogIn}"
                                                style="display: inline">回复</a>
                                             <a th:href="@{/login}" th:unless="${isLogIn}">回复</a>
                                             <a style="display: inline">删除评论</a>
+                                            <a th:href="'#'+${'show'+comment.getID()}"
+                                               data-toggle="collapse"
+                                               th:unless="${#lists.isEmpty(comment.getReplies())}">显示回复</a>
                                         </td>
                                     </tr>
                                 </table>
@@ -179,54 +183,64 @@
                                     </div>
                                 </div>
                             </li>
-                            <li class="list-item float-right" style="width: 95%;border-left: 3px solid #ddd"
-                                th:each="reply : ${comment.getReplies()}"
-                                th:unless="${#lists.isEmpty(comment.getReplies())}">
-                                <table class="table">
-                                    <tr>
-                                        <td style="width: 90%" th:if="${#strings.isEmpty(reply.getParent_reply_id())}">
-                                            <a th:href="@{'/personalCenter/'+${reply.getReply().getUid()}}"
-                                               th:text="${reply.getReply().getUserName()}+'：'"
-                                               style="display: inline;color: #00b6f9"></a>
-                                            <p th:text="${reply.getContent()}" style="display: inline"></p>
-                                            <p th:text="${#dates.format(reply.getTime(),'yyyy-MM-dd HH:mm')}"></p>
-                                        </td>
-                                        <td style="width: 90%"
-                                            th:unless="${#strings.isEmpty(reply.getParent_reply_id())}">
-                                            <a th:href="@{'/personalCenter/'+${reply.getReply().getUid()}}"
-                                               th:text="${reply.getReply().getUserName()}+'：'"
-                                               style="display: inline;color: #00b6f9"></a>
-                                            <a th:href="@{'/personalCenter/'+${reply.getParent_reply().getUid()}}"
-                                               th:text="'@'+${reply.getParent_reply().getUserName()}"
-                                               style="display: inline;color: #00b6f9"></a>
-                                            <p th:text="${reply.getContent()}" style="display: inline"></p>
-                                            <p th:text="${#dates.format(reply.getTime(),'yyyy-MM-dd HH:mm')}"></p>
-                                        </td>
-                                        <td style="width: 10%">
-                                            <a th:href="'#'+${reply.getID()}" data-toggle="collapse"
-                                               style="display: inline" th:if="${isLogIn}">回复</a>
-                                            <a th:href="@{/login}" th:unless="${isLogIn}">回复</a>
-                                            <a>删除评论</a>
-                                        </td>
-                                    </tr>
-                                </table>
-                                <div th:id="${reply.getID()}" class="collapse float-right" style="width: 70%;" th:if="${isLogIn}">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <form th:id="'reply'+${reply.getID()}">
+                            <li class="list-item">
+                                <div th:id="${'show'+comment.getID()}" class="collapse">
+                                    <ul class="list-media">
+                                        <li class="list-item float-right" style="width: 95%;border-left: 3px solid #ddd"
+                                            th:each="reply : ${comment.getReplies()}"
+                                            th:unless="${#lists.isEmpty(comment.getReplies())}">
+                                            <table class="table">
+                                                <tr>
+                                                    <td style="width: 90%"
+                                                        th:if="${#strings.isEmpty(reply.getParent_reply_id())}">
+                                                        <a th:href="@{'/personalCenter/'+${reply.getReply().getUid()}}"
+                                                           th:text="${reply.getReply().getUserName()}+'：'"
+                                                           style="display: inline;color: #00b6f9"></a>
+                                                        <p th:text="${reply.getContent()}" style="display: inline"></p>
+                                                        <p th:text="${#dates.format(reply.getTime(),'yyyy-MM-dd HH:mm')}"></p>
+                                                    </td>
+                                                    <td style="width: 90%"
+                                                        th:unless="${#strings.isEmpty(reply.getParent_reply_id())}">
+                                                        <a th:href="@{'/personalCenter/'+${reply.getReply().getUid()}}"
+                                                           th:text="${reply.getReply().getUserName()}+'：'"
+                                                           style="display: inline;color: #00b6f9"></a>
+                                                        <a th:href="@{'/personalCenter/'+${reply.getParent_reply().getUid()}}"
+                                                           th:text="'@'+${reply.getParent_reply().getUserName()}"
+                                                           style="display: inline;color: #00b6f9"></a>
+                                                        <p th:text="${reply.getContent()}" style="display: inline"></p>
+                                                        <p th:text="${#dates.format(reply.getTime(),'yyyy-MM-dd HH:mm')}"></p>
+                                                    </td>
+                                                    <td style="width: 10%">
+                                                        <a th:href="'#'+${reply.getID()}" data-toggle="collapse"
+                                                           style="display: inline" th:if="${isLogIn}">回复</a>
+                                                        <a th:href="@{/login}" th:unless="${isLogIn}">回复</a>
+                                                        <a>删除评论</a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <div th:id="${reply.getID()}" class="collapse float-right" style="width: 70%;"
+                                                 th:if="${isLogIn}">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <form th:id="'reply'+${reply.getID()}">
                                                     <textarea placeholder="回复最多可以发送255个字符"
                                                               name="content" class="form-control"></textarea>
-                                                <input type="hidden" name="Cid" th:value="${comment.getID()}">
-                                                <input type="hidden" name="reply_id" th:value="${message?.getUid()}">
-                                                <input type="hidden" name="parent_reply_id" th:value="${reply.getReply().getUid()}">
-                                                <button class="btn btn-danger float-right" type="button"
-                                                        th:href="'#'+${reply.getID()}" data-toggle="collapse">取消
-                                                </button>
-                                                <input type="button" value="添加回复" th:name="${reply.getID()}"
-                                                       class="btn btn-primary float-right addReply">
-                                            </form>
-                                        </div>
-                                    </div>
+                                                            <input type="hidden" name="Cid" th:value="${comment.getID()}">
+                                                            <input type="hidden" name="reply_id"
+                                                                   th:value="${message?.getUid()}">
+                                                            <input type="hidden" name="parent_reply_id"
+                                                                   th:value="${reply.getReply().getUid()}">
+                                                            <button class="btn btn-danger float-right" type="button"
+                                                                    th:href="'#'+${reply.getID()}" data-toggle="collapse">取消
+                                                            </button>
+                                                            <input type="button" value="添加回复" th:name="${reply.getID()}"
+                                                                   class="btn btn-primary float-right addReply">
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
                                 </div>
                             </li>
                         </ul>

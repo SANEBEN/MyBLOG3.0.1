@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface commentMapper {
 
-    @Select("SELECT * FROM myblog.comment where Aid = #{Aid}")
+    @Select("SELECT * FROM myblog.comment where Aid = #{Aid} ORDER BY time")
     @Results({
             @Result(column = "ID", property = "ID", jdbcType = JdbcType.VARCHAR, id = true),
             @Result(column = "Aid", property = "Aid", jdbcType = JdbcType.VARCHAR),
@@ -25,7 +25,7 @@ public interface commentMapper {
     })
     List<Comment> getByAid(String Aid);
 
-    @Select("SELECT * FROM myblog.comment where ID =#{ID}")
+    @Select("SELECT * FROM myblog.comment where ID =#{ID} ORDER BY time")
     @Results({
             @Result(column = "ID", property = "ID", jdbcType = JdbcType.VARCHAR, id = true),
             @Result(column = "Aid", property = "Aid", jdbcType = JdbcType.VARCHAR),

@@ -17,8 +17,10 @@ public class MyShiroRealm extends AuthorizingRealm {
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
+        String phone = (String) principalCollection.getPrimaryPrincipal();
         SimpleAuthorizationInfo simpleAuthorInfo = new SimpleAuthorizationInfo();
-        simpleAuthorInfo.addRole("user");
+        User user = userMapper.getByPhone(phone);
+        simpleAuthorInfo.addRole(user.getRole());
         return simpleAuthorInfo;
     }
 

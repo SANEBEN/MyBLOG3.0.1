@@ -33,4 +33,7 @@ public interface categoryMapper {
 
     @Insert("INSERT INTO myblog.category(ID, Uid, name) VALUES (#{ID} ,#{Uid} ,#{name})")
     boolean Insert(Category category) throws SQLIntegrityConstraintViolationException;
+
+    @Delete("DELETE FROM myblog.category where ID = #{Cid}")
+    boolean delete(String Cid);
 }

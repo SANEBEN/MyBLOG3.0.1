@@ -38,16 +38,18 @@ spring:
       pool-prepared-statements: true
       max-open-prepared-statements: 50
       max-pool-prepared-statement-per-connection-size: 2
+      aop-patterns:
+              com.myblog.version3.mapper.*
       # 配置监控服务器
       stat-view-servlet:
         login-username: admin
         login-password: 123456
         reset-enable: false
         url-pattern: /druid/*
-          # 添加IP白名单
-          #allow:
-          # 添加IP黑名单，当白名单和黑名单重复时，黑名单优先级更高
-          #deny:
+      # 添加IP白名单
+      #allow:
+      # 添加IP黑名单，当白名单和黑名单重复时，黑名单优先级更高
+       #deny:
       filter:
         stat:
           log-slow-sql: true

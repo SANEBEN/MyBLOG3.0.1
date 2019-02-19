@@ -13,6 +13,8 @@ public class Message implements Serializable {
     private String email;
     private String userName;
     private Date createdTime;
+    private String introduce;
+    private String img;
 
     public String getID() {
         return ID;
@@ -62,6 +64,14 @@ public class Message implements Serializable {
         this.createdTime = createdTime;
     }
 
+    public String getIntroduce() {
+        return introduce;
+    }
+
+    public void setIntroduce(String introduce) {
+        this.introduce = introduce;
+    }
+
     public String getImg() {
         return img;
     }
@@ -70,5 +80,4 @@ public class Message implements Serializable {
         this.img = img;
     }
 
-    private String img;
 }

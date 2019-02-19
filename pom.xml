@@ -110,11 +110,9 @@
 
         <!--短信验证码-->
         <dependency>
-            <groupId>eMessage</groupId>
-            <artifactId>eMessage</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/lib/eMessage.jar</systemPath>
+            <groupId>com.zhenzikj</groupId>
+            <artifactId>zhenzisms</artifactId>
+            <version>1.0.2</version>
         </dependency>
 
         <!--实现文件夹的复制、删除等操作-->

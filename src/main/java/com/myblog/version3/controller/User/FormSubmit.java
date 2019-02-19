@@ -6,15 +6,18 @@ import com.myblog.version3.entity.Category;
 import com.myblog.version3.entity.Form.Article;
 import com.myblog.version3.entity.Form.Comment;
 import com.myblog.version3.entity.Form.Reply;
-import com.myblog.version3.mapper.articleMapper;
-import com.myblog.version3.mapper.categoryMapper;
-import com.myblog.version3.mapper.commentMapper;
-import com.myblog.version3.mapper.replyMapper;
+import com.myblog.version3.entity.User;
+import com.myblog.version3.entity.UserActivity;
+import com.myblog.version3.mapper.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.io.FileUtils;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Result;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +56,11 @@ public class FormSubmit {
     @Autowired
     replyMapper replyMapper;
 
+    @Autowired
+    userActivityMapper userActivityMapper;
+
     @RequestMapping(value = "/createArticle", method = {RequestMethod.GET, RequestMethod.POST})
+    @ApiOperation(value = "新建文章" ,notes = "用于添加新的文章，登录后可访问该接口")
     public String insert(@Valid Article article, BindingResult bindingResult) throws IOException {
         JsonObject json = new JsonObject();
         if (bindingResult.hasErrors()) {
@@ -100,6 +107,13 @@ public class FormSubmit {
                 json.addProperty("status", 1);
                 json.addProperty("message", "添加文章成功");
                 json.addProperty("URL", "/user/Article/" + article.getUid() + "/editArticle/" + article1.getID());
+                UserActivity activity = new UserActivity();
+                activity.setAction("createArticle");
+                activity.setCreated_time(new Date());
+                activity.setID(Random.getUUID().substring(0,8));
+                activity.setUid(article.getUid());
+                activity.setObject_id(article1.getID());
+                userActivityMapper.Article(activity);
                 return json.toString();
             } else {
                 json.addProperty("status", 0);
@@ -110,6 +124,7 @@ public class FormSubmit {
     }
 
     @RequestMapping(value = "/updateArticle", method = {RequestMethod.GET, RequestMethod.POST})
+    @ApiOperation(value = "更新文章" ,notes = "用于更新文章，登录后可访问该接口")
     public String updateArticle(@Valid Article article, BindingResult bindingResult) throws IOException {
         JsonObject json = new JsonObject();
         if (bindingResult.hasErrors()) {
@@ -158,27 +173,71 @@ public class FormSubmit {
             outputStream.flush();
             outputStream.close();
             article1.setURL(file.getPath());
-            articleMapper.update(article1);
-            json.addProperty("status", 1);
-            json.addProperty("message", "更新文章成功");
-            json.addProperty("URL", "/user/Article/" + article.getUid() + "/editArticle/" + article.getAid());
+            if(articleMapper.update(article1)){
+                json.addProperty("status", 1);
+                json.addProperty("message", "更新文章成功");
+                json.addProperty("URL", "/user/Article/" + article.getUid() + "/editArticle/" + article.getAid());
+                UserActivity activity = new UserActivity();
+                activity.setAction("updateArticle");
+                activity.setCreated_time(new Date());
+                activity.setID(Random.getUUID().substring(0,8));
+                activity.setUid(article.getUid());
+                activity.setObject_id(article1.getID());
+                userActivityMapper.Article(activity);
+            }else {
+                json.addProperty("status", 0);
+                json.addProperty("message", "更新文章失败，请稍后重试");
+            }
             return json.toString();
         }
     }
 
+    @RequestMapping(value = "/deleteArticle" ,method = {RequestMethod.GET, RequestMethod.POST})
+    @ApiOperation(value = "删除文章" ,notes = "只用管理员或者作者能访问这个接口，需验证权限")
+    public String deleteArticle(@Param(value = "Aid") String Aid ){
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User)subject.getSession().getAttribute("User");
+        com.myblog.version3.entity.Article article = articleMapper.getByID(Aid);
+        if(subject.hasRole("admin")||user.getID().equals(article.getUid())) {
+            if(articleMapper.delete(Aid)) {
+                UserActivity activity = new UserActivity();
+                activity.setAction("deleteArticle");
+                activity.setCreated_time(new Date());
+                activity.setID(Random.getUUID().substring(0, 8));
+                activity.setUid(user.getID());
+                activity.setObject_id(article.getTitle());
+                userActivityMapper.Article(activity);
+                return "删除文章成功";
+            }else {
+                return "删除失败，请联系管理员了解详情";
+            }
+        }else {
+            return "你没有删除该文章的权限";
+        }
+    }
 
     @RequestMapping(value = "/addCategory", method = {RequestMethod.GET, RequestMethod.POST})
     @ApiImplicitParams({
             @ApiImplicitParam(value = "分类名称", name = "category", paramType = "query", dataType = "String", required = true),
             @ApiImplicitParam(value = "用户ID", name = "Uid", paramType = "query", dataType = "String", required = true)
     })
+    @ApiOperation(value = "添加分类" ,notes = "用于添加新的分类，登录后可访问该接口")
     public String addCategory(@NotBlank(message = "分类名不能为空") @Param(value = "category") String category, @Param(value = "Uid") String Uid) {
         Category newOne = new Category();
         newOne.setID(Random.getUUID().substring(0, 8));
         newOne.setName(category);
         newOne.setUid(Uid);
         try {
-            categoryMapper.Insert(newOne);
+            if(categoryMapper.Insert(newOne)){
+                UserActivity activity = new UserActivity();
+                activity.setAction("addCategory");
+                activity.setCreated_time(new Date());
+                activity.setID(Random.getUUID().substring(0, 8));
+                activity.setUid(Uid);
+                activity.setObject_id(Uid);
+                activity.setOperation_object_id(newOne.getID());
+                userActivityMapper.Other(activity);
+            }
             return "添加分类成功";
         } catch (SQLIntegrityConstraintViolationException e) {
             e.printStackTrace();
@@ -186,7 +245,33 @@ public class FormSubmit {
         }
     }
 
+    @RequestMapping(value = "/deleteCategory", method = {RequestMethod.GET, RequestMethod.POST})
+    @ApiOperation(value = "删除文章分类" ,notes = "只用管理员或者作者能访问这个接口，需验证权限")
+    public String deleteCategory(@Param(value = "Cid") String Cid){
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User)subject.getSession().getAttribute("User");
+        Category category = categoryMapper.getByID(Cid);
+        if(subject.hasRole("admin")||category.getUid().equals(user.getID())){
+            if(categoryMapper.delete(Cid)) {
+                UserActivity activity = new UserActivity();
+                activity.setAction("addCategory");
+                activity.setCreated_time(new Date());
+                activity.setID(Random.getUUID().substring(0, 8));
+                activity.setUid(user.getID());
+                activity.setObject_id(category.getName());
+                userActivityMapper.Other(activity);
+                return "删除分类成功";
+            }else {
+                return "删除失败，请联系管理员了解详情";
+            }
+
+        }else {
+            return "你没有权限删除该分类";
+        }
+    }
+
     @RequestMapping(value = "/addComment" ,method = {RequestMethod.GET ,RequestMethod.POST})
+    @ApiOperation(value = "添加文章评论" ,notes = "用于添加文章评论，登录后可访问该接口")
     public String addComment(@Valid Comment comment ,BindingResult bindingResult){
         JsonObject json = new JsonObject();
         if(bindingResult.hasErrors()){
@@ -208,6 +293,14 @@ public class FormSubmit {
             if(commentMapper.insert(newOne)){
                 json.addProperty("status", 1);
                 json.addProperty("message", "添加评论成功");
+                UserActivity activity = new UserActivity();
+                activity.setAction("addComment");
+                activity.setCreated_time(new Date());
+                activity.setID(Random.getUUID().substring(0, 8));
+                activity.setUid(comment.getUid());
+                activity.setObject_id(comment.getUid());
+                activity.setOperation_object_id(newOne.getID());
+                userActivityMapper.Other(activity);
                 return json.toString();
             }else {
                 json.addProperty("status", 0);
@@ -218,11 +311,25 @@ public class FormSubmit {
     }
 
     @RequestMapping(value = "/deleteComment" ,method = {RequestMethod.GET ,RequestMethod.POST})
-    public Boolean deleteComment(@Param(value = "Cid") String Cid){
-        return commentMapper.delete(Cid);
+    @ApiOperation(value = "删除评论" ,notes = "用于删除评论，只用文章作者和网站管理者有权调用该接口")
+    public String deleteComment(@Param(value = "Cid") String Cid){
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User)subject.getSession().getAttribute("User");
+        com.myblog.version3.entity.Comment comment = commentMapper.getByID(Cid);
+        if(subject.hasRole("admin")||user.getID().equals(comment.getUid())){
+            if(commentMapper.delete(Cid)){
+                return "删除评论成功";
+            }else {
+                return "删除失败，请稍后重试";
+            }
+        }else {
+            return "你没有删除评论的权限";
+        }
+
     }
 
     @RequestMapping(value = "/addReply" ,method = {RequestMethod.GET ,RequestMethod.POST})
+    @ApiOperation(value = "添加回复" ,notes = "用于添加回复，登录后可访问该接口")
     public String addReply(@Valid Reply reply ,BindingResult bindingResult){
         JsonObject json = new JsonObject();
         if(bindingResult.hasErrors()){
@@ -245,6 +352,14 @@ public class FormSubmit {
             if(replyMapper.insert(newOne)){
                 json.addProperty("status", 1);
                 json.addProperty("message", "回复成功");
+                UserActivity activity = new UserActivity();
+                activity.setAction("addReply");
+                activity.setCreated_time(new Date());
+                activity.setID(Random.getUUID().substring(0, 8));
+                activity.setUid(reply.getReply_id());
+                activity.setObject_id(reply.getReply_id());
+                activity.setOperation_object_id(newOne.getID());
+                userActivityMapper.Other(activity);
                 return json.toString();
             }else {
                 json.addProperty("status", 0);
@@ -255,6 +370,7 @@ public class FormSubmit {
     }
 
     @RequestMapping(value = "/deleteReply" ,method = {RequestMethod.GET ,RequestMethod.POST})
+    @ApiOperation(value = "删除回复" ,notes = "用于删除评论，只用文章作者和网站管理者有权调用该接口")
     public Boolean deleteReply(@Param(value = "Rid") String Rid){
         return replyMapper.delete(Rid);
     }

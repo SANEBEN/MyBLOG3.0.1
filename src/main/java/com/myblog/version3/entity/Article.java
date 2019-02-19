@@ -10,7 +10,9 @@ import java.util.Date;
 public class Article {
     private String ID;
     private String Cid;
+    private Category category;
     private String Uid;
+    private Message user;
     private String title;
     private String URL;
     private String Content;
@@ -37,12 +39,28 @@ public class Article {
         Cid = cid;
     }
 
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
     public String getUid() {
         return Uid;
     }
 
     public void setUid(String uid) {
         Uid = uid;
+    }
+
+    public Message getUser() {
+        return user;
+    }
+
+    public void setUser(Message user) {
+        this.user = user;
     }
 
     public String getTitle() {
@@ -126,7 +144,6 @@ public class Article {
     public void setStatus(int status) {
         this.status = status;
     }
-
 
     public Boolean getPrivate() {
         return isPrivate;

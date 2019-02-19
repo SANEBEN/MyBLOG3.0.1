@@ -9,31 +9,23 @@ public class eMessage {
             "https://sms_developer.zhenzikj.com"
             , "100628",
             "952970ff-8c79-462c-add7-c952e0625492");
-    public static String sendVerification(String phone){
+
+    public static String sendVerification(String phone) {
         try {
-            int number = (int)(Math.random()*100000);
+            int number = (int) (Math.random() * 100000);
             System.out.println(client.send(phone
-                    ,"欢迎注册“三年二班的路小雨”的博客，您的注册验证码为："+number+"，验证码的有效时间为60秒"));
+                    , "欢迎注册“三年二班的路小雨”的博客，您的注册验证码为：" + number + "，验证码的有效时间为60秒"));
             return Integer.toString(number);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static String getBalance(){
+    public static String getBalance() {
         try {
             return client.balance();
-        }catch (Exception e){
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static String getRecord(){
-        try {
-            return client.findSmsByMessageId("dfee_dfdw_xdfd_dfdfd");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
