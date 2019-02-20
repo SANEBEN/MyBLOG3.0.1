@@ -5,6 +5,7 @@ import java.util.Date;
 public class Reply {
     private String ID;
     private String Cid;
+    private Comment comment;
     private String parent_reply_id;
     private Message parent_reply;
     private String reply_id;
@@ -26,6 +27,14 @@ public class Reply {
 
     public void setCid(String cid) {
         Cid = cid;
+    }
+
+    public Comment getComment() {
+        return comment;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
     }
 
     public String getParent_reply_id() {

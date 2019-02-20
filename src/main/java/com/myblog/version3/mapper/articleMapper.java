@@ -99,7 +99,10 @@ public interface articleMapper {
     Boolean update(Article article);
 
     @Delete("DELETE FROM myblog.article where ID = #{Aid}")
-    Boolean delete(String Aid);
+    Boolean deleteByAid(String Aid);
+
+    @Delete("DELETE FROM myblog.article where Cid = #{Cid}")
+    Boolean deleteByCid(String Cid);
 
     @Update("update myblog.article set Status = #{status} where ID = #{ID}")
     Boolean status(Integer status, String ID);

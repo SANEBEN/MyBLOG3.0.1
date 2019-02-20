@@ -5,13 +5,15 @@ import java.util.Date;
 public class UserActivity {
     private String ID;
     private String Uid;
+    private Message user;
     private String action;
     private String object_id;
-    private Object object;
+    private Article article;
+    private Category category;
+    private Comment comment;
+    private Reply reply;
     private String operation_object_id;
-    private Object operation_object;
     private Date created_time;
-    private String text;
 
     public String getID() {
         return ID;
@@ -29,6 +31,13 @@ public class UserActivity {
         Uid = uid;
     }
 
+    public Message getUser() {
+        return user;
+    }
+
+    public void setUser(Message user) {
+        this.user = user;
+    }
 
     public String getAction() {
         return action;
@@ -46,12 +55,36 @@ public class UserActivity {
         this.object_id = object_id;
     }
 
-    public Object getObject() {
-        return object;
+    public Article getArticle() {
+        return article;
     }
 
-    public void setObject(Object object) {
-        this.object = object;
+    public void setArticle(Article article) {
+        this.article = article;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Comment getComment() {
+        return comment;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
+    }
+
+    public Reply getReply() {
+        return reply;
+    }
+
+    public void setReply(Reply reply) {
+        this.reply = reply;
     }
 
     public String getOperation_object_id() {
@@ -62,27 +95,11 @@ public class UserActivity {
         this.operation_object_id = operation_object_id;
     }
 
-    public Object getOperation_object() {
-        return operation_object;
-    }
-
-    public void setOperation_object(Object operation_object) {
-        this.operation_object = operation_object;
-    }
-
     public Date getCreated_time() {
         return created_time;
     }
 
     public void setCreated_time(Date created_time) {
         this.created_time = created_time;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
     }
 }

@@ -109,7 +109,7 @@ public class FormSubmit {
                 json.addProperty("URL", "/user/Article/" + article.getUid() + "/editArticle/" + article1.getID());
                 UserActivity activity = new UserActivity();
                 activity.setAction("createArticle");
-                activity.setCreated_time(new Date());
+                activity.setCreated_time(date);
                 activity.setID(Random.getUUID().substring(0,8));
                 activity.setUid(article.getUid());
                 activity.setObject_id(article1.getID());
@@ -194,12 +194,13 @@ public class FormSubmit {
 
     @RequestMapping(value = "/deleteArticle" ,method = {RequestMethod.GET, RequestMethod.POST})
     @ApiOperation(value = "删除文章" ,notes = "只用管理员或者作者能访问这个接口，需验证权限")
-    public String deleteArticle(@Param(value = "Aid") String Aid ){
+    public String deleteArticle(@Param(value = "Aid") String Aid ) throws IOException{
         Subject subject = SecurityUtils.getSubject();
         User user = (User)subject.getSession().getAttribute("User");
         com.myblog.version3.entity.Article article = articleMapper.getByID(Aid);
         if(subject.hasRole("admin")||user.getID().equals(article.getUid())) {
-            if(articleMapper.delete(Aid)) {
+            if(articleMapper.deleteByAid(Aid)) {
+                FileUtils.deleteDirectory(new File(article.getURL()).getParentFile());
                 UserActivity activity = new UserActivity();
                 activity.setAction("deleteArticle");
                 activity.setCreated_time(new Date());
@@ -234,7 +235,6 @@ public class FormSubmit {
                 activity.setCreated_time(new Date());
                 activity.setID(Random.getUUID().substring(0, 8));
                 activity.setUid(Uid);
-                activity.setObject_id(Uid);
                 activity.setOperation_object_id(newOne.getID());
                 userActivityMapper.Other(activity);
             }
@@ -247,12 +247,15 @@ public class FormSubmit {
 
     @RequestMapping(value = "/deleteCategory", method = {RequestMethod.GET, RequestMethod.POST})
     @ApiOperation(value = "删除文章分类" ,notes = "只用管理员或者作者能访问这个接口，需验证权限")
-    public String deleteCategory(@Param(value = "Cid") String Cid){
+    public String deleteCategory(@Param(value = "Cid") String Cid) throws IOException{
         Subject subject = SecurityUtils.getSubject();
         User user = (User)subject.getSession().getAttribute("User");
         Category category = categoryMapper.getByID(Cid);
         if(subject.hasRole("admin")||category.getUid().equals(user.getID())){
             if(categoryMapper.delete(Cid)) {
+                for(com.myblog.version3.entity.Article article : category.getArticles()){
+                    FileUtils.deleteDirectory(new File(article.getURL()).getParentFile());
+                }
                 UserActivity activity = new UserActivity();
                 activity.setAction("addCategory");
                 activity.setCreated_time(new Date());
@@ -298,7 +301,6 @@ public class FormSubmit {
                 activity.setCreated_time(new Date());
                 activity.setID(Random.getUUID().substring(0, 8));
                 activity.setUid(comment.getUid());
-                activity.setObject_id(comment.getUid());
                 activity.setOperation_object_id(newOne.getID());
                 userActivityMapper.Other(activity);
                 return json.toString();
@@ -325,7 +327,6 @@ public class FormSubmit {
         }else {
             return "你没有删除评论的权限";
         }
-
     }
 
     @RequestMapping(value = "/addReply" ,method = {RequestMethod.GET ,RequestMethod.POST})
@@ -357,7 +358,6 @@ public class FormSubmit {
                 activity.setCreated_time(new Date());
                 activity.setID(Random.getUUID().substring(0, 8));
                 activity.setUid(reply.getReply_id());
-                activity.setObject_id(reply.getReply_id());
                 activity.setOperation_object_id(newOne.getID());
                 userActivityMapper.Other(activity);
                 return json.toString();
@@ -371,7 +371,18 @@ public class FormSubmit {
 
     @RequestMapping(value = "/deleteReply" ,method = {RequestMethod.GET ,RequestMethod.POST})
     @ApiOperation(value = "删除回复" ,notes = "用于删除评论，只用文章作者和网站管理者有权调用该接口")
-    public Boolean deleteReply(@Param(value = "Rid") String Rid){
-        return replyMapper.delete(Rid);
+    public String deleteReply(@Param(value = "Rid") String Rid){
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User)subject.getSession().getAttribute("User");
+        com.myblog.version3.entity.Reply reply = replyMapper.getByID(Rid);
+        if(subject.hasRole("admin")||user.getID().equals(reply.getReply_id())){
+            if(replyMapper.delete(Rid)){
+                return "删除回复成功";
+            }else {
+                return "删除失败，请稍后重试";
+            }
+        }else {
+            return "你没有删除该回复的权限";
+        }
     }
 }

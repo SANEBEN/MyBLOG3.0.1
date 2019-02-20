@@ -1,12 +1,14 @@
 package com.myblog.version3.entity.Form;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 public class Comment {
 
     private String Uid;
     private String Aid;
     @NotBlank(message = "评论不能为空")
+    @Pattern(regexp = "[a-zA-Z0-9\\u4e00-\\u9fa5]{1,8}" ,message = "评论中不能含有特殊字符")
     private String content;
 
     public String getUid() {

@@ -1,5 +1,6 @@
 package com.myblog.version3.mapper;
 
+import com.myblog.version3.entity.Article;
 import com.myblog.version3.entity.Comment;
 import com.myblog.version3.entity.Message;
 import org.apache.ibatis.annotations.*;
@@ -15,6 +16,8 @@ public interface commentMapper {
     @Results({
             @Result(column = "ID", property = "ID", jdbcType = JdbcType.VARCHAR, id = true),
             @Result(column = "Aid", property = "Aid", jdbcType = JdbcType.VARCHAR),
+            @Result(column = "Aid", property = "article", javaType = Article.class,
+                    one = @One(select = "com.myblog.version3.mapper.articleMapper.getByID")),
             @Result(column = "Uid", property = "Uid", jdbcType = JdbcType.VARCHAR),
             @Result(column = "Uid", property = "user", javaType = Message.class,
                     one = @One(select = "com.myblog.version3.mapper.messageMapper.getByUid")),
@@ -25,10 +28,12 @@ public interface commentMapper {
     })
     List<Comment> getByAid(String Aid);
 
-    @Select("SELECT * FROM myblog.comment where ID =#{ID} ORDER BY time")
+    @Select("SELECT * FROM myblog.comment where ID =#{ID}")
     @Results({
             @Result(column = "ID", property = "ID", jdbcType = JdbcType.VARCHAR, id = true),
             @Result(column = "Aid", property = "Aid", jdbcType = JdbcType.VARCHAR),
+            @Result(column = "Aid", property = "article", javaType = Article.class,
+                    one = @One(select = "com.myblog.version3.mapper.articleMapper.getByID")),
             @Result(column = "Uid", property = "Uid", jdbcType = JdbcType.VARCHAR),
             @Result(column = "Uid", property = "user", javaType = Message.class,
                     one = @One(select = "com.myblog.version3.mapper.messageMapper.getByUid")),

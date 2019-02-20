@@ -2,9 +2,8 @@ package com.myblog.version3.controller.Public;
 
 import com.myblog.version3.entity.Article;
 import com.myblog.version3.entity.User;
-import com.myblog.version3.mapper.articleMapper;
-import com.myblog.version3.mapper.commentMapper;
-import com.myblog.version3.mapper.messageMapper;
+import com.myblog.version3.entity.UserActivity;
+import com.myblog.version3.mapper.*;
 import io.swagger.annotations.ApiImplicitParam;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
@@ -31,6 +30,15 @@ public class PublicController {
 
     @Autowired
     commentMapper commentMapper;
+
+    @Autowired
+    userActivityMapper userActivityMapper;
+
+    @Autowired
+    categoryMapper categoryMapper;
+
+    @Autowired
+    replyMapper replyMapper;
 
     @GetMapping("/")
     @ApiIgnore
@@ -66,6 +74,21 @@ public class PublicController {
         }
         modelMap.addAttribute("message",messageMapper.getByUid(Uid));
         modelMap.addAttribute("articles" ,articleMapper.getByUid(Uid));
+        List<UserActivity> activities = userActivityMapper.getByUid(Uid);
+        for(UserActivity activity : activities){
+            if(activity.getAction().equals("createArticle")){
+                activity.setArticle(articleMapper.getByID(activity.getObject_id()));
+            }else if(activity.getAction().equals("updateArticle")){
+                activity.setArticle(articleMapper.getByID(activity.getObject_id()));
+            }else if(activity.getAction().equals("addCategory")){
+                activity.setCategory(categoryMapper.getByID(activity.getOperation_object_id()));
+            }else if(activity.getAction().equals("addComment")){
+                activity.setComment(commentMapper.getByID(activity.getOperation_object_id()));
+            }else if(activity.getAction().equals("addReply")){
+                activity.setReply(replyMapper.getByID(activity.getOperation_object_id()));
+            }
+        }
+        modelMap.addAttribute("activities" ,activities);
         return "public/personalCenter";
     }
 

@@ -1,5 +1,7 @@
 package com.myblog.version3.mapper;
 
+import com.myblog.version3.entity.Category;
+import com.myblog.version3.entity.Comment;
 import com.myblog.version3.entity.Message;
 import com.myblog.version3.entity.Reply;
 import org.apache.ibatis.annotations.*;
@@ -26,7 +28,7 @@ public interface replyMapper {
     })
     List<Reply> getByCid(String Cid);
 
-    @Select("SELECT * FROM myblog.reply where ID = #{ID} ORDER BY time")
+    @Select("SELECT * FROM myblog.reply where ID = #{ID}")
     @Results({
             @Result(column = "ID", property = "ID", jdbcType = JdbcType.VARCHAR, id = true),
             @Result(column = "Cid", property = "Cid", jdbcType = JdbcType.VARCHAR),
@@ -34,7 +36,7 @@ public interface replyMapper {
             @Result(column = "parent_reply_id", property = "parent_reply", javaType = Message.class,
                     one = @One(select = "com.myblog.version3.mapper.messageMapper.getByUid")),
             @Result(column = "reply_id", property = "reply_id", jdbcType = JdbcType.VARCHAR),
-            @Result(column = "reply_id", property = "reply_id", javaType = Message.class,
+            @Result(column = "reply_id", property = "reply", javaType = Message.class,
                     one = @One(select = "com.myblog.version3.mapper.messageMapper.getByUid")),
             @Result(column = "content", property = "content", jdbcType = JdbcType.VARCHAR),
             @Result(column = "time", property = "time", jdbcType = JdbcType.DATETIMEOFFSET),

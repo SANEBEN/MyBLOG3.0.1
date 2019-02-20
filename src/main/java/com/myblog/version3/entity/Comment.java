@@ -7,6 +7,7 @@ import java.util.List;
 public class Comment {
     private String ID;
     private String Aid;
+    private Article article;
     private String Uid;
     private Message user;
     private String content;
@@ -27,6 +28,14 @@ public class Comment {
 
     public void setAid(String aid) {
         Aid = aid;
+    }
+
+    public Article getArticle() {
+        return article;
+    }
+
+    public void setArticle(Article article) {
+        this.article = article;
     }
 
     public String getUid() {
