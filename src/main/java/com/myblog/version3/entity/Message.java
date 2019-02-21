@@ -9,12 +9,14 @@ import java.util.Date;
 public class Message implements Serializable {
     private String ID;
     private String Uid;
+    private String Role;
     private String phone;
     private String email;
     private String userName;
     private Date createdTime;
     private String introduce;
     private String img;
+    private int status;
 
     public String getID() {
         return ID;
@@ -30,6 +32,14 @@ public class Message implements Serializable {
 
     public void setUid(String uid) {
         Uid = uid;
+    }
+
+    public String getRole() {
+        return Role;
+    }
+
+    public void setRole(String role) {
+        Role = role;
     }
 
     public String getPhone() {
@@ -80,4 +90,11 @@ public class Message implements Serializable {
         this.img = img;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 }

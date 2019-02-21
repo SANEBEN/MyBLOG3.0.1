@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
 </head>
 <body>
-<div class="app header-default side-nav-dark" id="app">
+<div class="app header-default side-nav-dark side-nav-folded" id="app">
     <div class="layout">
         <div class="header navbar">
             <div class="header-container">
@@ -46,7 +46,8 @@
                                         </div>
                                         <div class="info">
                                             <span class="title text-semibold" th:text="${message.getUserName()}"></span>
-                                            <span class="sub-title" th:text="${message.getCreatedTime()}"></span>
+                                            <span class="sub-title"
+                                                  th:text="${'创建时间：'+#dates.format(message.getCreatedTime(),'yyyy/MM/dd')}"></span>
                                         </div>
                                     </li>
                                 </ul>
@@ -81,7 +82,7 @@
                         </a>
                         <ul class="dropdown-menu sub-down">
                             <li>
-                                <a href="index.html">主页</a>
+                                <a th:href="@{/admin/index}">主页</a>
                             </li>
                         </ul>
                     </li>
@@ -97,28 +98,12 @@
                         </a>
                         <ul class="dropdown-menu sub-down">
                             <li class="active">
-                                <a href="UserAccountManagement.html">普通账号管理</a>
+                                <a th:href="@{'/admin/userAccountManagement?pageNum=1'}">普通账号管理</a>
                             </li>
                             <li>
-                                <a href="adminAccountManagement.html">管理员账号管理</a>
+                                <a th:href="@{'/admin/adminAccountManagement?pageNum=1'}">管理员账号管理</a>
                             </li>
 
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="dropdown-toggle" href="#">
-                            <span class="icon-holder">
-                               <i class="lni-control-panel"></i>
-                            </span>
-                            <span class="title">网站信息统计</span>
-                            <span class="arrow">
-                                <i class="lni-chevron-right"></i>
-                            </span>
-                        </a>
-                        <ul class="dropdown-menu sub-down">
-                            <li>
-                                <a href="Druid.html">操作日志</a>
-                            </li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -133,7 +118,27 @@
                         </a>
                         <ul class="dropdown-menu sub-down">
                             <li>
-                                <a href="ArticleManagement.html">文章管理</a>
+                                <a th:href="@{${'/admin/articleManagement?pageNum=1'}}">文章管理</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="dropdown-toggle" href="#">
+                            <span class="icon-holder">
+                               <i class="lni-control-panel"></i>
+                            </span>
+                            <span class="title">第三方管理工具</span>
+                            <span class="arrow">
+                                <i class="lni-chevron-right"></i>
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu sub-down">
+                            <li>
+                                <a th:href="@{'http://sms_developer.zhenzikj.com/zhenzisms_user/login.html'}"
+                                   target="_blank">短信平台</a>
+                            </li>
+                            <li>
+                                <a th:href="@{'http://localhost:8088/druid/index'}" target="_blank">Druid连接池</a>
                             </li>
                         </ul>
                     </li>
@@ -161,24 +166,104 @@
                                         <thead class="thead-light">
                                         <tr>
                                             <th>邮箱</th>
+                                            <th>电话号码</th>
                                             <th>用户名</th>
                                             <th>创建时间</th>
                                             <th>账户状态</th>
                                             <th>编辑账户</th>
                                         </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody th:unless="${#lists.isEmpty(users.getList())}">
+                                        <tr th:each="user : ${users.getList()}">
+                                            <td th:text="${user.getEmail()}"></td>
+                                            <td th:text="${user.getPhone()}"></td>
+                                            <td th:text="${user.getUserName()}"></td>
+                                            <td th:text="${#dates.format(user.getCreatedTime(),'yyyy/MM/dd HH:mm:ss')}"></td>
+                                            <td>
+                                                <a href="javascript:void(0)" class="badge badge-success"
+                                                   th:if="${user.getStatus() == 1}">账号正常</a>
+                                                <a href="javascript:void(0)" class="badge badge-danger"
+                                                   th:if="${user.getStatus() == 0}">账号锁定</a>
+                                            </td>
+                                            <td>
+                                                <div class="dropdown m-b-10">
+                                                    <button class="btn btn-common dropdown-toggle" type="button"
+                                                            th:id="${user.getUid()}" data-toggle="dropdown"
+                                                            aria-haspopup="true"
+                                                            aria-expanded="false">
+                                                        编辑账户
+                                                    </button>
+                                                    <div class="dropdown-menu" th:aria-labelledby="${user.getUid()}"
+                                                         x-placement="bottom-start"
+                                                         style="position: absolute; transform: translate3d(0px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                        <a class="dropdown-item" href="javascript:void(0)"
+                                                           data-toggle="modal"
+                                                           data-target=".bs-example-modal-center">显示动态
+                                                        </a>
+                                                        <a class="dropdown-item" href="javascript:void(0)"
+                                                           th:if="${user.getStatus() == 1}">锁定账户</a>
+                                                        <a class="dropdown-item" href="javascript:void(0)"
+                                                           th:if="${user.getStatus() == 0}">解锁账户</a>
+                                                        <a class="dropdown-item" href="javascript:void(0)">删除账户</a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6">
+                                                <div class="m-auto col-md-2 col-md-offset-7">
+                                                    <ul class="pagination">
+                                                        <li class="page-item" th:if="${users.hasPreviousPage}">
+                                                            <a class="page-link"
+                                                               th:href="${'/admin/articleManagement?pageNum='+articles.getPrePage()}">Previous</a>
+                                                        </li>
+                                                        <li class="page-item disabled"
+                                                            th:unless="${users.hasPreviousPage}">
+                                                            <a href="#" class="page-link">Previous</a>
+                                                        </li>
+                                                        <li class="page-item active"
+                                                            th:each="i : ${#numbers.sequence(users.getFirstPage(),users.getLastPage())}">
+                                                            <a class="page-link"
+                                                               th:href="${'/admin/articleManagement?pageNum='+i}"
+                                                               th:text="${i}"></a>
+                                                        </li>
+                                                        <li class="page-item" th:if="${users.hasNextPage}">
+                                                            <a class="page-link" href="#">Next</a>
+                                                        </li>
+                                                        <li class="page-item disabled" th:unless="${users.hasNextPage}">
+                                                            <a class="page-link"
+                                                               th:href="${'/admin/articleManagement?pageNum='+users.getNextPage()}">Next</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" class="text-center">
+                                                <p class="text" style="display: inline;"
+                                                   th:text="${'总页数：'+users.getLastPage()+'。当前页数：'+users.getPageNum()}"></p>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                        <tbody th:if="${#lists.isEmpty(users.getList())}">
+                                        <tr>
+                                            <td colspan="6">
+                                                <p>暂无数据</p>
+                                            </td>
+                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade bs-example-modal-center" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" style="display: none;">
+                    <div class="modal fade bs-example-modal-center" tabindex="-1" role="dialog"
+                         aria-labelledby="mySmallModalLabel" aria-hidden="true" style="display: none;">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+                                    </button>
                                 </div>
                                 <div class="modal-body">
                                 </div>
@@ -186,15 +271,16 @@
                         </div>
                     </div>
                 </div>
-                <footer class="content-footer text-center">
-                    <div class="footer">
-                        <div class="copyright">
-                            <span>Copyright © 2018 MyBLOG2.0.1</span>
-                        </div>
-                    </div>
-                </footer>
             </div>
+            <footer class="content-footer text-center">
+                <div class="footer">
+                    <div class="copyright">
+                        <span>Copyright © 2018 MyBLOG2.0.1</span>
+                    </div>
+                </div>
+            </footer>
         </div>
+
     </div>
 </div>
 <script th:src="@{/js/jquery-min.js}"></script>

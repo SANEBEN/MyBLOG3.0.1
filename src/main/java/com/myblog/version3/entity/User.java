@@ -17,8 +17,6 @@ public class User implements Serializable {
     @ApiModelProperty(value = "登录的手机号" , name = "phone" ,required = true)
     private String phone;
 
-    private String Role;
-
 
     public String getID() {
         return ID;
@@ -42,13 +40,5 @@ public class User implements Serializable {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public String getRole() {
-        return Role;
-    }
-
-    public void setRole(String role) {
-        Role = role;
     }
 }

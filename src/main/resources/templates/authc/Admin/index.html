@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/responsive.css}">
 </head>
 <body>
-<div class="app header-default side-nav-dark" id="app">
+<div class="app header-default side-nav-dark side-nav-folded" id="app">
     <div class="layout">
         <div class="header navbar">
             <div class="header-container">
@@ -48,7 +48,7 @@
                                         </div>
                                         <div class="info">
                                             <span class="title text-semibold" th:text="${message.getUserName()}"></span>
-                                            <span class="sub-title" th:text="${message.getCreatedTime()}"></span>
+                                            <span class="sub-title" th:text="${'创建时间：'+#dates.format(message.getCreatedTime(),'yyyy/MM/dd')}"></span>
                                         </div>
                                     </li>
                                 </ul>
@@ -83,7 +83,7 @@
                         </a>
                         <ul class="dropdown-menu sub-down">
                             <li class="active">
-                                <a href="index.html">主页</a>
+                                <a th:href="@{/admin/index}">主页</a>
                             </li>
                         </ul>
                     </li>
@@ -92,34 +92,19 @@
                              <span class="icon-holder">
                                  <i class="lni-files"></i>
                              </span>
-                             <span class="title">账号管理</span>
-                             <span class="arrow">
+                            <span class="title">账号管理</span>
+                            <span class="arrow">
                                  <i class="lni-chevron-right"></i>
                              </span>
                         </a>
                         <ul class="dropdown-menu sub-down">
                             <li>
-                                <a href="UserAccountManagement.html">普通账号管理</a>
+                                <a th:href="@{'/admin/userAccountManagement?pageNum=1'}">普通账号管理</a>
                             </li>
                             <li>
-                                <a href="adminAccountManagement.html">管理员账号管理</a>
+                                <a th:href="@{'/admin/adminAccountManagement?pageNum=1'}">管理员账号管理</a>
                             </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="dropdown-toggle" href="#">
-                            <span class="icon-holder">
-                               <i class="lni-control-panel"></i>
-                            </span>
-                            <span class="title">网站信息统计</span>
-                            <span class="arrow">
-                                <i class="lni-chevron-right"></i>
-                            </span>
-                        </a>
-                        <ul class="dropdown-menu sub-down">
-                            <li>
-                                <a href="Druid.html">操作日志</a>
-                            </li>
+
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -134,7 +119,27 @@
                         </a>
                         <ul class="dropdown-menu sub-down">
                             <li>
-                                <a href="ArticleManagement.html">文章管理</a>
+                                <a th:href="@{${'/admin/articleManagement?pageNum=1'}}">文章管理</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="dropdown-toggle" href="#">
+                            <span class="icon-holder">
+                               <i class="lni-control-panel"></i>
+                            </span>
+                            <span class="title">第三方管理工具</span>
+                            <span class="arrow">
+                                <i class="lni-chevron-right"></i>
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu sub-down">
+                            <li>
+                                <a th:href="@{'http://sms_developer.zhenzikj.com/zhenzisms_user/login.html'}"
+                                   target="_blank">短信平台</a>
+                            </li>
+                            <li>
+                                <a th:href="@{'http://localhost:8088/druid/index'}" target="_blank">Druid连接池</a>
                             </li>
                         </ul>
                     </li>
@@ -155,17 +160,17 @@
                         欢迎来到网站管理系统
                     </h2>
                 </div>
-                <footer class="content-footer text-center">
-                    <div class="footer">
-                        <div class="copyright">
-                            <span>Copyright © 2018 MyBLOG2.0.1</span>
-                        </div>
-                    </div>
-                </footer>
 
             </div>
-
+            <footer class="content-footer text-center">
+                <div class="footer">
+                    <div class="copyright">
+                        <span>Copyright © 2018 MyBLOG2.0.1</span>
+                    </div>
+                </div>
+            </footer>
         </div>
+
     </div>
 </div>
 <script th:src="@{/js/jquery-min.js}"></script>

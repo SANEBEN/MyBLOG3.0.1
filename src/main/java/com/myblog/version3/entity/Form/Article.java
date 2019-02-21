@@ -11,7 +11,6 @@ public class Article {
     @NotEmpty(message = "文章内容不能为空")
     private String content;
 
-    @NotBlank(message = "文章分类不能为空")
     private String Cid;
 
     private String Uid;

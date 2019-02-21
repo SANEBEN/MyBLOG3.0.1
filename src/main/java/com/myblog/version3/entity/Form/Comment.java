@@ -8,7 +8,7 @@ public class Comment {
     private String Uid;
     private String Aid;
     @NotBlank(message = "评论不能为空")
-    @Pattern(regexp = "[a-zA-Z0-9\\u4e00-\\u9fa5]{1,8}" ,message = "评论中不能含有特殊字符")
+    @Pattern(regexp = "[a-zA-Z0-9\\u4e00-\\u9fa5]{1,255}" ,message = "评论中不能含有特殊字符，且最多255个字符")
     private String content;
 
     public String getUid() {

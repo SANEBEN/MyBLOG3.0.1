@@ -1,6 +1,9 @@
 package com.myblog.version3.configuration;
 
+import com.myblog.version3.entity.Message;
 import com.myblog.version3.entity.User;
+import com.myblog.version3.mapper.messageMapper;
+import com.myblog.version3.mapper.userMapper;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -14,12 +17,16 @@ public class MyShiroRealm extends AuthorizingRealm {
     @Autowired
     com.myblog.version3.mapper.userMapper userMapper;
 
+    @Autowired
+    messageMapper messageMapper;
+
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         User user = (User) principalCollection.getPrimaryPrincipal();
+        Message message = messageMapper.getByUid(user.getID());
         SimpleAuthorizationInfo simpleAuthorInfo = new SimpleAuthorizationInfo();
-        simpleAuthorInfo.addRole(user.getRole());
+        simpleAuthorInfo.addRole(message.getRole());
         return simpleAuthorInfo;
     }
 

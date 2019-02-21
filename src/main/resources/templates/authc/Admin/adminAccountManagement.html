@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
 </head>
 <body>
-<div class="app header-default side-nav-dark" id="app">
+<div class="app header-default side-nav-dark side-nav-folded" id="app">
     <div class="layout">
         <div class="header navbar">
             <div class="header-container">
@@ -46,7 +46,8 @@
                                         </div>
                                         <div class="info">
                                             <span class="title text-semibold" th:text="${message.getUserName()}"></span>
-                                            <span class="sub-title" th:text="${message.getCreatedTime()}"></span>
+                                            <span class="sub-title"
+                                                  th:text="${'创建时间：'+#dates.format(message.getCreatedTime(),'yyyy/MM/dd')}"></span>
                                         </div>
                                     </li>
                                 </ul>
@@ -81,7 +82,7 @@
                         </a>
                         <ul class="dropdown-menu sub-down">
                             <li>
-                                <a th:href="@{admin/index}">主页</a>
+                                <a th:href="@{/admin/index}">主页</a>
                             </li>
                         </ul>
                     </li>
@@ -97,31 +98,12 @@
                         </a>
                         <ul class="dropdown-menu sub-down">
                             <li>
-                                <a th:href="@{admin/userAccountManagement}">普通账号管理</a>
+                                <a th:href="@{'/admin/userAccountManagement?pageNum=1'}">普通账号管理</a>
                             </li>
                             <li class="active">
-                                <a th:href="@{admin/adminAccountManagement}">管理员账号管理</a>
+                                <a th:href="@{'/admin/adminAccountManagement?pageNum=1'}">管理员账号管理</a>
                             </li>
 
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="dropdown-toggle" href="#">
-                            <span class="icon-holder">
-                               <i class="lni-control-panel"></i>
-                            </span>
-                            <span class="title">第三方管理工具</span>
-                            <span class="arrow">
-                                <i class="lni-chevron-right"></i>
-                            </span>
-                        </a>
-                        <ul class="dropdown-menu sub-down">
-                            <li>
-                                <a th:href="@{'http://sms_developer.zhenzikj.com/zhenzisms_user/login.html'}" target="_blank">短信平台</a>
-                            </li>
-                            <li>
-                                <a th:href="@{'http://localhost:8088/druid/index'}" target="_blank">Druid连接池</a>
-                            </li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -136,7 +118,27 @@
                         </a>
                         <ul class="dropdown-menu sub-down">
                             <li>
-                                <a th:href="@{admin/articleManagement}">文章管理</a>
+                                <a th:href="@{${'/admin/articleManagement?pageNum=1'}}">文章管理</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="dropdown-toggle" href="#">
+                            <span class="icon-holder">
+                               <i class="lni-control-panel"></i>
+                            </span>
+                            <span class="title">第三方管理工具</span>
+                            <span class="arrow">
+                                <i class="lni-chevron-right"></i>
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu sub-down">
+                            <li>
+                                <a th:href="@{'http://sms_developer.zhenzikj.com/zhenzisms_user/login.html'}"
+                                   target="_blank">短信平台</a>
+                            </li>
+                            <li>
+                                <a th:href="@{'http://localhost:8088/druid/index'}" target="_blank">Druid连接池</a>
                             </li>
                         </ul>
                     </li>
@@ -178,18 +180,21 @@
                                                         <div class="modal-body">
                                                             <div class="form-group">
                                                                 <label>邮箱</label>
-                                                                <input type="text" class="form-control form-control-lg" required
+                                                                <input type="text" class="form-control form-control-lg"
+                                                                       required
                                                                        placeholder="email" aria-label="email"
                                                                        name="email">
                                                             </div>
                                                             <div class="form-group">
                                                                 <label>用户名</label>
-                                                                <input type="text" class="form-control" required name="userName"
+                                                                <input type="text" class="form-control" required
+                                                                       name="userName"
                                                                        placeholder="userName" aria-label="userName">
                                                             </div>
                                                             <div class="form-group">
                                                                 <label>密码</label>
-                                                                <input type="text" class="form-control form-control-sm" name="password" required
+                                                                <input type="text" class="form-control form-control-sm"
+                                                                       name="password" required
                                                                        placeholder="password" aria-label="password">
                                                             </div>
                                                         </div>
@@ -217,7 +222,48 @@
                                             <th>编辑账户</th>
                                         </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody th:unless="${#lists.isEmpty(admins.getList())}">
+                                        <tr th:each="admin : ${admins.getList()}">
+                                            <td th:text="${admin.getEmail()}"></td>
+                                            <td th:text="${admin.getUserName()}"></td>
+                                            <td th:text="${#dates.format(admin.getCreatedTime(),'yyyy/MM/dd HH:mm:ss')}"></td>
+                                            <td>
+                                                <a href="javascript:void(0)" class="badge badge-success"
+                                                   th:if="${admin.getStatus() == 1}">账号正常</a>
+                                                <a href="javascript:void(0)" class="badge badge-danger"
+                                                   th:if="${admin.getStatus() == 0}">账号锁定</a>
+                                            </td>
+                                            <td>
+                                                <div class="dropdown m-b-10">
+                                                    <button class="btn btn-common dropdown-toggle" type="button"
+                                                            th:id="${admin.getUid()}" data-toggle="dropdown"
+                                                            aria-haspopup="true"
+                                                            aria-expanded="false">
+                                                        编辑账户
+                                                    </button>
+                                                    <div class="dropdown-menu" th:aria-labelledby="${admin.getUid()}"
+                                                         x-placement="bottom-start"
+                                                         style="position: absolute; transform: translate3d(0px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                        <a class="dropdown-item" href="javascript:void(0)"
+                                                           data-toggle="modal"
+                                                           data-target=".bs-example-modal-center">显示动态
+                                                        </a>
+                                                        <a class="dropdown-item" href="javascript:void(0)"
+                                                           th:if="${admin.getStatus() == 1}">锁定账户</a>
+                                                        <a class="dropdown-item" href="javascript:void(0)"
+                                                           th:if="${admin.getStatus() == 0}">解锁账户</a>
+                                                        <a class="dropdown-item" href="javascript:void(0)">删除账户</a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                        <tbody th:if="${#lists.isEmpty(admins.getList())}">
+                                        <tr>
+                                            <td colspan="5">
+                                                <p>暂无数据</p>
+                                            </td>
+                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -225,15 +271,16 @@
                         </div>
                     </div>
                 </div>
-                <footer class="content-footer text-center">
-                    <div class="footer">
-                        <div class="copyright">
-                            <span>Copyright © 2018 MyBLOG2.0.1</span>
-                        </div>
-                    </div>
-                </footer>
             </div>
+            <footer class="content-footer text-center">
+                <div class="footer">
+                    <div class="copyright">
+                        <span>Copyright © 2018 MyBLOG2.0.1</span>
+                    </div>
+                </div>
+            </footer>
         </div>
+
     </div>
 </div>
 <script th:src="@{/js/jquery-min.js}"></script>

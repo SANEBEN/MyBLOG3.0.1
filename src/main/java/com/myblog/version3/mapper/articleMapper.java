@@ -56,8 +56,6 @@ public interface articleMapper {
     @Results({
             @Result(column = "ID", property = "ID", jdbcType = JdbcType.VARCHAR, id = true),
             @Result(column = "Cid", property = "Cid", jdbcType = JdbcType.VARCHAR),
-            @Result(column = "Cid", property = "category", javaType = Category.class,
-                    one = @One(select = "com.myblog.version3.mapper.categoryMapper.getByID")),
             @Result(column = "Uid", property = "Uid", jdbcType = JdbcType.VARCHAR),
             @Result(column = "Uid", property = "user", javaType = Message.class,
                     one = @One(select = "com.myblog.version3.mapper.messageMapper.getByUid")),
@@ -72,7 +70,7 @@ public interface articleMapper {
     })
     List<Article> getByCid(String Cid);
 
-    @Select("SELECT * FROM myblog.article limit 0,10")
+    @Select("SELECT * FROM myblog.article")
     @Results({
             @Result(column = "ID", property = "ID", jdbcType = JdbcType.VARCHAR, id = true),
             @Result(column = "Cid", property = "Cid", jdbcType = JdbcType.VARCHAR),

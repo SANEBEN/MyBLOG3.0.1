@@ -66,3 +66,9 @@ spring:
     servlet:
       content-type: text/html
     cache: false
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql

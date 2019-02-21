@@ -11,7 +11,7 @@ public class Register implements Serializable {
     private String phone;
 
     @NotBlank(message = "用户名不能为空")
-    @Pattern(regexp = "^[a-zA-Z\\u4e00-\\u9fa50-9_]{3,10}$",message = "用户名不符合格式")
+    @Pattern(regexp = "^[a-zA-Z\\u4e00-\\u9fa50-9_]{3,15}$",message = "用户名不符合格式")
     private String userName;
 
     @NotBlank(message = "密码不能为空")

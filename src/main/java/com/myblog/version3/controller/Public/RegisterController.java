@@ -3,7 +3,9 @@ package com.myblog.version3.controller.Public;
 import com.myblog.version3.Tools.Random;
 import com.myblog.version3.Tools.eMessage;
 import com.myblog.version3.entity.Form.Register;
+import com.myblog.version3.entity.Message;
 import com.myblog.version3.entity.User;
+import com.myblog.version3.mapper.messageMapper;
 import com.myblog.version3.mapper.userMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -25,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,7 +39,10 @@ public class RegisterController {
     private Logger logger = LoggerFactory.getLogger(RegisterController.class);
 
     @Autowired
-    userMapper mapper;
+    userMapper usermapper;
+
+    @Autowired
+    messageMapper messageMapper;
 
     @RequestMapping(value = "/register" ,method = RequestMethod.GET)
     @ApiIgnore
@@ -55,7 +61,7 @@ public class RegisterController {
             @ApiImplicitParam(value = "确认密码" ,name = "Lpassword" ,dataType = "String" ,paramType = "query" ,required = true),
             @ApiImplicitParam(value = "验证码" ,name = "verification" ,dataType = "String" ,paramType = "query" ,required = true)
     })
-    public String userRegister(@Valid Register user , BindingResult bindingResult , ModelMap modelMap){
+    public String userRegister(@Valid Register user , BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             List<FieldError> list=bindingResult.getFieldErrors();
             StringBuilder builder = new StringBuilder();
@@ -64,7 +70,7 @@ public class RegisterController {
             }
             return builder.toString();
         }else {
-            if (mapper.DuplicateChecking(user.getPhone()) == 0) {
+            if (usermapper.DuplicateChecking(user.getPhone()) == 0) {
                 if(user.getRpassword().equals(user.getLpassword())){
                     Subject subject = SecurityUtils.getSubject();
                     Session session =subject.getSession();
@@ -77,7 +83,14 @@ public class RegisterController {
                                 register.setID(Random.getUUID().substring(0,8));
                                 register.setPhone(user.getPhone());
                                 register.setPassword(user.getRpassword());
-                                mapper.insert(register);
+                                Message message = new Message();
+                                message.setCreatedTime(new Date());
+                                message.setUid(register.getID());
+                                message.setPhone(user.getPhone());
+                                message.setUserName(user.getUserName());
+                                message.setID(Random.getUUID().substring(0,8));
+                                usermapper.insert(register);
+                                messageMapper.insert(message);
                                 return "注册成功";
                             }else {
                                 return "验证码输入错误！";
@@ -103,7 +116,7 @@ public class RegisterController {
         Pattern pattern = Pattern.compile("^1(3|4|5|7|8)\\d{9}$");
         Matcher matcher = pattern.matcher(phone);
         if(matcher.matches()) {
-            if(mapper.DuplicateChecking(phone) == 0) {
+            if(usermapper.DuplicateChecking(phone) == 0) {
                 String verification = eMessage.sendVerification(phone);
                 if (verification != null) {
                     Subject subject = SecurityUtils.getSubject();
