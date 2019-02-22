@@ -7,7 +7,7 @@ import java.io.Serializable;
 public class Register implements Serializable {
 
     @NotBlank(message = "电话号码不能为空")
-    @Pattern(regexp = "^1(3|4|5|7|8)\\d{9}$", message = "手机号格式错误")
+    @Pattern(regexp = "^1(3|4|5|7|8)\\d{9}$", message = "请输入正确的手机号")
     private String phone;
 
     @NotBlank(message = "用户名不能为空")
@@ -15,6 +15,7 @@ public class Register implements Serializable {
     private String userName;
 
     @NotBlank(message = "密码不能为空")
+    @Pattern(regexp = "[0-9a-zA-z_]{6,15}" ,message = "密码不符合规范")
     private String Rpassword;
 
     @NotBlank(message = "请输入确认密码")

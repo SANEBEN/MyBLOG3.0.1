@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -52,5 +53,12 @@ public class UserPageController {
             modelMap.addAttribute("article" ,article);
         }
         return "authc/User/editArticle";
+    }
+
+    @GetMapping("/editMessage/{Uid}")
+    @ApiImplicitParam(value = "用户的ID" ,name = "Uid" ,dataType = "String" ,paramType = "path" ,required = true)
+    public String editMessage(@PathVariable(value = "Uid") String Uid ,ModelMap modelMap){
+        modelMap.addAttribute("message" ,messageMapper.getByUid(Uid));
+        return "authc/User/editMessage";
     }
 }

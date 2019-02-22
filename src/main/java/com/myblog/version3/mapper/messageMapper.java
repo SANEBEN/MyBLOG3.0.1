@@ -24,6 +24,9 @@ public interface messageMapper {
             " values(#{ID} ,#{Uid} ,#{phone} ,#{userName} ,#{createdTime})")
     boolean insert(Message message);
 
-    @Update("update myblog.message set userName = #{userName} ,email = #{email} ,img = #{img} ,introduce = #{introduce} where Uid = #{Uid}")
+    @Update("update myblog.message set userName = #{userName} ,email = #{email},introduce = #{introduce} where Uid = #{Uid}")
     boolean update(Message message);
+
+    @Update("update myblog.message set img = #{img} where Uid = #{Uid}")
+    boolean updateHeadPortrait(String img ,String Uid);
 }

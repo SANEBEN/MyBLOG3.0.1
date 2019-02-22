@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>编辑信息</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/fonts/line-icons.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/icons.css}">
+    <link rel="stylesheet" th:href="@{/plugins/morris/morris.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/responsive.css}">
+</head>
+<body>
+<div id="data">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="header navbar">
+                <div class="header-container">
+                    <div class="nav-logo">
+                        <a th:href="@{/}">
+                            <b><img th:src="@{/img/logo.png}" alt=""></b>
+                            <span class="logo">
+                    <img th:src="@{/img/logo-text.png}" alt="">
+                            </span>
+                        </a>
+                    </div>
+                    <ul class="nav-right">
+                        <!--显示用户信息-->
+                        <li class="user-profile dropdown dropdown-animated scale-left">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="data2">
+                                <img class="profile-img img-fluid" th:src="@{${message.getImg()}}" alt="">
+                            </a>
+                            <ul class="dropdown-menu dropdown-md">
+                                <li>
+                                    <ul class="list-media">
+                                        <li class="list-item avatar-info">
+                                            <div class="media-img">
+                                                <img th:src="@{${message.getImg()}}" alt="">
+                                            </div>
+                                            <div class="info">
+                                                <span class="title text-semibold"
+                                                      th:text="${message.getUserName()}"></span>
+                                                <span class="sub-title"
+                                                      th:text="${'加入时间：'+#dates.format(message.getCreatedTime(),'yyyy/MM/dd')}"></span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li role="separator" class="divider"></li>
+                                <li>
+                                    <a th:href="@{'/personalCenter/'+${message.getUid()}}">
+                                        <i class="lni-user"></i>
+                                        <span>个人中心</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a th:href="@{'/user/editMessage/'+${message.getUid()}}">
+                                        <i class="lni-cog"></i>
+                                        <span>更改个人信息</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a th:href="@{'/user/Article/'+${message.getUid()}}">
+                                        <i class="lni-envelope"></i>
+                                        <span>管理文章</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a th:href="@{/logout}">
+                                        <i class="lni-lock"></i>
+                                        <span>注销</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <br><br><br><br>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-sm-12 m-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <form id="form1" enctype="multipart/form-data">
+                                <label>上传头像</label>
+                                <div class="custom-file" style="width: 40%">
+                                    <input type="file" class="custom-file-input" id="image" name="HeadPortrait"
+                                           required>
+                                    <label class="custom-file-label" for="image">选择图片</label>
+                                    <input name="Uid" th:value="${message.getUid()}" type="hidden">
+                                </div>
+                                <button class="btn btn-info" id="uploadHeadPortrait">上传</button>
+                            </form>
+                        </div>
+                        <hr>
+                        <div class="form-group">
+                            <p style="display: inline">更改密码：</p>
+                            <a class="btn btn-primary text" data-toggle="modal"
+                               data-target=".bs-example-modal-center">更改密码
+                            </a>
+                            <div class="modal fade bs-example-modal-center" tabindex="-1" role="dialog"
+                                 aria-labelledby="mySmallModalLabel" aria-hidden="true" style="display: none;"
+                                 id="modal">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">修改密码</h5>
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                    aria-hidden="true">×
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="form2">
+                                                <input class="form-control" name="originPassword"
+                                                       placeholder="输入原密码" required><br>
+                                                <input class="form-control" name="newPassword"
+                                                       placeholder="输入新密码" required><br>
+                                                <input class="form-control" name="confirmPassword"
+                                                       placeholder="确认新密码" required><br>
+                                                <input name="Uid" th:value="${message.getUid()}" type="hidden">
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" form="form2" class="btn btn-common"
+                                                    id="changePassword">提交
+                                            </button>
+                                            <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">取消
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <p class="card-description">
+                            更改个人信息
+                        </p>
+                        <form class="forms-sample" id="form3">
+                            <div class="form-group">
+                                <label for="Name">用户名</label>
+                                <input type="text" name="userName" class="form-control"
+                                       th:value="${message.getUserName()}" id="Name" placeholder="用户名" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="Email">电子邮箱</label>
+                                <input type="email" name="email" class="form-control" th:value="${message.getEmail()}"
+                                       id="Email" placeholder="电子邮箱">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputCity1">电话号码</label>
+                                <input type="text" class="form-control" th:value="${message.getPhone()}" readonly
+                                       id="exampleInputCity1" placeholder="电话号码">
+                            </div>
+                            <div class="form-group m-b-20">
+                                <label for="exampleTextarea1">个人简介</label>
+                                <textarea class="form-control" name="introduce" th:text="${message.getIntroduce()}"
+                                          id="exampleTextarea1" rows="4" required></textarea>
+                            </div>
+                            <input name="Uid" th:value="${message.getUid()}" type="hidden">
+                            <a class="btn btn-light" href="javascript:history.back(-1)">取消</a>
+                        </form>
+                        <a type="button" class="btn btn-common mr-3" id="updateMessage">提交更改</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/jquery-min.js}"></script>
+<script th:src="@{/js/popper.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/jquery.app.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+<script th:src="@{/plugins/morris/morris.min.js}"></script>
+<script th:src="@{/plugins/raphael/raphael-min.js}"></script>
+<script th:src="@{/js/dashborad1.js}"></script>
+<script>
+    $(document).ready(function () {
+        $("#form1").submit(function () {
+            var data = new FormData($("#form1")[0]);
+            $.ajax({
+                url: "/Form/uploadHeadPortrait",
+                data: data,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                type: "post",
+                success: function (data) {
+                    alert(data);
+                    window.location.reload(true)
+                },
+                error: function (xhr) {
+                    alert("服务器出错：" + xhr.status)
+                }
+            });
+            return false;
+        });
+        $("#form2").submit(function () {
+            var data = $("#form2").serialize();
+            $.ajax({
+                url: "/Form/updatePassword",
+                data: data,
+                type: "post",
+                dataType: "text",
+                success: function (data) {
+                    alert(data);
+                    $("#modal").modal('hide');
+                    window.location.reload(true)
+                },
+                error: function (xhr) {
+                    alert("服务器出错：" + xhr.status)
+                }
+            });
+            return false;
+        });
+        $("#updateMessage").click(function () {
+            var data = $("#form3").serialize();
+            $.ajax({
+                url: "/Form/updateMessage",
+                data: data,
+                cache: false,
+                type: "post",
+                dataType: "text",
+                success: function (data) {
+                    alert(data);
+                    window.location.reload(true)
+                },
+                error: function (xhr) {
+                    alert("服务器出错：" + xhr.status)
+                }
+            });
+        })
+    })
+</script>
+</body>
+</html>
