@@ -60,10 +60,18 @@
                                         <span>更改个人信息</span>
                                     </a>
                                 </li>
-                                <li>
-                                    <a th:href="@{'/user/Article/'+${message.getUid()}}">
+                                <li th:unless="${message.getRole().equals('superAdmin')||message.getRole().equals('admin')}">
+                                    <a th:href="@{'/user/Article/'+${message.getUid()}}"
+                                      >
                                         <i class="lni-envelope"></i>
                                         <span>管理文章</span>
+                                    </a>
+                                </li>
+                                <li th:if="${message.getRole().equals('superAdmin')||message.getRole().equals('admin')}">
+                                    <a th:href="@{'/admin/index'}"
+                                      >
+                                        <i class="lni-envelope"></i>
+                                        <span>后台管理</span>
                                     </a>
                                 </li>
                                 <li>

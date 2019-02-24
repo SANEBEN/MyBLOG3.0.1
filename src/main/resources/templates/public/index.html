@@ -38,7 +38,7 @@
                 <!--显示用户信息-->
                 <li class="user-profile dropdown dropdown-animated scale-left" th:if="${isLogIn}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="data2">
-                        <img class="profile-img img-fluid" th:src="@{/File/defult.png}" alt="">
+                        <img class="profile-img img-fluid" th:src="@{${message.getImg()}}" alt="">
                     </a>
                     <ul class="dropdown-menu dropdown-md">
                         <li>
@@ -67,10 +67,16 @@
                                 <span>更改个人信息</span>
                             </a>
                         </li>
-                        <li>
+                        <li th:unless="${message.getRole().equals('superAdmin')||message.getRole().equals('admin')}">
                             <a th:href="@{'/user/Article/'+${message.getUid()}}">
                                 <i class="lni-envelope"></i>
                                 <span>文章管理</span>
+                            </a>
+                        </li>
+                        <li th:if="${message.getRole().equals('superAdmin')||message.getRole().equals('admin')}">
+                            <a th:href="@{'/admin/index'}">
+                                <i class="lni-envelope"></i>
+                                <span>后台管理</span>
                             </a>
                         </li>
                         <li>

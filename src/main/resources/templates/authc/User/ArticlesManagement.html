@@ -27,14 +27,14 @@
                 <!--显示用户信息-->
                 <li class="user-profile dropdown dropdown-animated scale-left">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="data2">
-                        <img class="profile-img img-fluid" th:src="@{/File/defult.png}" alt="">
+                        <img class="profile-img img-fluid" th:src="@{${message.getImg()}}" alt="">
                     </a>
                     <ul class="dropdown-menu dropdown-md">
                         <li>
                             <ul class="list-media">
                                 <li class="list-item avatar-info">
                                     <div class="media-img">
-                                        <img th:src="@{/File/defult.png}" alt="">
+                                        <img th:src="@{${message.getImg()}}" alt="">
                                     </div>
                                     <div class="info">
                                         <span class="title text-semibold" th:text="${message.getUserName()}"></span>
@@ -257,7 +257,7 @@
                                                     <tr th:unless="${#lists.isEmpty(category.getArticles())}">
                                                         <td class="text-center" colspan="4">
                                                             <a th:href="@{'/user/Article/'+${message.getUid()}+'/editArticle/new'}"
-                                                                style="color: #a6e1ec">新建文章</a>
+                                                               style="color: #a6e1ec">新建文章</a>
                                                         </td>
                                                     </tr>
                                                     </tbody>

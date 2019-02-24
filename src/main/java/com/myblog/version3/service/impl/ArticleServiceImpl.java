@@ -60,6 +60,6 @@ public class ArticleServiceImpl implements articleService {
 
     @Override
     public Boolean hit(String ID) {
-        return mapper.hit(ID);
+        return mapper.updateHit(ID);
     }
 }

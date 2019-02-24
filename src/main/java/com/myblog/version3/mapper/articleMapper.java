@@ -90,6 +90,9 @@ public interface articleMapper {
     })
     List<Article> getAll();
 
+    @Select("SELECT count(*) FROM myblog.article")
+    int statistical();
+
     @Insert("insert into myblog.article(ID, Cid, Uid, title, URL, createdTime, changeTime ,isPrivate ,allowComment) VALUES (#{ID} ,#{Cid} ,#{Uid} ,#{title} ,#{URL} ,#{createdTime} ,#{changeTime} ,#{isPrivate} ,#{allowComment})")
     Boolean insert(Article article);
 
@@ -111,6 +114,9 @@ public interface articleMapper {
     @Update("update myblog.article set isPrivate = #{isPrivate} where ID = #{ID}")
     Boolean setPrivate(Boolean isPrivate, String ID);
 
-    @Update("update myblog.article set hits = hits + 1 where ID = #{ID}")
-    Boolean hit(String Id);
+    @Update("update myblog.article set hits = hits + 1 where ID = #{Aid}")
+    Boolean updateHit(String Aid);
+
+    @Update("update myblog.article set hits = #{hits} where ID = #{Aid}")
+    Boolean setHits(String Aid ,int hits);
 }

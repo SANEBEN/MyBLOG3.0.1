@@ -20,6 +20,9 @@ public interface messageMapper {
     @Select("SELECT * FROM myblog.message where Uid = #{Uid}")
     Message getByUid(String Uid);
 
+    @Select("SELECT count(*) FROM myblog.message")
+    int statistical();
+
     @Insert("insert into myblog.message(ID, Uid, phone, userName, createdTime)" +
             " values(#{ID} ,#{Uid} ,#{phone} ,#{userName} ,#{createdTime})")
     boolean insert(Message message);

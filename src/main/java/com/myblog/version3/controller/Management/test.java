@@ -2,6 +2,8 @@ package com.myblog.version3.controller.Management;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.gson.JsonObject;
+import com.myblog.version3.Tools.Redis;
 import com.myblog.version3.entity.Article;
 import com.myblog.version3.entity.Form.Form;
 import io.swagger.annotations.Api;
@@ -31,6 +33,9 @@ public class test {
     @Autowired
     com.myblog.version3.mapper.userMapper userMapper;
 
+    @Autowired
+    Redis redis;
+
     @PostMapping(value = "/upload")
     public String upload(@Valid Form message) throws IOException {
         MultipartFile file = message.getImage();
@@ -59,5 +64,27 @@ public class test {
         List<Article> articles1 = articleMapper.getAll();
         PageInfo<Article> pageInfo = new PageInfo<>(articles);
         return articles.toString();
+    }
+
+    @RequestMapping("/getArticleHits")
+    public String getHits(@Param(value = "Aid")String Aid){
+        return Integer.toString(redis.getArticleHits(Aid));
+    }
+
+    @RequestMapping("/getArticleList")
+    public String getArticleList(){
+        List<String> articles = redis.getArticleList(0,-1);
+        return articles.toString();
+    }
+
+    @RequestMapping("/deleteAllKey")
+    public String deleteKey(){
+        redis.emptyDataBase();
+        return "删除所有的key";
+    }
+
+    @RequestMapping("/synchronousArticleHits")
+    public String synchronousArticleHits(){
+        return redis.synchronousArticleHits();
     }
 }

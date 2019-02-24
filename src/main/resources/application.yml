@@ -58,7 +58,19 @@ spring:
         wall:
           config:
             multi-statement-allow: true
-#thymeleaf start
+  redis:
+    host: 127.0.0.1
+    database: 0
+    port: 6379
+    password:
+    timeout: 2000
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: 100
+        max-idle: 8
+        min-idle: 0
+  #thymeleaf start
 #开发时关闭缓存,不然没法看到实时页面
   thymeleaf:
     mode: HTML5

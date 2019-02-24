@@ -24,7 +24,7 @@ public interface userMapper {
     @Insert("insert into myblog.user(ID, password, phone) values (#{ID} ,#{password} ,#{phone})")
     boolean insert(User user);
 
-    @Select("select  count(*)  from  myblog.user where phone = #{phone}")
+    @Select("select count(*) from  myblog.user where phone = #{phone}")
     int DuplicateChecking(String phone);
 
     @Update("update myblog.user set password = #{password} where ID = #{Uid}")

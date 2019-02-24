@@ -1,5 +1,6 @@
 package com.myblog.version3.controller.Public;
 
+import com.myblog.version3.Tools.Redis;
 import com.myblog.version3.entity.Article;
 import com.myblog.version3.entity.User;
 import com.myblog.version3.entity.UserActivity;
@@ -40,6 +41,9 @@ public class PublicController {
     @Autowired
     replyMapper replyMapper;
 
+    @Autowired
+    private Redis redis;
+
     @GetMapping("/")
     @ApiIgnore
     public String HomePage(ModelMap modelMap){
@@ -57,6 +61,10 @@ public class PublicController {
             article.setContent(article.getURL());
         }
         modelMap.addAttribute("articles" ,articles);
+        modelMap.addAttribute("ArticleNumber" ,redis.getArticleNumber());
+        modelMap.addAttribute("UserNumber" ,redis.getUserNumber());
+        modelMap.addAttribute("indexVisit",redis.getIndexVisit());
+        redis.updateIndexVisit();
         return "public/index";
     }
 
@@ -108,6 +116,7 @@ public class PublicController {
         modelMap.addAttribute("article" ,article);
         modelMap.addAttribute("author" ,messageMapper.getByUid(article.getUid()));
         modelMap.addAttribute("comments" ,commentMapper.getByAid(Aid));
+        redis.updateArticleHits(Aid);
         return "public/Article";
     }
 }
