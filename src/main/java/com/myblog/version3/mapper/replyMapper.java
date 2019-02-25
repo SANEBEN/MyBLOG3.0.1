@@ -49,4 +49,7 @@ public interface replyMapper {
 
     @Delete("DELETE from myblog.reply where ID=#{ID}")
     Boolean delete(String ID);
+
+    @Delete("DELETE from myblog.reply where Cid=#{Cid}")
+    boolean deleteByCid(String Cid);
 }

@@ -214,15 +214,14 @@
                                                     <div class="dropdown-menu" th:aria-labelledby="${user.getUid()}"
                                                          x-placement="bottom-start"
                                                          style="position: absolute; transform: translate3d(0px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                                        <a class="dropdown-item" href="javascript:void(0)"
-                                                           data-toggle="modal"
-                                                           data-target=".bs-example-modal-center">显示动态
-                                                        </a>
-                                                        <a class="dropdown-item" href="javascript:void(0)"
+                                                        <a class="dropdown-item lockUser" href="javascript:void(0)"
+                                                           th:name="${user.getUid()}"
                                                            th:if="${user.getStatus() == 1}">锁定账户</a>
-                                                        <a class="dropdown-item" href="javascript:void(0)"
+                                                        <a class="dropdown-item unlockUser" href="javascript:void(0)"
+                                                           th:name="${user.getUid()}"
                                                            th:if="${user.getStatus() == 0}">解锁账户</a>
-                                                        <a class="dropdown-item" href="javascript:void(0)">删除账户</a>
+                                                        <a class="dropdown-item deleteUser" th:name="${user.getUid()}"
+                                                           href="javascript:void(0)">删除账户</a>
                                                     </div>
                                                 </div>
                                             </td>
@@ -306,5 +305,68 @@
 <script th:src="@{/js/bootstrap.min.js}"></script>
 <script th:src="@{/js/jquery.app.js}"></script>
 <script th:src="@{/js/main.js}"></script>
+<script>
+    $(document).ready(function () {
+        $(".deleteUser").click(function () {
+            var data = window.confirm("确定要删除该用户吗（包含该用户的所有信息）？该操作不可撤销！！！");
+            var Uid = $(this).attr("name");
+            if (data) {
+                $.ajax({
+                    url: "/AdminForm/deleteUser",
+                    data: {
+                        "Uid": Uid
+                    },
+                    success: function (data) {
+                        alert(data);
+                        window.location.reload(true)
+                    },
+                    error: function (xhr) {
+                        alert("出现错误：" + xhr.status)
+                    }
+                })
+            }
+        });
+        $(".lockUser").click(function () {
+            var data = window.confirm("确定要锁定该用户吗？操作后用户无法登录。");
+            var Uid = $(this).attr("name");
+            if (data) {
+                $.ajax({
+                    url: "/AdminForm/userStatus",
+                    data: {
+                        "Uid": Uid,
+                        "status": 0
+                    },
+                    success: function (data) {
+                        alert(data);
+                        window.location.reload(true)
+                    },
+                    error: function (xhr) {
+                        alert("出现错误：" + xhr.status)
+                    }
+                })
+            }
+        });
+        $(".unlockUser").click(function () {
+            var data = window.confirm("确定要解锁该用户吗？");
+            var Uid = $(this).attr("name");
+            if (data) {
+                $.ajax({
+                    url: "/AdminForm/userStatus",
+                    data: {
+                        "Uid": Uid,
+                        "status": 1
+                    },
+                    success: function (data) {
+                        alert(data);
+                        window.location.reload(true)
+                    },
+                    error: function (xhr) {
+                        alert("出现错误：" + xhr.status)
+                    }
+                })
+            }
+        });
+    })
+</script>
 </body>
 </html>

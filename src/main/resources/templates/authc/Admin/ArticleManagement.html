@@ -203,15 +203,12 @@
                                 <div class="dropdown-menu" th:aria-labelledby="${article.getID()}"
                                      x-placement="bottom-start"
                                      style="position: absolute; transform: translate3d(0px, 34px, 0px); top: 0; left: 0; will-change: transform;">
-                                    <a class="dropdown-item" href="javascript:void(0)"
-                                       th:if="${article.getStatus() eq 1}">锁定文章</a>
-                                    <a class="dropdown-item" href="javascript:void(0)"
-                                       th:if="${article.getStatus() eq 0}">解锁文章</a>
-                                    <a class="dropdown-item" href="javascript:void(0)"
+                                    <a class="dropdown-item forbidComment" href="javascript:void(0)" th:name="${article.getID()}"
                                        th:if="${article.getAllowComment()}">禁止评论</a>
-                                    <a class="dropdown-item" href="javascript:void(0)"
+                                    <a class="dropdown-item allowComment" href="javascript:void(0)" th:name="${article.getID()}"
                                        th:unless="${article.getAllowComment()}">允许评论</a>
-                                    <a class="dropdown-item" href="javascript:void(0)">删除文章</a>
+                                    <a class="dropdown-item deleteArticle" th:name="${article.getID()}"
+                                       href="javascript:void(0)">删除文章</a>
                                 </div>
                             </div>
                         </td>
@@ -267,5 +264,68 @@
 <script th:src="@{/js/bootstrap.min.js}"></script>
 <script th:src="@{/js/jquery.app.js}"></script>
 <script th:src="@{/js/main.js}"></script>
+<script>
+    $(document).ready(function () {
+        $(".deleteArticle").click(function () {
+            var data = window.confirm("确定要删除该文章吗？该操作不可撤销！！！");
+            var Aid = $(this).attr("name");
+            if (data) {
+                $.ajax({
+                    url: "/AdminForm/deleteArticle",
+                    data: {
+                        "Aid": Aid
+                    },
+                    success: function (data) {
+                        alert(data);
+                        window.location.reload(true)
+                    },
+                    error: function (xhr) {
+                        alert("出现错误：" + xhr.status)
+                    }
+                })
+            }
+        });
+        $(".forbidComment").click(function () {
+            var data = window.confirm("确定要禁止该文章的评论功能吗？");
+            var Aid = $(this).attr("name");
+            if (data) {
+                $.ajax({
+                    url: "/AdminForm/commentStatus",
+                    data: {
+                        "Aid": Aid,
+                        "status" : false
+                    },
+                    success: function (data) {
+                        alert(data);
+                        window.location.reload(true)
+                    },
+                    error: function (xhr) {
+                        alert("出现错误：" + xhr.status)
+                    }
+                })
+            }
+        });
+        $(".allowComment").click(function () {
+            var data = window.confirm("确定要允许该文章的评论功能吗？");
+            var Aid = $(this).attr("name");
+            if (data) {
+                $.ajax({
+                    url: "/AdminForm/commentStatus",
+                    data: {
+                        "Aid": Aid,
+                        "status" : true
+                    },
+                    success: function (data) {
+                        alert(data);
+                        window.location.reload(true)
+                    },
+                    error: function (xhr) {
+                        alert("出现错误：" + xhr.status)
+                    }
+                })
+            }
+        })
+    })
+</script>
 </body>
 </html>

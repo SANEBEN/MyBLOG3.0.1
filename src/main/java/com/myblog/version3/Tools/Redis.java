@@ -198,15 +198,13 @@ public class Redis {
      * @return
      * 返回一个布尔值
      */
-    public boolean updateArticleNumber(){
+    public void updateArticleNumber(int number){
         Jedis jedis = jedisPool.getResource();
         if(jedis.exists("ArticleNumber")){
-            set("ArticleNumber",Integer.parseInt(get("ArticleNumber")));
-            return true;
+            set("ArticleNumber",Integer.parseInt(get("ArticleNumber"))+number);
         }else {
             getArticleNumber();
-            updateArticleNumber();
-            return true;
+            updateArticleNumber(1);
         }
     }
 
@@ -234,15 +232,12 @@ public class Redis {
      * @return
      * 返回一个布尔值
      */
-    public boolean updateUserNumber(){
+    public void updateUserNumber(int number){
         Jedis jedis = jedisPool.getResource();
         if(jedis.exists("UserNumber")){
-            set("UserNumber",Integer.parseInt(get("UserNumber")));
-            return true;
+            set("UserNumber",Integer.parseInt(get("UserNumber"))+number);
         }else {
             getUserNumber();
-            updateUserNumber();
-            return true;
         }
     }
 

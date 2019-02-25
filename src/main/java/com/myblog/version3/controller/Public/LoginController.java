@@ -46,28 +46,28 @@ public class LoginController {
             User user1 = mapper.getByPhone(user.getPhone());
             session.setAttribute("User" ,user1);
             if (savedRequest != null) {
-                return "redirect:/" + savedRequest;
+                return "redirect:http://localhost:8088/" + savedRequest.getRequestUrl();
             } else {
                 return "redirect:/";
             }
         } catch (IncorrectCredentialsException e) {
             modelMap.addAttribute("message", "登录密码错误");
-            return "redirect:/login";
+            return "public/login";
         } catch (ExcessiveAttemptsException e) {
             modelMap.addAttribute("message", "登录失败次数过多");
-            return "redirect:/login";
+            return "public/login";
         } catch (LockedAccountException e) {
             modelMap.addAttribute("message", "账号已被锁定");
-            return "redirect:/login";
+            return "public/login";
         } catch (DisabledAccountException e) {
             modelMap.addAttribute("message", "账号已被禁用");
-            return "redirect:/login";
+            return "public/login";
         } catch (ExpiredCredentialsException e) {
             modelMap.addAttribute("message", "账号已过期");
-            return "redirect:/login";
+            return "public/login";
         } catch (AuthenticationException e) {
             modelMap.addAttribute("message", "账号不存在,快去注册一个吧！");
-            return "redirect:/login";
+            return "public/login";
         }
     }
 

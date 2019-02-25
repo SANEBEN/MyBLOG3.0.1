@@ -40,4 +40,18 @@ $(document).ready(function () {
             alert("请输入正确的手机号")
         }
     });
+    $("#submit").click(function () {
+        var data = $("#form").serialize();
+        $.ajax({
+            url: "/userRegister",
+            data: data,
+            success: function (data) {
+                alert(data);
+                window.location.reload(true)
+            },
+            error: function (xhr) {
+                alert("出现错误，错误码为：" + xhr.status)
+            }
+        })
+    })
 });

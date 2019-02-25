@@ -1,6 +1,7 @@
 package com.myblog.version3.controller.Public;
 
 import com.myblog.version3.Tools.Random;
+import com.myblog.version3.Tools.Redis;
 import com.myblog.version3.Tools.eMessage;
 import com.myblog.version3.entity.Form.Register;
 import com.myblog.version3.entity.Message;
@@ -43,6 +44,9 @@ public class RegisterController {
 
     @Autowired
     messageMapper messageMapper;
+
+    @Autowired
+    Redis redis;
 
     @RequestMapping(value = "/register" ,method = RequestMethod.GET)
     @ApiIgnore
@@ -91,6 +95,7 @@ public class RegisterController {
                                 message.setID(Random.getUUID().substring(0,8));
                                 usermapper.insert(register);
                                 messageMapper.insert(message);
+                                redis.updateUserNumber(1);
                                 return "注册成功";
                             }else {
                                 return "验证码输入错误！";

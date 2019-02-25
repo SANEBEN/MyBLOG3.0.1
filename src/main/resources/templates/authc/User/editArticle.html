@@ -124,7 +124,7 @@
                                                 <div class="col-sm-9">
                                                     <select class="form-control" id="category" name="Cid"
                                                             style="height: auto">
-                                                        <option value="false" th:selected="${#strings.equals('false',article?.getCid())}">选择分类</option>
+                                                        <option value=" ">选择分类</option>
                                                         <option th:each="category : ${categories}" th:selected="${category.getID().equals(article?.getCid())}"
                                                                 th:value="${category.getID()}"
                                                                 th:text="${category.getName()}"></option>
@@ -192,9 +192,6 @@
 <script th:src="@{/plugins/raphael/raphael-min.js}"></script>
 <script th:src="@{/js/dashborad1.js}"></script>
 <script>
-    function change(data){
-        return data === false;
-    }
     $(document).ready(function () {
         $("#createArticle").click(function () {
             var data = $("#article").serialize();

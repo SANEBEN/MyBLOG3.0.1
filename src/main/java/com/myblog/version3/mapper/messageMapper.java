@@ -1,6 +1,7 @@
 package com.myblog.version3.mapper;
 
 import com.myblog.version3.entity.Message;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -32,4 +33,10 @@ public interface messageMapper {
 
     @Update("update myblog.message set img = #{img} where Uid = #{Uid}")
     boolean updateHeadPortrait(String img ,String Uid);
+
+    @Delete("DELETE from myblog.message where Uid = #{Uid}")
+    boolean delete(String Uid);
+
+    @Update("update myblog.message set status = #{status} where Uid = #{Uid}")
+    boolean userStatus(String Uid ,int status);
 }

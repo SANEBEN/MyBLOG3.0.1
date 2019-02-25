@@ -14,6 +14,8 @@ public interface categoryMapper {
     @Select("SELECT * FROM myblog.category where ID = #{ID}")
     @Results({
             @Result(column = "ID", property = "ID", jdbcType = JdbcType.VARCHAR, id = true),
+            @Result(column = "ID", property = "articles", javaType = List.class,
+                    many = @Many(select = "com.myblog.version3.mapper.articleMapper.getByCid")),
             @Result(column = "Uid", property = "Uid", jdbcType = JdbcType.VARCHAR),
             @Result(column = "name", property = "name", jdbcType = JdbcType.VARCHAR)
     })

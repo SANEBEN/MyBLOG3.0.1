@@ -109,7 +109,7 @@ public interface articleMapper {
     Boolean status(Integer status, String ID);
 
     @Update("update myblog.article set allowComment = #{comment} where ID = #{ID}")
-    Boolean commentStatus(Boolean comment, String ID);
+    Boolean commentStatus(boolean comment, String ID);
 
     @Update("update myblog.article set isPrivate = #{isPrivate} where ID = #{ID}")
     Boolean setPrivate(Boolean isPrivate, String ID);

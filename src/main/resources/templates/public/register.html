@@ -13,11 +13,11 @@
     <script th:src="@{/js/bootstrap.min.js}"></script>
 </head>
 <body class="text-center">
-<form class="form-register" name="form" id="form" th:action="@{/userRegister}">
+<form class="form-register" name="form" id="form">
     <h1 class="h3 mb-3 font-weight-normal">Please register</h1><br>
     <input type="text" class="form-control" placeholder="Username" name="userName">
     <label for="inputPhone" class="sr-only">Phone Number</label>
-    <input type="email" id="inputPhone" class="form-control" placeholder="Phone Number" required autofocus=""
+    <input type="text" id="inputPhone" class="form-control" placeholder="Phone Number" required autofocus=""
            name="phone">
     <label for="inputPassword" class="sr-only">Password</label>
     <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="Rpassword">
@@ -32,7 +32,7 @@
         <a th:href="@{/login}">Already have a account?</a>
     </div>
     <br><br>
-    <button class="btn btn-lg btn-primary btn-block submit" type="submit" form="form">Regster now</button>
+    <button class="btn btn-lg btn-primary btn-block" id="submit" type="button" form="form">Regster now</button>
 </form>
 </body>
 <script th:src="@{/js/Index/register.js}"></script>

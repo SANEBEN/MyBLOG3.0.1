@@ -1,10 +1,7 @@
 package com.myblog.version3.mapper;
 
 import com.myblog.version3.entity.User;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -29,4 +26,7 @@ public interface userMapper {
 
     @Update("update myblog.user set password = #{password} where ID = #{Uid}")
     boolean updatePassword(String password ,String Uid);
+
+    @Delete("DELETE FROM myblog.user where ID = #{ID}")
+    boolean delete(String ID);
 }

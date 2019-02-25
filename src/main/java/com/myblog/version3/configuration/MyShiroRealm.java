@@ -26,7 +26,10 @@ public class MyShiroRealm extends AuthorizingRealm {
         User user = (User) principalCollection.getPrimaryPrincipal();
         Message message = messageMapper.getByUid(user.getID());
         SimpleAuthorizationInfo simpleAuthorInfo = new SimpleAuthorizationInfo();
-        simpleAuthorInfo.addRole(message.getRole());
+        String Roles = message.getRole();
+        for(String role : Roles.split(",")){
+            simpleAuthorInfo.addRole(role);
+        }
         return simpleAuthorInfo;
     }
 
@@ -38,6 +41,9 @@ public class MyShiroRealm extends AuthorizingRealm {
         String phone = token.getUsername();
         User user = userMapper.getByPhone(phone);//根据登陆名account从库中查询user对象
         if(user==null){throw new AuthenticationException("用户不存在");}
+        if(messageMapper.getByUid(user.getID()).getStatus() == 0){
+            throw new LockedAccountException("账户已被锁定");
+        }
         //进行认证，将正确数据给shiro处理
         //密码不用自己比对，AuthenticationInfo认证信息对象，一个接口，new他的实现类对象SimpleAuthenticationInfo
         /*	第一个参数随便放，可以放user对象，程序可在任意位置获取 放入的对象

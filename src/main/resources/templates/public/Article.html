@@ -38,7 +38,9 @@
                 <!--显示用户信息-->
                 <li class="user-profile dropdown dropdown-animated scale-left" th:if="${isLogIn}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="data2">
-                        <img class="profile-img img-fluid" th:src="@{${message.getImg()}}" alt="">
+                        <div class="media-img">
+                            <img style="width: 40px;height: 40px;" th:src="@{${message.getImg()}}" alt="">
+                        </div>
                     </a>
                     <ul class="dropdown-menu dropdown-md">
                         <li>
@@ -49,14 +51,15 @@
                                     </div>
                                     <div class="info">
                                         <span class="title text-semibold" th:text="${message.getUserName()}"></span>
-                                        <span class="sub-title" th:text="'加入时间：'+${#dates.format(message.getCreatedTime(),'yyyy/MM/dd')}"></span>
+                                        <span class="sub-title"
+                                              th:text="'加入时间：'+${#dates.format(message.getCreatedTime(),'yyyy/MM/dd')}"></span>
                                     </div>
                                 </li>
                             </ul>
                         </li>
                         <li role="separator" class="divider"></li>
                         <li>
-                            <a th:href="@{'/user/personalCenter/'+${message.getUid()}}">
+                            <a th:href="@{'/personalCenter/'+${message.getUid()}}">
                                 <i class="lni-user"></i>
                                 <span>个人中心</span>
                             </a>
@@ -67,16 +70,15 @@
                                 <span>更改个人信息</span>
                             </a>
                         </li>
-                        <li th:unless="${message.getRole().equals('superAdmin')||message.getRole().equals('admin')}">
-                            <a th:href="@{'/user/Article/'+${message.getUid()}}"
-                              >
+                        <li th:unless="${message.getRole().equals('admin,superAdmin')||message.getRole().equals('admin')}">
+                            <a th:href="@{'/user/Article/'+${message.getUid()}}">
                                 <i class="lni-envelope"></i>
                                 <span>文章管理</span>
                             </a>
                         </li>
-                        <li th:if="${message.getRole().equals('superAdmin')||message.getRole().equals('admin')}">
+                        <li th:if="${message.getRole().equals('admin,superAdmin')||message.getRole().equals('admin')}">
                             <a th:href="@{'/admin/index'}"
-                              >
+                            >
                                 <i class="lni-envelope"></i>
                                 <span>后台管理</span>
                             </a>
@@ -109,7 +111,7 @@
                                        th:href="@{'/personalCenter/'+${author.getUid()}}"></a>
                                 </td>
                                 <td>
-                                    <a th:text="'阅读数：'+${article.getHits()}"></a>
+                                    <a th:text="'阅读数：'+${hits}"></a>
                                 </td>
                             </tr>
                         </table>
@@ -165,7 +167,10 @@
                                                th:if="${isLogIn}"
                                                style="display: inline">回复</a>
                                             <a th:href="@{/login}" th:unless="${isLogIn}">回复</a>
-                                            <a style="display: inline">删除评论</a>
+                                            <div th:if="${isLogIn}">
+                                                <a class="deleteComment" th:name="${comment.getID()}" href="javascript:void(0)"
+                                                   th:if="${message.getUid().equals(author.getUid())||message.getRole().equals('admin,superAdmin')||message.getRole().equals('admin')}">删除评论</a>
+                                            </div>
                                             <a th:href="'#'+${'show'+comment.getID()}"
                                                data-toggle="collapse"
                                                th:unless="${#lists.isEmpty(comment.getReplies())}">显示回复</a>
@@ -222,24 +227,30 @@
                                                         <a th:href="'#'+${reply.getID()}" data-toggle="collapse"
                                                            style="display: inline" th:if="${isLogIn}">回复</a>
                                                         <a th:href="@{/login}" th:unless="${isLogIn}">回复</a>
-                                                        <a>删除评论</a>
+                                                        <div th:if="${isLogIn}">
+                                                            <a class="deleteReply" th:name="${reply.getID()}" href="javascript:void(0)"
+                                                               th:if="${message.getUid().equals(author.getUid())||message.getRole().equals('admin,superAdmin')||message.getRole().equals('admin')}">删除回复</a>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             </table>
-                                            <div th:id="${reply.getID()}" class="collapse float-right" style="width: 70%;"
+                                            <div th:id="${reply.getID()}" class="collapse float-right"
+                                                 style="width: 70%;"
                                                  th:if="${isLogIn}">
                                                 <div class="card">
                                                     <div class="card-body">
                                                         <form th:id="'reply'+${reply.getID()}">
                                                     <textarea placeholder="回复最多可以发送255个字符"
                                                               name="content" class="form-control"></textarea>
-                                                            <input type="hidden" name="Cid" th:value="${comment.getID()}">
+                                                            <input type="hidden" name="Cid"
+                                                                   th:value="${comment.getID()}">
                                                             <input type="hidden" name="reply_id"
                                                                    th:value="${message?.getUid()}">
                                                             <input type="hidden" name="parent_reply_id"
                                                                    th:value="${reply.getReply().getUid()}">
                                                             <button class="btn btn-danger float-right" type="button"
-                                                                    th:href="'#'+${reply.getID()}" data-toggle="collapse">取消
+                                                                    th:href="'#'+${reply.getID()}"
+                                                                    data-toggle="collapse">取消
                                                             </button>
                                                             <input type="button" value="添加回复" th:name="${reply.getID()}"
                                                                    class="btn btn-primary float-right addReply">
@@ -298,6 +309,45 @@
                     alert("出现错误：" + xhr.status)
                 }
             })
+        });
+        $(".deleteComment").click(function () {
+            var choose = window.confirm("确定要删除该条评论吗？该操作无法撤销！！！");
+            var Cid = $(this).attr("name");
+            if (choose) {
+                $.ajax({
+                    url: "/AdminForm/deleteComment",
+                    data: {
+                        "Cid": Cid
+                    },
+                    success: function (data) {
+                        alert(data);
+                        window.location.reload(true)
+                    },
+                    error: function (xhr) {
+                        alert("出现错误：" + xhr.status)
+                    }
+                })
+            }
+        });
+
+        $(".deleteReply").click(function () {
+            var choose = window.confirm("确定要删除该条评论吗？该操作无法撤销！！！");
+            var Rid = $(this).attr("name");
+            if (choose) {
+                $.ajax({
+                    url: "/AdminForm/deleteReply",
+                    data: {
+                        "Rid": Rid
+                    },
+                    success: function (data) {
+                        alert(data);
+                        window.location.reload(true)
+                    },
+                    error: function (xhr) {
+                        alert("出现错误：" + xhr.status)
+                    }
+                })
+            }
         })
     })
 </script>

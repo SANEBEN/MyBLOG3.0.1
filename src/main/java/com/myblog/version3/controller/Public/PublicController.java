@@ -12,10 +12,7 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
@@ -59,10 +56,11 @@ public class PublicController {
         List<Article> articles = articleMapper.getAll();
         for(Article article : articles){
             article.setContent(article.getURL());
+            article.setHits(redis.getArticleHits(article.getID()));
         }
         modelMap.addAttribute("articles" ,articles);
-        modelMap.addAttribute("ArticleNumber" ,redis.getArticleNumber());
-        modelMap.addAttribute("UserNumber" ,redis.getUserNumber());
+        modelMap.addAttribute("ArticleNumber" ,articleMapper.statistical());
+        modelMap.addAttribute("UserNumber" ,messageMapper.statistical());
         modelMap.addAttribute("indexVisit",redis.getIndexVisit());
         redis.updateIndexVisit();
         return "public/index";
@@ -116,7 +114,23 @@ public class PublicController {
         modelMap.addAttribute("article" ,article);
         modelMap.addAttribute("author" ,messageMapper.getByUid(article.getUid()));
         modelMap.addAttribute("comments" ,commentMapper.getByAid(Aid));
+        modelMap.addAttribute("hits" ,redis.getArticleHits(Aid));
         redis.updateArticleHits(Aid);
         return "public/Article";
+    }
+
+    @RequestMapping("/permissionForbid")
+    public String permissionForbid(ModelMap modelMap){
+        Subject subject = SecurityUtils.getSubject();
+        Session session = subject.getSession();
+        if(session.getAttribute("isLogIn") !=null){
+            modelMap.addAttribute("isLogIn",session.getAttribute("isLogIn"));
+            User user = (User)session.getAttribute("User");
+            modelMap.addAttribute("message" ,messageMapper.getByUid(user.getID()));
+        }else {
+            modelMap.addAttribute("isLogIn",false);
+        }
+        modelMap.addAttribute("data" ,"你没有访问该界面的权限");
+        return "public/permissionForbid";
     }
 }
