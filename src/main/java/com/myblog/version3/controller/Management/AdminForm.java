@@ -6,6 +6,7 @@ import com.myblog.version3.entity.Category;
 import com.myblog.version3.entity.Comment;
 import com.myblog.version3.entity.User;
 import com.myblog.version3.mapper.*;
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.io.FileUtils;
@@ -181,7 +182,6 @@ public class AdminForm {
         } else {
             return "请登录后重试";
         }
-
     }
 
     @RequestMapping(value = "/userStatus")
@@ -191,6 +191,44 @@ public class AdminForm {
             return "更改用户状态成功";
         } else {
             return "更改失败，请稍后再试";
+        }
+    }
+
+    @RequestMapping(value = "/setAdmin")
+    @ApiOperation(value = "更改普通用户为管理员", notes = "用于更改用户类型，只用超级管理者有权调用该接口")
+    public String setAdmin(@Param(value = "Uid") String Uid) throws IOException {
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.isAuthenticated()) {
+            if (subject.hasRole("superAdmin")) {
+                messageMapper.setAdmin(Uid);
+                for (Category category : categoryMapper.getByUid(Uid)) {
+                    deleteCategory(category.getID());
+                }
+                return "成功更改用户为管理员";
+            } else {
+                return "你没有权限进行该操作";
+            }
+        } else {
+            return "请登录后重试";
+        }
+    }
+
+    @RequestMapping(value = "/setUser")
+    @ApiOperation(value = "更改管理员为普通用户", notes = "用于更改用户类型，只用超级管理者有权调用该接口")
+    public String serUser(@Param(value = "Uid") String Uid) {
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.isAuthenticated()) {
+            if (subject.hasRole("superAdmin")) {
+                if (messageMapper.setUser(Uid)) {
+                    return "成功更改管理员为用户";
+                } else {
+                    return "更改失败，请稍后重试";
+                }
+            } else {
+                return "你没有权限进行该操作";
+            }
+        } else {
+            return "请登录后重试";
         }
     }
 }

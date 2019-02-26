@@ -178,56 +178,6 @@
                             <div class="card">
                                 <div class="card-header border-bottom">
                                     <h4 class="card-title">管理员账户信息</h4>
-                                    <div class="float-right">
-                                        <button type="button" class="btn btn-common waves-effect waves-light"
-                                                data-toggle="modal" data-target=".bs-example-modal-center">
-                                            添加管理员
-                                        </button>
-                                        <div class="modal fade bs-example-modal-center" tabindex="-1" role="dialog"
-                                             aria-labelledby="mySmallModalLabel" style="display: none;"
-                                             aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered">
-                                                <div class="modal-content">
-                                                    <form id="addAdmin">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">添加管理员</h5>
-                                                            <button type="button" class="close" data-dismiss="modal"
-                                                                    aria-hidden="true">×
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="form-group">
-                                                                <label>邮箱</label>
-                                                                <input type="text" class="form-control form-control-lg"
-                                                                       required
-                                                                       placeholder="email" aria-label="email"
-                                                                       name="email">
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label>用户名</label>
-                                                                <input type="text" class="form-control" required
-                                                                       name="userName"
-                                                                       placeholder="userName" aria-label="userName">
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label>密码</label>
-                                                                <input type="text" class="form-control form-control-sm"
-                                                                       name="password" required
-                                                                       placeholder="password" aria-label="password">
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-common">确认添加
-                                                            </button>
-                                                            <button type="button" class="btn btn-secondary"
-                                                                    data-dismiss="modal">取消
-                                                            </button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-bordered table-hover text-center">
@@ -262,15 +212,17 @@
                                                     <div class="dropdown-menu" th:aria-labelledby="${admin.getUid()}"
                                                          x-placement="bottom-start"
                                                          style="position: absolute; transform: translate3d(0px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                                        <a class="dropdown-item" href="javascript:void(0)"
-                                                           data-toggle="modal"
-                                                           data-target=".bs-example-modal-center">显示动态
-                                                        </a>
-                                                        <a class="dropdown-item" href="javascript:void(0)"
+                                                        <a class="dropdown-item lockUser" href="javascript:void(0)"
+                                                           th:name="${admin.getUid()}"
                                                            th:if="${admin.getStatus() == 1}">锁定账户</a>
-                                                        <a class="dropdown-item" href="javascript:void(0)"
+                                                        <a class="dropdown-item unlockUser" href="javascript:void(0)"
+                                                           th:name="${admin.getUid()}"
                                                            th:if="${admin.getStatus() == 0}">解锁账户</a>
-                                                        <a class="dropdown-item" href="javascript:void(0)">删除账户</a>
+                                                        <a class="dropdown-item setUser" th:name="${admin.getUid()}"
+                                                           th:if="${message.getRole().equals('admin,superAdmin')}"
+                                                           href="javascript:void(0)">修改账户为普通用户</a>
+                                                        <a class="dropdown-item deleteUser" th:name="${admin.getUid()}"
+                                                           href="javascript:void(0)">删除账户</a>
                                                     </div>
                                                 </div>
                                             </td>
@@ -306,5 +258,87 @@
 <script th:src="@{/js/bootstrap.min.js}"></script>
 <script th:src="@{/js/jquery.app.js}"></script>
 <script th:src="@{/js/main.js}"></script>
+<script>
+    $(document).ready(function () {
+        $(".deleteUser").click(function () {
+            var data = window.confirm("确定要删除该用户吗（包含该用户的所有信息）？该操作不可撤销！！！");
+            var Uid = $(this).attr("name");
+            if (data) {
+                $.ajax({
+                    url: "/AdminForm/deleteUser",
+                    data: {
+                        "Uid": Uid
+                    },
+                    success: function (data) {
+                        alert(data);
+                        window.location.reload(true)
+                    },
+                    error: function (xhr) {
+                        alert("出现错误：" + xhr.status)
+                    }
+                })
+            }
+        });
+        $(".lockUser").click(function () {
+            var data = window.confirm("确定要锁定该用户吗？操作后用户无法登录。");
+            var Uid = $(this).attr("name");
+            if (data) {
+                $.ajax({
+                    url: "/AdminForm/userStatus",
+                    data: {
+                        "Uid": Uid,
+                        "status": 0
+                    },
+                    success: function (data) {
+                        alert(data);
+                        window.location.reload(true)
+                    },
+                    error: function (xhr) {
+                        alert("出现错误：" + xhr.status)
+                    }
+                })
+            }
+        });
+        $(".unlockUser").click(function () {
+            var data = window.confirm("确定要解锁该用户吗？");
+            var Uid = $(this).attr("name");
+            if (data) {
+                $.ajax({
+                    url: "/AdminForm/userStatus",
+                    data: {
+                        "Uid": Uid,
+                        "status": 1
+                    },
+                    success: function (data) {
+                        alert(data);
+                        window.location.reload(true)
+                    },
+                    error: function (xhr) {
+                        alert("出现错误：" + xhr.status)
+                    }
+                })
+            }
+        });
+        $(".setUser").click(function () {
+            var data = window.confirm("确定要将该管理员更改为普通用户吗？这个操作将恢复账户发表文章的功能。");
+            var Uid = $(this).attr("name");
+            if (data) {
+                $.ajax({
+                    url: "/AdminForm/setUser",
+                    data: {
+                        "Uid": Uid
+                    },
+                    success: function (data) {
+                        alert(data);
+                        window.location.reload(true)
+                    },
+                    error: function (xhr) {
+                        alert("出现错误：" + xhr.status)
+                    }
+                })
+            }
+        });
+    })
+</script>
 </body>
 </html>

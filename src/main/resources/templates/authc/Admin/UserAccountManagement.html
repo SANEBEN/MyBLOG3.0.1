@@ -220,6 +220,9 @@
                                                         <a class="dropdown-item unlockUser" href="javascript:void(0)"
                                                            th:name="${user.getUid()}"
                                                            th:if="${user.getStatus() == 0}">解锁账户</a>
+                                                        <a class="dropdown-item setAdmin" th:name="${user.getUid()}"
+                                                           th:if="${message.getRole().equals('admin,superAdmin')}"
+                                                           href="javascript:void(0)">修改账户为管理员</a>
                                                         <a class="dropdown-item deleteUser" th:name="${user.getUid()}"
                                                            href="javascript:void(0)">删除账户</a>
                                                     </div>
@@ -355,6 +358,25 @@
                     data: {
                         "Uid": Uid,
                         "status": 1
+                    },
+                    success: function (data) {
+                        alert(data);
+                        window.location.reload(true)
+                    },
+                    error: function (xhr) {
+                        alert("出现错误：" + xhr.status)
+                    }
+                })
+            }
+        });
+        $(".setAdmin").click(function () {
+            var data = window.confirm("确定要将该用户更改为管理员吗？操作后该用户原有的文章等都会被删除，只保留基本用户信息！！！");
+            var Uid = $(this).attr("name");
+            if (data) {
+                $.ajax({
+                    url: "/AdminForm/setAdmin",
+                    data: {
+                        "Uid": Uid
                     },
                     success: function (data) {
                         alert(data);
