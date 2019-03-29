@@ -209,7 +209,7 @@
                     <div class="card" th:each="article : ${articles}">
                         <div class="card-body">
                             <h5 class="card-title"><a th:text="${article.getTitle()}" th:href="@{'/Article/'+${article.getID()}}"></a></h5>
-                            <p class="card-text" th:text="${#strings.abbreviate(article.getContent(),20)}"></p>
+                            <p class="card-text" th:text="${#strings.abbreviate(article.getContent(),50)}"></p>
                         </div>
                         <div class="card-footer text-muted">
                             <span th:text="'最后修改时间：'+${#dates.format(article.getChangeTime(), 'yyyy/MM/dd HH:mm')}+'  阅读量：'+${article.getHits()}"></span>

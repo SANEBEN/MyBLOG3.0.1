@@ -15,8 +15,8 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.io.FileUtils;
 import org.apache.ibatis.annotations.Param;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
+import org.apache.shiro.crypto.hash.SimpleHash;
+import org.apache.shiro.util.ByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,7 +101,8 @@ public class FormSubmit {
             }
             String content = article.getContent();
             byte[] data = content.getBytes();
-            File file = new File("E:\\MyBLOGFileFolder\\" + article.getUid() + "\\" + article.getCid() + "\\" + article1.getID(), article.getTitle() + "_" + Random.forArticle(date) + ".html");
+            String fileName = Random.forArticle(date);
+            File file = new File("E:\\MyBLOG3.0.1\\src\\main\\resources\\static\\blogFile\\" + article.getUid() + "\\" + article.getCid() + "\\" + article1.getID(), article.getTitle() + "_" + fileName + ".html");
             file.getParentFile().mkdirs();
             if (file.createNewFile()) {
                 logger.info("为用户" + article.getUid() + "创建了一个新的文件");
@@ -110,18 +111,11 @@ public class FormSubmit {
             outputStream.write(data, 0, data.length);
             outputStream.flush();
             outputStream.close();
-            article1.setURL(file.getPath());
+            article1.setURL("/blogFile/" + article.getUid() + "/" + article.getCid() + "/" + article1.getID()+"/"+ article.getTitle() + "_" + fileName + ".html");
             if (articleMapper.insert(article1)) {
                 json.addProperty("status", 1);
                 json.addProperty("message", "添加文章成功");
                 json.addProperty("URL", "/user/Article/" + article.getUid() + "/editArticle/" + article1.getID());
-                UserActivity activity = new UserActivity();
-                activity.setAction("createArticle");
-                activity.setCreated_time(date);
-                activity.setID(Random.getUUID().substring(0, 8));
-                activity.setUid(article.getUid());
-                activity.setObject_id(article1.getID());
-                userActivityMapper.Article(activity);
                 return json.toString();
             } else {
                 json.addProperty("status", 0);
@@ -165,14 +159,15 @@ public class FormSubmit {
             byte[] data = content.getBytes();
             com.myblog.version3.entity.Article origin = articleMapper.getByID(article.getAid());
             if (!article.getCid().equals(origin.getCid())) {
-                File newOne = new File("E:\\MyBLOGFileFolder\\" + article.getUid() + "\\" + article.getCid() + "\\" + article.getAid());
-                File oldOne = new File("E:\\MyBLOGFileFolder\\" + article.getUid() + "\\" + origin.getCid() + "\\" + article.getAid());
+                File newOne = new File("E:\\MyBLOG3.0.1\\src\\main\\resources\\static\\blogFile\\" + article.getUid() + "\\" + article.getCid() + "\\" + article.getAid());
+                File oldOne = new File("E:\\MyBLOG3.0.1\\src\\main\\resources\\static\\blogFile\\" + article.getUid() + "\\" + origin.getCid() + "\\" + article.getAid());
                 newOne.mkdirs();
                 FileUtils.copyDirectory(oldOne, newOne);
                 FileUtils.deleteDirectory(oldOne);
                 logger.info("将用户" + article.getUid() + "存放文章的文件夹更改了存储位置");
             }
-            File file = new File("E:\\MyBLOGFileFolder\\" + article.getUid() + "\\" + article.getCid() + "\\" + article.getAid(), article.getTitle() + "_" + Random.forArticle(date) + ".html");
+            String fileName = Random.forArticle(date);
+            File file = new File("E:\\MyBLOG3.0.1\\src\\main\\resources\\static\\blogFile\\" + article.getUid() + "\\" + article.getCid() + "\\" + article.getAid(), article.getTitle() + "_" + fileName + ".html");
             if (file.createNewFile()) {
                 logger.info("用户" + article.getUid() + "新建了一个文件");
             }
@@ -180,19 +175,12 @@ public class FormSubmit {
             outputStream.write(data, 0, data.length);
             outputStream.flush();
             outputStream.close();
-            article1.setURL(file.getPath());
+            article1.setURL("/blogFile/" + article.getUid() + "/" + article.getCid() + "/" + article1.getID()+"/"+ article.getTitle() + "_" + fileName + ".html");
             if (articleMapper.update(article1)) {
                 json.addProperty("status", 1);
                 json.addProperty("message", "更新文章成功");
                 json.addProperty("URL", "/user/Article/" + article.getUid() + "/editArticle/" + article.getAid());
-                UserActivity activity = new UserActivity();
-                activity.setAction("updateArticle");
-                activity.setCreated_time(new Date());
-                activity.setID(Random.getUUID().substring(0, 8));
-                activity.setUid(article.getUid());
-                activity.setObject_id(article1.getID());
                 redis.updateArticleNumber(1);
-                userActivityMapper.Article(activity);
             } else {
                 json.addProperty("status", 0);
                 json.addProperty("message", "更新文章失败，请稍后重试");
@@ -317,7 +305,10 @@ public class FormSubmit {
         User user = userMapper.getByID(Uid);
         if (user.getPassword().equals(originPassword)) {
             if (newPassword.equals(confirmPassword)) {
-                if (userMapper.updatePassword(newPassword, Uid)) {
+                ByteSource credentialsSalt = ByteSource.Util.bytes(Uid);
+                String password = new SimpleHash("MD5", newPassword
+                        , credentialsSalt, 1024).toHex();
+                if (userMapper.updatePassword(password, Uid)) {
                     return "修改密码成功";
                 } else {
                     return "服务器错误，请稍后重试";
@@ -333,7 +324,7 @@ public class FormSubmit {
     @PostMapping("/uploadHeadPortrait")
     public String updateHeadPortrait(HeadPortrait headPortrait) throws IOException {
         BufferedInputStream stream = new BufferedInputStream(headPortrait.getHeadPortrait().getInputStream());
-        String path = "E:\\MyBLOGFileFolder\\" + headPortrait.getUid();
+        String path = "E:\\MyBLOG3.0.1\\src\\main\\resources\\static\\blogFile\\" + headPortrait.getUid();
         byte[] bs = new byte[1024];
         // 读取到的数据长度
         int len;
@@ -343,40 +334,60 @@ public class FormSubmit {
             Directory.mkdirs();
         }
         String type = headPortrait.getHeadPortrait().getOriginalFilename().substring(headPortrait.getHeadPortrait().getOriginalFilename().indexOf(".") + 1);
-        File tempFile = new File(path, headPortrait.getHeadPortrait().getName() + "." + type);
-        BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(tempFile));
-        while ((len = stream.read(bs, 0, bs.length)) != -1) {
-            outputStream.write(bs, 0, len);
+        if(checkImageType(type)){
+            File tempFile = new File(path, headPortrait.getHeadPortrait().getName() + "." + type);
+            BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(tempFile));
+            while ((len = stream.read(bs, 0, bs.length)) != -1) {
+                outputStream.write(bs, 0, len);
+            }
+            outputStream.flush();
+            outputStream.close();
+            stream.close();
+            String newPath = tempFile.getAbsolutePath().substring(49).replaceAll("\\\\", "/");
+            if (messageMapper.updateHeadPortrait(
+                    "/blogFile" + newPath,
+                    headPortrait.getUid())) {
+                return "上传成功";
+            } else {
+                return "上传失败，服务器错误";
+            }
+        }else {
+            return "上传的图片格式不对";
         }
-        outputStream.flush();
-        outputStream.close();
-        stream.close();
-        String newPath = tempFile.getAbsolutePath().substring(20).replaceAll("\\\\", "/");
-        if (messageMapper.updateHeadPortrait(
-                "/File/" + newPath,
-                headPortrait.getUid())) {
-            return "上传成功";
-        } else {
-            return "上传失败，服务器错误";
-        }
+
     }
 
     @PostMapping("/updateMessage")
-    public String updateMessage(
-            @NotBlank(message = "用户名不能为空") @Pattern(regexp = "^[a-zA-Z\\u4e00-\\u9fa50-9_]{3,15}$", message = "用户名不符合格式") @Param(value = "userName") String userName,
-            @Email(message = "请输入正确的邮箱地址") @Param(value = "email") String email,
-            @NotBlank(message = "个人简介不能为空") @Param(value = "introduce") String introduce,
-            @Param(value = "Uid") String Uid
-    ) {
-        Message newOne = new Message();
-        newOne.setUserName(userName);
-        newOne.setEmail(email);
-        newOne.setIntroduce(introduce);
-        newOne.setUid(Uid);
-        if (messageMapper.update(newOne)) {
-            return "更改信息成功";
-        } else {
-            return "更改失败，服务器出错。";
+    public String updateMessage(@Valid com.myblog.version3.entity.Form.Message message , BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<FieldError> list = bindingResult.getFieldErrors();
+            StringBuilder builder = new StringBuilder();
+            for (FieldError error : list) {
+                builder.append(error.getDefaultMessage() + "&");
+            }
+            return builder.toString();
+        }else {
+            Message newOne = new Message();
+            newOne.setUserName(message.getUserName());
+            newOne.setEmail(message.getEmail());
+            newOne.setIntroduce(message.getIntroduce());
+            newOne.setUid(message.getUid());
+            if (messageMapper.update(newOne)) {
+                return "更改信息成功";
+            } else {
+                return "更改失败，服务器出错。";
+            }
         }
+
+    }
+
+    private boolean checkImageType(String type){
+        String[] types = {"bmp" ,"gif" ,"jepg" ,"jpg" ,"png"};
+        for(String i : types){
+            if(type.equalsIgnoreCase(i)){
+                return true;
+            }
+        }
+        return false;
     }
 }

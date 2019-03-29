@@ -10,8 +10,8 @@
     </parent>
     <groupId>com.example</groupId>
     <artifactId>MyBLOG</artifactId>
-    <version>0.0.1-test</version>
-    <name>demo</name>
+    <version>3.0.1</version>
+    <name>MyBLOG</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
@@ -35,12 +35,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional> <!-- 这个需要为 true 热部署才有效 -->
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <!--mybatis相关配置-->
@@ -103,6 +97,20 @@
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-spring</artifactId>
             <version>1.3.2</version>
+        </dependency>
+        <!-- shiro ehcache -->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-ehcache</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+
+        <!--google的验证码框架-->
+        <!-- https://mvnrepository.com/artifact/com.github.penggle/kaptcha -->
+        <dependency>
+            <groupId>com.github.penggle</groupId>
+            <artifactId>kaptcha</artifactId>
+            <version>2.3.2</version>
         </dependency>
 
         <!--validation校验-->
@@ -179,24 +187,6 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
-
-        <resources>
-            <resource>
-                <directory>src/main/java</directory>
-                <includes>
-                    <include>**/*.xml</include>
-                </includes>
-                <filtering>true</filtering>
-            </resource>
-
-            <resource>
-                <directory>lib</directory>
-                <targetPath>BOOT-INF/lib/</targetPath>
-                <includes>
-                    <include>**/*.jar</include>
-                </includes>
-            </resource>
-        </resources>
     </build>
 
 </project>

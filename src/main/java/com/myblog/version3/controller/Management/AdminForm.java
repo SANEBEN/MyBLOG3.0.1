@@ -1,12 +1,10 @@
 package com.myblog.version3.controller.Management;
 
 import com.myblog.version3.Tools.Redis;
-import com.myblog.version3.entity.Article;
 import com.myblog.version3.entity.Category;
 import com.myblog.version3.entity.Comment;
 import com.myblog.version3.entity.User;
 import com.myblog.version3.mapper.*;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.io.FileUtils;
@@ -60,12 +58,13 @@ public class AdminForm {
     @ApiOperation(value = "删除文章", notes = "只用管理员或者作者能访问这个接口，需验证权限")
     public String deleteArticle(@Param(value = "Aid") String Aid) throws IOException {
         Subject subject = SecurityUtils.getSubject();
-        User user = (User) subject.getSession().getAttribute("User");
+        User user = (User) subject.getPrincipal();
         com.myblog.version3.entity.Article article = articleMapper.getByID(Aid);
         if (subject.hasRole("admin") || user.getID().equals(article.getUid())) {
             if (articleMapper.deleteByAid(Aid)) {
                 logger.info("=====================删除文章测试=====================");
-                FileUtils.deleteDirectory(new File(article.getURL()).getParentFile());
+                String path = "E:\\MyBLOG3.0.1\\src\\main\\resources\\static\\";
+                FileUtils.deleteDirectory(new File(path+article.getURL().replaceAll("/","\\\\")).getParentFile());
                 List<Comment> comments = commentMapper.getByAid(Aid);
                 for (com.myblog.version3.entity.Comment Cid : comments) {
                     deleteComment(Cid.getID());
@@ -85,7 +84,7 @@ public class AdminForm {
     @ApiOperation(value = "删除文章分类", notes = "只用管理员或者作者能访问这个接口，需验证权限")
     public String deleteCategory(@Param(value = "Cid") String Cid) throws IOException {
         Subject subject = SecurityUtils.getSubject();
-        User user = (User) subject.getSession().getAttribute("User");
+        User user = (User) subject.getPrincipal();
         Category category = categoryMapper.getByID(Cid);
         if (subject.hasRole("admin") || category.getUid().equals(user.getID())) {
             logger.info("=====================删除分类测试=====================");
@@ -111,7 +110,7 @@ public class AdminForm {
     @ApiOperation(value = "删除评论", notes = "用于删除评论，只用文章作者和网站管理者有权调用该接口")
     public String deleteComment(@Param(value = "Cid") String Cid) {
         Subject subject = SecurityUtils.getSubject();
-        User user = (User) subject.getSession().getAttribute("User");
+        User user = (User) subject.getPrincipal();
         com.myblog.version3.entity.Comment comment = commentMapper.getByID(Cid);
         if (subject.hasRole("superAdmin") || subject.hasRole("admin") || user.getID().equals(comment.getUid())) {
             if (commentMapper.delete(Cid)) {
@@ -130,7 +129,7 @@ public class AdminForm {
     @ApiOperation(value = "删除回复", notes = "用于删除评论，只用文章作者和网站管理者有权调用该接口")
     public String deleteReply(@Param(value = "Rid") String Rid) {
         Subject subject = SecurityUtils.getSubject();
-        User user = (User) subject.getSession().getAttribute("User");
+        User user = (User) subject.getPrincipal();
         com.myblog.version3.entity.Reply reply = replyMapper.getByID(Rid);
         if (subject.hasRole("admin") || user.getID().equals(reply.getReply_id())) {
             if (replyMapper.delete(Rid)) {
@@ -158,7 +157,7 @@ public class AdminForm {
     public String deleteUser(@Param(value = "Uid") String Uid) throws IOException {
         Subject subject = SecurityUtils.getSubject();
         if (subject.isAuthenticated()) {
-            User user = (User) subject.getSession().getAttribute("User");
+            User user = (User) subject.getPrincipal();
             String Role = messageMapper.getByUid(user.getID()).getRole();
             if (Role.equals("admin") || Role.equals("admin,superAdmin")) {
                 if (userMapper.delete(Uid)) {
@@ -169,7 +168,7 @@ public class AdminForm {
                         logger.info("用户的文章分类：" + category.getName() + "  " + category.getID());
                         deleteCategory(category.getID());
                     }
-                    FileUtils.deleteDirectory(new File("E:\\MyBLOGFileFolder\\" + Uid));
+                    FileUtils.deleteDirectory(new File("E:\\MyBLOG3.0.1\\src\\main\\resources\\static\\blogFile\\" + Uid));
                     redis.updateUserNumber(-1);
                     return "删除用户成功";
                 } else {

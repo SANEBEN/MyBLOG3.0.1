@@ -32,19 +32,16 @@ public class LoginController {
 
     @RequestMapping(value = "/userLogin", method = {RequestMethod.GET, RequestMethod.POST})
     public String UserLogin(Login user, ModelMap modelMap, HttpServletRequest request) {
-        UsernamePasswordToken token = new UsernamePasswordToken(user.getPhone(), user.getPassword(), false);
+        UsernamePasswordToken token;
         Subject subject = SecurityUtils.getSubject();
         SavedRequest savedRequest = WebUtils.getSavedRequest(request);
-        logger.info("原访问地址为：" + savedRequest);
-        logger.info("用户的电话号码为：" + user.getPhone());
-        logger.info("用户的密码为:" + user.getPassword());
-        logger.info("是否记住密码:" + user.getRememberMe());
+        if (user.getRememberMe() != null) {
+            token = new UsernamePasswordToken(user.getPhone(), user.getPassword(), true);
+        } else {
+            token = new UsernamePasswordToken(user.getPhone(), user.getPassword(), false);
+        }
         try {
             subject.login(token);
-            Session session = subject.getSession();
-            session.setAttribute("isLogIn" ,true);
-            User user1 = mapper.getByPhone(user.getPhone());
-            session.setAttribute("User" ,user1);
             if (savedRequest != null) {
                 return "redirect:http://localhost:8088/" + savedRequest.getRequestUrl();
             } else {

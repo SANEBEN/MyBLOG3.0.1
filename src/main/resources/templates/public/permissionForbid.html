@@ -38,42 +38,42 @@
                 <!--显示用户信息-->
                 <li class="user-profile dropdown dropdown-animated scale-left" th:if="${isLogIn}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="data2">
-                        <img class="profile-img img-fluid" th:src="@{${message.getImg()}}" alt="">
+                        <img class="profile-img img-fluid" th:src="@{${user.getImg()}}" alt="">
                     </a>
                     <ul class="dropdown-menu dropdown-md">
                         <li>
                             <ul class="list-media">
                                 <li class="list-item avatar-info">
                                     <div class="media-img">
-                                        <img th:src="@{${message.getImg()}}" alt="">
+                                        <img th:src="@{${user.getImg()}}" alt="">
                                     </div>
                                     <div class="info">
-                                        <span class="title text-semibold" th:text="${message.getUserName()}"></span>
-                                        <span class="sub-title" th:text="'加入时间'+${#dates.format(message.getCreatedTime(),'yyyy/MM/dd')}"></span>
+                                        <span class="title text-semibold" th:text="${user.getUserName()}"></span>
+                                        <span class="sub-title" th:text="'加入时间'+${#dates.format(user.getCreatedTime(),'yyyy/MM/dd')}"></span>
                                     </div>
                                 </li>
                             </ul>
                         </li>
                         <li role="separator" class="divider"></li>
                         <li>
-                            <a th:href="@{'/personalCenter/'+${message.getUid()}}">
+                            <a th:href="@{'/personalCenter/'+${user.getUid()}}">
                                 <i class="lni-user"></i>
                                 <span>个人中心</span>
                             </a>
                         </li>
                         <li>
-                            <a th:href="@{'/user/editMessage/'+${message.getUid()}}">
+                            <a th:href="@{'/user/editMessage/'+${user.getUid()}}">
                                 <i class="lni-cog"></i>
                                 <span>更改个人信息</span>
                             </a>
                         </li>
-                        <li th:unless="${message.getRole().equals('admin,superAdmin')||message.getRole().equals('admin')}">
-                            <a th:href="@{'/user/Article/'+${message.getUid()}}">
+                        <li th:unless="${user.getRole().equals('admin,superAdmin')||user.getRole().equals('admin')}">
+                            <a th:href="@{'/user/Article/'+${user.getUid()}}">
                                 <i class="lni-envelope"></i>
                                 <span>文章管理</span>
                             </a>
                         </li>
-                        <li th:if="${message.getRole().equals('admin,superAdmin')||message.getRole().equals('admin')}">
+                        <li th:if="${user.getRole().equals('admin,superAdmin')||user.getRole().equals('admin')}">
                             <a th:href="@{'/admin/index'}">
                                 <i class="lni-envelope"></i>
                                 <span>后台管理</span>

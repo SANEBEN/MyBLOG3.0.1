@@ -9,6 +9,8 @@ import io.swagger.annotations.ApiImplicitParam;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -19,6 +21,7 @@ import java.util.List;
 
 @Controller
 public class PublicController {
+    private Logger logger = LoggerFactory.getLogger(PublicController.class);
 
     @Autowired
     messageMapper messageMapper;
@@ -45,10 +48,9 @@ public class PublicController {
     @ApiIgnore
     public String HomePage(ModelMap modelMap){
         Subject subject = SecurityUtils.getSubject();
-        Session session = subject.getSession();
-        if(session.getAttribute("isLogIn") !=null){
-            modelMap.addAttribute("isLogIn",session.getAttribute("isLogIn"));
-            User user = (User)session.getAttribute("User");
+        User user = (User)subject.getPrincipal();
+        if(user !=null){
+            modelMap.addAttribute("isLogIn",true);
             modelMap.addAttribute("message" ,messageMapper.getByUid(user.getID()));
         }else {
             modelMap.addAttribute("isLogIn",false);
@@ -70,42 +72,25 @@ public class PublicController {
     @ApiImplicitParam(value = "用户的ID" ,name = "Uid" ,dataType = "String" ,paramType = "path" ,required = true)
     public String PersonalCenter(@PathVariable String Uid , ModelMap modelMap){
         Subject subject = SecurityUtils.getSubject();
-        Session session = subject.getSession();
-        if(session.getAttribute("isLogIn") !=null){
-            modelMap.addAttribute("isLogIn",session.getAttribute("isLogIn"));
-            User user = (User)session.getAttribute("User");
+        User user = (User)subject.getPrincipal();
+        if(user !=null){
+            modelMap.addAttribute("isLogIn",true);
             modelMap.addAttribute("user" ,messageMapper.getByUid(user.getID()));
         }else {
             modelMap.addAttribute("isLogIn",false);
         }
         modelMap.addAttribute("message",messageMapper.getByUid(Uid));
         modelMap.addAttribute("articles" ,articleMapper.getByUid(Uid));
-        List<UserActivity> activities = userActivityMapper.getByUid(Uid);
-        for(UserActivity activity : activities){
-            if(activity.getAction().equals("createArticle")){
-                activity.setArticle(articleMapper.getByID(activity.getObject_id()));
-            }else if(activity.getAction().equals("updateArticle")){
-                activity.setArticle(articleMapper.getByID(activity.getObject_id()));
-            }else if(activity.getAction().equals("addCategory")){
-                activity.setCategory(categoryMapper.getByID(activity.getOperation_object_id()));
-            }else if(activity.getAction().equals("addComment")){
-                activity.setComment(commentMapper.getByID(activity.getOperation_object_id()));
-            }else if(activity.getAction().equals("addReply")){
-                activity.setReply(replyMapper.getByID(activity.getOperation_object_id()));
-            }
-        }
-        modelMap.addAttribute("activities" ,activities);
         return "public/personalCenter";
     }
 
     @RequestMapping("/Article/{Aid}")
     public String Article(@PathVariable(value = "Aid") String Aid, ModelMap modelMap){
         Subject subject = SecurityUtils.getSubject();
-        Session session = subject.getSession();
-        if(session.getAttribute("isLogIn") !=null){
-            modelMap.addAttribute("isLogIn",session.getAttribute("isLogIn"));
-            User user = (User)session.getAttribute("User");
-            modelMap.addAttribute("message" ,messageMapper.getByUid(user.getID()));
+        User user = (User)subject.getPrincipal();
+        if(user !=null){
+            modelMap.addAttribute("isLogIn",true);
+            modelMap.addAttribute("user" ,messageMapper.getByUid(user.getID()));
         }else {
             modelMap.addAttribute("isLogIn",false);
         }
@@ -122,11 +107,10 @@ public class PublicController {
     @RequestMapping("/permissionForbid")
     public String permissionForbid(ModelMap modelMap){
         Subject subject = SecurityUtils.getSubject();
-        Session session = subject.getSession();
-        if(session.getAttribute("isLogIn") !=null){
-            modelMap.addAttribute("isLogIn",session.getAttribute("isLogIn"));
-            User user = (User)session.getAttribute("User");
-            modelMap.addAttribute("message" ,messageMapper.getByUid(user.getID()));
+        User user = (User)subject.getPrincipal();
+        if(user !=null){
+            modelMap.addAttribute("isLogIn",true);
+            modelMap.addAttribute("user" ,messageMapper.getByUid(user.getID()));
         }else {
             modelMap.addAttribute("isLogIn",false);
         }

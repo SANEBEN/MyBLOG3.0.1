@@ -1,8 +1,15 @@
 package com.myblog.version3.configuration;
 
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.servlet.SimpleCookie;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,6 +19,9 @@ import java.util.Map;
 
 @Configuration
 public class shiroConfiguation {
+
+    Logger logger = LoggerFactory.getLogger(shiroConfiguation.class);
+
     /**
      * ShiroFilterFactoryBean 处理拦截资源文件问题。
      * 注意：单独一个ShiroFilterFactoryBean配置是或报错的，因为在初始化ShiroFilterFactoryBean的时候需要注入：SecurityManager
@@ -24,7 +34,6 @@ public class shiroConfiguation {
         // 必须设置 SecurityManager
         shiroFilterFactoryBean.setSecurityManager(securityManager);
 
-        // 如果不设置默认会自动寻找Web工程根目录下的"/login.jsp"页面
         //访问的是后端url地址为 /login的接口
         shiroFilterFactoryBean.setLoginUrl("/login");
         // 登录成功后要跳转的链接
@@ -51,7 +60,7 @@ public class shiroConfiguation {
         filterChainDefinitionMap.put("/permissionForbid", "anon");
         filterChainDefinitionMap.put("/personalCenter/**", "anon");
         filterChainDefinitionMap.put("/Article/**", "anon");
-        filterChainDefinitionMap.put("/user/**", "authc");
+        filterChainDefinitionMap.put("/user/**", "user");
         filterChainDefinitionMap.put("/admin/adminAccountManagement", "authc,roles[admin,superAdmin]");
         filterChainDefinitionMap.put("/admin/**", "authc,roles[admin]");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
@@ -59,19 +68,54 @@ public class shiroConfiguation {
         return shiroFilterFactoryBean;
     }
 
-    @Bean
-    public SecurityManager securityManager() {
+    @Bean("SecurityManager")
+    public SecurityManager securityManager(@Qualifier("MyShiroRealm") MyShiroRealm myShiroRealm) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         // 设置realm.
-        securityManager.setRealm(myShiroRealm());
+        securityManager.setRememberMeManager(cookieRememberMeManager()); //注入rememberMeManager
+        securityManager.setRealm(myShiroRealm);
         return securityManager;
     }
 
     /**
      * 身份认证realm; (这个需要自己写，账号密码校验；权限等)
      */
-    @Bean
-    public MyShiroRealm myShiroRealm() {
-        return new MyShiroRealm();
+    @Bean("MyShiroRealm")
+    public MyShiroRealm myShiroRealm(@Qualifier("HashedCredentialsMatcher") HashedCredentialsMatcher matcher) {
+        MyShiroRealm realm = new MyShiroRealm();
+        realm.setAuthorizationCachingEnabled(false);
+        realm.setCredentialsMatcher(matcher);
+        return realm;
     }
+
+    //cookie对象;
+    @Bean("rememberMeCookie")
+    public SimpleCookie rememberMeCookie() {
+        //这个参数是cookie的名称，对应前端的checkbox的name = rememberMe
+        SimpleCookie simpleCookie = new SimpleCookie("rememberMe");
+        //<!-- 记住我cookie生效时间15天 ,单位秒;-->
+        simpleCookie.setMaxAge(60 * 60 * 24 * 15);
+        return simpleCookie;
+    }
+
+    //cookie管理对象;
+    @Bean("cookieRememberMeManager")
+    public CookieRememberMeManager cookieRememberMeManager() {
+        CookieRememberMeManager manager = new CookieRememberMeManager();
+        manager.setCookie(rememberMeCookie());
+        return manager;
+    }
+
+    @Bean("HashedCredentialsMatcher")
+    public HashedCredentialsMatcher hashedCredentialsMatcher() {
+        logger.info("修改了shiro的验证模式");
+        HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher();
+        //指定加密方式为MD5
+        credentialsMatcher.setHashAlgorithmName("MD5");
+        //加密次数
+        credentialsMatcher.setHashIterations(1024);
+        credentialsMatcher.setStoredCredentialsHexEncoded(true);
+        return credentialsMatcher;
+    }
+
 }

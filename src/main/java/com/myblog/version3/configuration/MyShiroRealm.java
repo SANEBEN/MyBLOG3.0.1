@@ -1,5 +1,6 @@
 package com.myblog.version3.configuration;
 
+import com.myblog.version3.Tools.MD5;
 import com.myblog.version3.entity.Message;
 import com.myblog.version3.entity.User;
 import com.myblog.version3.mapper.messageMapper;
@@ -10,6 +11,7 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class MyShiroRealm extends AuthorizingRealm {
@@ -30,6 +32,7 @@ public class MyShiroRealm extends AuthorizingRealm {
         for(String role : Roles.split(",")){
             simpleAuthorInfo.addRole(role);
         }
+        System.out.println("为用户添加角色信息");
         return simpleAuthorInfo;
     }
 
@@ -48,13 +51,16 @@ public class MyShiroRealm extends AuthorizingRealm {
         //密码不用自己比对，AuthenticationInfo认证信息对象，一个接口，new他的实现类对象SimpleAuthenticationInfo
         /*	第一个参数随便放，可以放user对象，程序可在任意位置获取 放入的对象
          * 第二个参数必须放密码，
-         * 第三个参数放 当前realm的名字，因为可能有多个realm*/
-        AuthenticationInfo authcInfo=new SimpleAuthenticationInfo(user, user.getPassword(), this.getName());
+         * 第三个参数放 当前realm的名字，因为可能有多个realm
+         */
+        ByteSource source = ByteSource.Util.bytes(user.getID());
+        AuthenticationInfo authcInfo=new SimpleAuthenticationInfo(user, user.getPassword(),source, this.getName());
+        System.out.println(authcInfo.getCredentials()+"   这是登录验证");
         //AuthenticationInfo authcInfo=new SimpleAuthenticationInfo(user,user.getPassword(),new MySimpleByteSource(account), this.getName());
         //清之前的授权信息
         super.clearCachedAuthorizationInfo(authcInfo.getPrincipals());
-        SecurityUtils.getSubject().getSession().setAttribute("login", user);
-        return authcInfo;//返回给安全管理器，securityManager，由securityManager比对数据库查询出的密码和页面提交的密码
+        return authcInfo;
+        //返回给安全管理器，securityManager，由securityManager比对数据库查询出的密码和页面提交的密码
         //如果有问题，向上抛异常，一直抛到控制器
     }
 }

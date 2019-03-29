@@ -1,5 +1,6 @@
 package com.myblog.version3.controller.Public;
 
+import com.myblog.version3.Tools.MD5;
 import com.myblog.version3.Tools.Random;
 import com.myblog.version3.Tools.Redis;
 import com.myblog.version3.Tools.eMessage;
@@ -12,8 +13,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,7 +89,10 @@ public class RegisterController {
                                 User register = new User();
                                 register.setID(Random.getUUID().substring(0,8));
                                 register.setPhone(user.getPhone());
-                                register.setPassword(user.getRpassword());
+                                ByteSource credentialsSalt = ByteSource.Util.bytes(register.getID());
+                                String password = new SimpleHash("MD5", user.getRpassword()
+                                        , credentialsSalt, 1024).toHex();
+                                register.setPassword(password);
                                 Message message = new Message();
                                 message.setCreatedTime(new Date());
                                 message.setUid(register.getID());

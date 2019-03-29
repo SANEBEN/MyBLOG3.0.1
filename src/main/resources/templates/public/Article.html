@@ -39,7 +39,7 @@
                 <li class="user-profile dropdown dropdown-animated scale-left" th:if="${isLogIn}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="data2">
                         <div class="media-img">
-                            <img style="width: 40px;height: 40px;" th:src="@{${message.getImg()}}" alt="">
+                            <img style="width: 40px;height: 40px;" th:src="@{${user.getImg()}}" alt="">
                         </div>
                     </a>
                     <ul class="dropdown-menu dropdown-md">
@@ -47,36 +47,36 @@
                             <ul class="list-media">
                                 <li class="list-item avatar-info">
                                     <div class="media-img">
-                                        <img th:src="@{${message.getImg()}}" alt="">
+                                        <img th:src="@{${user.getImg()}}" alt="">
                                     </div>
                                     <div class="info">
-                                        <span class="title text-semibold" th:text="${message.getUserName()}"></span>
+                                        <span class="title text-semibold" th:text="${user.getUserName()}"></span>
                                         <span class="sub-title"
-                                              th:text="'加入时间：'+${#dates.format(message.getCreatedTime(),'yyyy/MM/dd')}"></span>
+                                              th:text="'加入时间：'+${#dates.format(user.getCreatedTime(),'yyyy/MM/dd')}"></span>
                                     </div>
                                 </li>
                             </ul>
                         </li>
                         <li role="separator" class="divider"></li>
                         <li>
-                            <a th:href="@{'/personalCenter/'+${message.getUid()}}">
+                            <a th:href="@{'/personalCenter/'+${user.getUid()}}">
                                 <i class="lni-user"></i>
                                 <span>个人中心</span>
                             </a>
                         </li>
                         <li>
-                            <a th:href="@{'/user/editMessage/'+${message.getUid()}}">
+                            <a th:href="@{'/user/editMessage/'+${user.getUid()}}">
                                 <i class="lni-cog"></i>
                                 <span>更改个人信息</span>
                             </a>
                         </li>
-                        <li th:unless="${message.getRole().equals('admin,superAdmin')||message.getRole().equals('admin')}">
-                            <a th:href="@{'/user/Article/'+${message.getUid()}}">
+                        <li th:unless="${user.getRole().equals('admin,superAdmin')||user.getRole().equals('admin')}">
+                            <a th:href="@{'/user/Article/'+${user.getUid()}}">
                                 <i class="lni-envelope"></i>
                                 <span>文章管理</span>
                             </a>
                         </li>
-                        <li th:if="${message.getRole().equals('admin,superAdmin')||message.getRole().equals('admin')}">
+                        <li th:if="${user.getRole().equals('admin,superAdmin')||user.getRole().equals('admin')}">
                             <a th:href="@{'/admin/index'}"
                             >
                                 <i class="lni-envelope"></i>
@@ -98,7 +98,7 @@
     <div class="container-fluid" style="width: 80%;">
         <div class="row">
             <div class="col col-md-12">
-                <div class="card" style="height: 600px">
+                <div class="card">
                     <div class="card-body">
                         <h1 th:text="${article.getTitle()}"></h1>
                         <table class="table " style="table-layout:fixed;width: auto;border-bottom: #666666">
@@ -134,7 +134,7 @@
                                 <textarea placeholder="评论最多可以发送255个字符" name="content" class="form-control"></textarea>
                                 <input type="button" value="添加评论" id="addComment"
                                        class="btn btn-primary float-right">
-                                <input type="hidden" name="Uid" th:value="${message.getUid()}">
+                                <input type="hidden" name="Uid" th:value="${user.getUid()}">
                                 <input type="hidden" name="Aid" th:value="${article.getID()}">
                             </div>
                             <div class="card-body text-center" th:unless="${isLogIn}">
@@ -169,7 +169,7 @@
                                             <a th:href="@{/login}" th:unless="${isLogIn}">回复</a>
                                             <div th:if="${isLogIn}">
                                                 <a class="deleteComment" th:name="${comment.getID()}" href="javascript:void(0)"
-                                                   th:if="${message.getUid().equals(author.getUid())||message.getRole().equals('admin,superAdmin')||message.getRole().equals('admin')}">删除评论</a>
+                                                   th:if="${user.getUid().equals(author.getUid())||user.getRole().equals('admin,superAdmin')||message.getRole().equals('admin')}">删除评论</a>
                                             </div>
                                             <a th:href="'#'+${'show'+comment.getID()}"
                                                data-toggle="collapse"
@@ -185,7 +185,7 @@
                                                           name="content" class="form-control"></textarea>
                                                 <input type="hidden" name="Cid" th:value="${comment.getID()}">
                                                 <input type="hidden" name="reply_id"
-                                                       th:value="${message?.getUid()}">
+                                                       th:value="${user?.getUid()}">
                                                 <input type="button" value="添加回复" th:name="${comment.getID()}"
                                                        class="btn btn-primary float-right addReply">
                                                 <button class="btn btn-danger float-right" type="button"
@@ -229,7 +229,7 @@
                                                         <a th:href="@{/login}" th:unless="${isLogIn}">回复</a>
                                                         <div th:if="${isLogIn}">
                                                             <a class="deleteReply" th:name="${reply.getID()}" href="javascript:void(0)"
-                                                               th:if="${message.getUid().equals(author.getUid())||message.getRole().equals('admin,superAdmin')||message.getRole().equals('admin')}">删除回复</a>
+                                                               th:if="${user.getUid().equals(author.getUid())||user.getRole().equals('admin,superAdmin')||user.getRole().equals('admin')}">删除回复</a>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -245,7 +245,7 @@
                                                             <input type="hidden" name="Cid"
                                                                    th:value="${comment.getID()}">
                                                             <input type="hidden" name="reply_id"
-                                                                   th:value="${message?.getUid()}">
+                                                                   th:value="${user?.getUid()}">
                                                             <input type="hidden" name="parent_reply_id"
                                                                    th:value="${reply.getReply().getUid()}">
                                                             <button class="btn btn-danger float-right" type="button"

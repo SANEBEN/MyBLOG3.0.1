@@ -85,7 +85,9 @@ public class Article {
 
     public void setContent(String URL) {
         try {
-            File file = new File(URL);
+            String path = "E:\\MyBLOG3.0.1\\src\\main\\resources\\static\\";
+            File file = new File(path+URL.replaceAll("/","\\\\"));
+            System.out.println("寻找查询文章的bug"+file.getPath());
             if (file.exists()) {
                 InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
                 BufferedReader bufferedReader = new BufferedReader(reader);
@@ -95,7 +97,8 @@ public class Article {
                     content.append(temp);
                 }
                 reader.close();
-                Content = content.toString().trim();
+                String message = content.toString();
+                Content = message.replaceAll("<(.[^>]*)>","").trim();
             } else {
                 Content = "未找到指定文件，请稍后重试，或联系网站管理员了解相关情况";
             }

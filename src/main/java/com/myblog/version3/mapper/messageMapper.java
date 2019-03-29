@@ -31,7 +31,7 @@ public interface messageMapper {
     @Update("update myblog.message set Role = 'admin' where Uid = #{Uid}")
     boolean setAdmin(String Uid);
 
-    @Update("update myblog.message set Role = 'User' where Uid = #{Uid}")
+    @Update("update myblog.message set Role = 'user' where Uid = #{Uid}")
     boolean setUser(String Uid);
 
     @Update("update myblog.message set userName = #{userName} ,email = #{email},introduce = #{introduce} where Uid = #{Uid}")

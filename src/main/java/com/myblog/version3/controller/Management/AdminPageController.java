@@ -35,8 +35,7 @@ public class AdminPageController {
         Subject subject = SecurityUtils.getSubject();
         if(subject.isAuthenticated()) {
             if (subject.hasRole("superAdmin")) {
-                Session session = subject.getSession();
-                User user = (User)session.getAttribute("User");
+                User user = (User)subject.getPrincipal();
                 modelMap.addAttribute("message" ,messageMapper.getByUid(user.getID()));
                 PageHelper.startPage(pageNum,6);
                 List<Message> users = messageMapper.getAllAdmin();
@@ -57,8 +56,7 @@ public class AdminPageController {
         Subject subject = SecurityUtils.getSubject();
         if(subject.isAuthenticated()){
             if(subject.hasRole("admin")||subject.hasRole("superAdmin")){
-                Session session = subject.getSession();
-                User user = (User)session.getAttribute("User");
+                User user = (User)subject.getPrincipal();
                 modelMap.addAttribute("message" ,messageMapper.getByUid(user.getID()));
                 PageHelper.startPage(pageNum,6);
                 List<Article> articles = articleMapper.getAll();
@@ -78,8 +76,7 @@ public class AdminPageController {
         Subject subject = SecurityUtils.getSubject();
         if(subject.isAuthenticated()){
             if(subject.hasRole("admin")||subject.hasRole("superAdmin")){
-                Session session = subject.getSession();
-                User user = (User)session.getAttribute("User");
+                User user = (User)subject.getPrincipal();
                 modelMap.addAttribute("message" ,messageMapper.getByUid(user.getID()));
                 return "authc/Admin/index";
             }else {
@@ -96,8 +93,7 @@ public class AdminPageController {
         Subject subject = SecurityUtils.getSubject();
         if(subject.isAuthenticated()){
             if(subject.hasRole("admin")||subject.hasRole("superAdmin")){
-                Session session = subject.getSession();
-                User user = (User)session.getAttribute("User");
+                User user = (User)subject.getPrincipal();
                 modelMap.addAttribute("message" ,messageMapper.getByUid(user.getID()));
                 PageHelper.startPage(pageNum,6);
                 List<Message> users = messageMapper.getAllUser();
